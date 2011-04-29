@@ -1,0 +1,7 @@
+content pano chrome/content/
+locale pano en-US chrome/locale/en-US/
+skin pano classic/1.0 chrome/skin/
+resource pano modules/
+
+overlay chrome://browser/content/browser.xul chrome://pano/content/overlay.xul
+

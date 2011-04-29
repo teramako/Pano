@@ -1,0 +1,49 @@
+
+#tabGroupTree {
+  -moz-appearance: none;
+  border: 0;
+  margin: 0;
+  border-top: 1px solid TreeDShadow;
+}
+
+#tabGroupTree treechildren::-moz-tree-image(item) {
+  list-style-image: url("chrome://mozapps/skin/places/defaultFavicon.png");
+  padding-right: 2px;
+  margin: 0px 2px;
+  width: 16px;
+  height: 16px;
+}
+#tabGroupTree treechildren::-moz-tree-cell-text(currentTab),
+#tabGroupTree treechildren::-moz-tree-cell-text(currentGroup) {
+  font-weight: bold;
+}
+#tabGroupTree treechildren::-moz-tree-row(currentGroup) {
+  background-color: rgba(224, 255, 255, 0.8); /* LightCyan */
+}
+#tabGroupTree treechildren::-moz-tree-twisty {
+  width: 16px;
+  list-style-image: url("chrome://browser/skin/tabview/tabview.png");
+  -moz-image-region: rect(1px, 35px, 16px, 19px);
+}
+#tabGroupTree treechildren::-moz-tree-twisty(AppTabs) {
+  list-style-image: url("chrome://pano/skin/application_double.png");
+  -moz-image-region: auto;
+}
+#tabGroupTree treechildren::-moz-tree-twisty(Orphaned) {
+  list-style-image: url("chrome://pano/skin/bullet_black.png");
+  -moz-image-region: auto;
+}
+
+/* tooltip */
+#tooltipImage {
+  width: 200px;
+  height: 150px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: -moz-element(#tabCapture);
+}
+#tooltipImage.hide {
+  height: 0;
+  overflow: hidden;
+}
+

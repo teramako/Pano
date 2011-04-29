@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
+<?xml-stylesheet type="text/css" href="chrome://pano/skin/sidebar.css"?>
+<window id="panoramaSidebarWindow"
+        onload="gPanoramaTree.init();"
+        onunload="gPanoramaTree.destroy();"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/javascript" src="chrome://pano/content/sidebar.js"/>
+  <popupset id="panoramaSidebarPopupSet">
+    <tooltip id="tabTooltip"
+             noautohide="true"
+             onpopupshowing="gPanoramaTree.tooltip.show(event);">
+      <vbox id="tooltipBox">
+        <label id="tooltipTitle" flex="1"/>
+        <label id="tooltipURL" flex="1"/>
+        <box id="tooltipImage"/>
+      </vbox>
+    </tooltip>
+  </popupset>
+  <tree id="tabGroupTree" flex="1" hidecolumnpicker="true" editable="true">
+    <treecols>
+      <treecol anonid="title" flex="1"
+               hideheader="true"
+               editable="true" primary="true"/>
+    </treecols>
+    <treechildren ondblclick="gPanoramaTree.onDblClick(event);"
+                  ondragstart="gPanoramaTree.onDragStart(event);"
+                  tooltip="tabTooltip"/>
+  </tree>
+</window>

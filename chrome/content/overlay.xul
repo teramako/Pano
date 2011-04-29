@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<broadcasterset id="mainBroadcasterSet">
+  <broadcaster id="viewPanoramaSidebar"
+               autoCheck="false"
+               label="Tab Group"
+               type="checkbox"
+               group="sidebar"
+               oncommand="toggleSidebar('viewPanoramaSidebar')"
+               sidebarurl="chrome://pano/content/sidebar.xul"/>
+</broadcasterset>
+<menupopup id="viewSidebarMenu">
+  <menuitem id="menu_panoramaSidebar" observes="viewPanoramaSidebar"/>
+</menupopup>
+</overlay>

@@ -235,14 +235,11 @@ PanoramaSidebar.prototype = {
         } else {
           groupItem = this.rows[groupRow];
         }
-        for (let i = 0; i < groupItem.group._children.length; i++) {
-          if (groupItem.group._children[i].tab === tab) {
-            if (changeIndex == 0)
-              changeIndex = groupRow + i + 1;
-            this.rows.splice(groupRow + i + 1, 0, new TabItem(tab));
-            break;
-          }
-        }
+        let tabIndex = this.getIndexOfGroupForTab(tab, groupItem.group);
+        if (changeIndex == 0)
+          changeIndex = groupRow + tabIndex + 1;
+
+        this.rows.splice(groupRow + tabIndex + 1, 0, new TabItem(tab));
       } else {
         // 孤立タブ
         changeIndex = this.rows.push(new TabItem(tab)) - 1;
@@ -262,7 +259,6 @@ PanoramaSidebar.prototype = {
     }
   },
   onTabMove: function PS_onTabMove (aEvent) {
-    Services.console.logStringMessage("onTabMove: type: " + aEvent.type);
     var tab = aEvent.target;
     var row = this.getRowForTab(tab);
     if (row != -1) {
@@ -273,7 +269,6 @@ PanoramaSidebar.prototype = {
       else {
         let group = tab._tabViewTabItem.parent;
         if (group) {
-          Services.console.logStringMessage("moveto group: " + group.getTitle());
           group._children.sort(function(a,b) a.tab._tPos - b.tab._tPos);
           let groupRow = this.getRowForGroup(group);
           let tabIndex = this.getIndexOfGroupForTab(tab, group);

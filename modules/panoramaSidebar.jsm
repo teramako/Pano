@@ -79,7 +79,15 @@ TabItem.prototype = {
   get id () this.tab._tPos,
 };
 
-const HANDLE_EVENT_TYPES = [ "TabOpen", "TabClose", "TabMove", "TabPinned", "TabUnpinned", "TabAttrModified" ];
+const HANDLE_EVENT_TYPES = [
+  "TabOpen",
+  "TabClose",
+  "TabMove",
+  "TabPinned",
+  "TabUnpinned",
+  "TabAttrModified",
+  "TabGroupMove",
+];
 
 function PanoramaSidebar (tabView) {
   this.tabView = tabView;
@@ -95,8 +103,20 @@ PanoramaSidebar.prototype = {
       win.addEventListener(type, this, false);
     }
     this.build();
+    var orignalMoveTabToGroupItem = this.tabView._window.GroupItems.moveTabToGroupItem;
+    if (orignalMoveTabToGroupItem.name != "PS_moveTabToGroupItem") {
+      this.orignalMoveTabToGroupItem = orignalMoveTabToGroupItem.bind(this.tabView._window.GroupItems);
+      this.tabView._window.GroupItems.moveTabToGroupItem = this.moveTabToGroupItem.bind(this);
+    }
+  },
+  moveTabToGroupItem: function PS_moveTabToGroupItem (tab, groupItemId) {
+    this.orignalMoveTabToGroupItem(tab, groupItemId);
+    var event = this.tabView._window.document.createEvent("Events");
+    event.initEvent("TabGroupMove", true, false);
+    tab.dispatchEvent(event);
   },
   destroy: function PS_destroy () {
+    this.tabView._window.GroupItems.moveTabToGroupItem = this.orignalMoveTabToGroupItem;
     var win = this.tabView._window.gWindow;
     for (let [, type] in Iterator(HANDLE_EVENT_TYPES)) {
       win.removeEventListener(type, this, false);
@@ -164,6 +184,14 @@ PanoramaSidebar.prototype = {
     }
     return -1;
   },
+  getIndexOfGroupForTab: function PS_getIndexOfGroupForTab (tab, group) {
+    for (let i = 0; i < group._children.length; i++) {
+      if (group._children[i].tab === tab) {
+        return i;
+      }
+    }
+    return -1;
+  },
   // ==========================================================================
   // Handlers
   // ==========================================================================
@@ -174,6 +202,12 @@ PanoramaSidebar.prototype = {
       break;
     case "TabClose":
       this.onTabClose(aEvent);
+      break;
+    case "TabPinned":
+    case "TabUnpinned":
+    case "TabMove":
+    case "TabGroupMove":
+      this.onTabMove(aEvent);
       break;
     default:
       this.treeBox.invalidate();
@@ -225,6 +259,32 @@ PanoramaSidebar.prototype = {
     if (row != -1) {
       this.rows.splice(row, 1);
       this.treeBox.rowCountChanged(row, -1);
+    }
+  },
+  onTabMove: function PS_onTabMove (aEvent) {
+    Services.console.logStringMessage("onTabMove: type: " + aEvent.type);
+    var tab = aEvent.target;
+    var row = this.getRowForTab(tab);
+    if (row != -1) {
+      let items = this.rows.splice(row, 1);
+      if (tab.pinned) {
+        this.rows.splice(1 + tab._tPos, 0, items[0]);
+      }
+      else {
+        let group = tab._tabViewTabItem.parent;
+        if (group) {
+          Services.console.logStringMessage("moveto group: " + group.getTitle());
+          group._children.sort(function(a,b) a.tab._tPos - b.tab._tPos);
+          let groupRow = this.getRowForGroup(group);
+          let tabIndex = this.getIndexOfGroupForTab(tab, group);
+          this.rows.splice(groupRow + tabIndex + 1, 0, items[0]);
+        }
+        // 孤立タブ
+        else {
+          this.rows.push(items[0]);
+        }
+      }
+      this.treeBox.invalidate();
     }
   },
   // ==========================================================================

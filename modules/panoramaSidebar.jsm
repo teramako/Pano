@@ -331,38 +331,51 @@ PanoramaSidebar.prototype = {
     var item = this.rows[sourceIndex];
     if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation == Ci.nsITreeView.DROP_BEFORE) {
       aTargetIndex--;
+      aOrientation = Ci.nsITreeView.DROP_AFTER;
     }
     var targetItem = this.rows[aTargetIndex];
 
     if (targetItem.type & TAB_GROUP_TYPE) {
       let indexOfGroup = 0;
+      // アプリタブ・グループへドロップ
       if (targetItem.type & APPTAB_GROUP_TYPE) {
         this.gBrowser.pinTab(item.tab);
-        indexOfGroup = Array.indexOf(this.gBrowser.mTabs, item.tab), 0, item;
-      } else if (targetItem.type & ORPHANED_GROUP_TYPE) {
-        if (item.tab.pinned) {
+        if (aOrientation == Ci.nsITreeView.DROP_AFTER)
+          this.gBrowser.moveTabTo(item.tab, 0);
+      }
+      // 孤立タブ・グループへドロップ
+      else if (targetItem.type & ORPHANED_GROUP_TYPE) {
+        if (item.tab.pinned)
           this.gBrowser.unpinTab(item.tab);
-        }
+
         let tabItem = item.tab._tabViewTabItem;
         if (tabItem.parent)
           tabItem.parent.remove(tabItem);
 
-        indexOfGroup = this.tabView._window.GroupItems.getOrphanedTabs().indexOf(tabItem);
-      } else if (item.tab.pinned) {
-        // 移動元のタブはアプリタブ
+        if (aOrientation == Ci.nsITreeView.DROP_AFTER && this.rows[aTargetIndex + 1])
+            this.gBrowser.moveTabTo(item.tab, this.rows[aTargetIndex + 1].tab._tPos);
+
+        this.onTabMove({type: "TabToOrphaned", target: item.tab})
+      }
+      // 移動元のタブはアプリタブ
+      else if (item.tab.pinned) {
         this.gBrowser.unpinTab(item.tab);
         this.tabView.moveTabTo(item.tab, targetItem.group.id);
-        indexOfGroup = targetItem.group._children.indexOf(item.tab._tabViewTabItem);
-      } else if (targetItem.group !== item.tab._tabViewTabItem.parent) {
-        this.tabView.moveTabTo(item.tab, targetItem.group.id);
-        indexOfGroup = targetItem.group._children.indexOf(item.tab._tabViewTabItem);
-      } else {
-        return;
+        if (aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
+          this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
       }
-
-      this.rows.splice(sourceIndex, 1);
-      this.rows.splice(aTargetIndex + indexOfGroup, 0, item);
-    } else if (targetItem.type & TAB_ITEM_TYPE) {
+      // 別グループへドロップ
+      else if (targetItem.group !== item.tab._tabViewTabItem.parent) {
+        this.tabView.moveTabTo(item.tab, targetItem.group.id);
+        if (aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
+          this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
+      }
+      // 同一グループの先頭へドロップ
+      else if (aOrientation == Ci.nsITreeView.DROP_AFTER) {
+        this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
+      }
+    }
+    else if (targetItem.type & TAB_ITEM_TYPE) {
       let sourceGroup = item.tab._tabViewTabItem ? item.tab._tabViewTabItem.parent : null;
       let targetGroup = targetItem.tab._tabViewTabItem ? targetItem.tab._tabViewTabItem.parent : null;
       if (targetGroup) {
@@ -371,18 +384,17 @@ PanoramaSidebar.prototype = {
 
         if (sourceGroup != targetGroup)
           this.tabView.moveTabTo(item.tab, targetGroup.id);
-
-      } else if (targetItem.tab.pinned) {
+      }
+      else if (targetItem.tab.pinned) {
         if (!item.tab.pinned)
           this.gBrowser.pinTab(item.tab);
-      } else {
+      }
+      else {
         // move to OrphanedGroup
         if (sourceGroup)
           sourceGroup.remove(item);
       }
-      this.gBrowser.moveTabTo(item.tab, targetItem.tab._tPos);
-      this.rows.splice(sourceIndex, 1);
-      this.rows.splice(aTargetIndex, 0, item);
+      this.gBrowser.moveTabTo(item.tab, targetItem.tab._tPos + aOrientation);
     }
   },
   selection: null,

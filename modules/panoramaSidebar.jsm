@@ -115,7 +115,7 @@ PanoramaSidebar.prototype = {
   build: function PS_build () {
     var gb = this.tabView._window.gBrowser,
         GI = this.tabView._window.GroupItems,
-        rows = [];;
+        rows = [];
     rows.push(new AppTabsGroup());
     rows.push.apply(rows, this.getAppTabs());
     for (let [,group] in Iterator(GI.groupItems)) {
@@ -132,7 +132,6 @@ PanoramaSidebar.prototype = {
       }
     }
     this.rows = rows;
-    this.treeBox.invalidate();
   },
   getAtom: function PS_getAtom (name) {
     if (atomCache[name])

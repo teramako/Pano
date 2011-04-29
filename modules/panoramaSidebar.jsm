@@ -185,12 +185,7 @@ PanoramaSidebar.prototype = {
     return -1;
   },
   getIndexOfGroupForTab: function PS_getIndexOfGroupForTab (tab, group) {
-    for (let i = 0; i < group._children.length; i++) {
-      if (group._children[i].tab === tab) {
-        return i;
-      }
-    }
-    return -1;
+    return group._children.indexOf(tab._tabViewTabItem);
   },
   // ==========================================================================
   // Handlers

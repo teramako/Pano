@@ -1,5 +1,6 @@
 content pano chrome/content/
 locale pano en-US chrome/locale/en-US/
+locale pano ja    chrome/locale/ja/
 skin pano classic/1.0 chrome/skin/
 resource pano modules/
 

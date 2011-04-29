@@ -222,7 +222,7 @@ PanoramaSidebar.prototype = {
   onTabClose: function PS_onTabClose (aEvent) {
     var tab = aEvent.target;
     var row = this.getRowForTab(tab);
-    if (row != 1) {
+    if (row != -1) {
       this.rows.splice(row, 1);
       this.treeBox.rowCountChanged(row, -1);
     }

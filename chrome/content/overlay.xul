@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
+<!DOCTYPE overlay SYSTEM "chrome://pano/locale/pano.dtd">
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <broadcasterset id="mainBroadcasterSet">
   <broadcaster id="viewPanoramaSidebar"
                autoCheck="false"
-               label="Tab Group"
+               label="&tabgroup.label;"
                type="checkbox"
                group="sidebar"
                oncommand="toggleSidebar('viewPanoramaSidebar')"

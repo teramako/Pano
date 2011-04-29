@@ -12,9 +12,16 @@
                oncommand="toggleSidebar('viewPanoramaSidebar')"
                sidebarurl="chrome://pano/content/sidebar.xul"/>
 </broadcasterset>
+<keyset id="mainKeyset">
+  <key id="viewPanoramaSidebarKb"
+       command="viewPanoramaSidebar"
+       key="p"
+       modifiers="accel,alt"/>
+</keyset>
 <menupopup id="viewSidebarMenu">
   <menuitem id="menu_panoramaSidebar"
             observes="viewPanoramaSidebar"
+            key="viewPanoramaSidebarKb"
             accesskey="&sidePano.menu.accesskey;"/>
 </menupopup>
 </overlay>

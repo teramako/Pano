@@ -13,6 +13,8 @@
                sidebarurl="chrome://pano/content/sidebar.xul"/>
 </broadcasterset>
 <menupopup id="viewSidebarMenu">
-  <menuitem id="menu_panoramaSidebar" observes="viewPanoramaSidebar"/>
+  <menuitem id="menu_panoramaSidebar"
+            observes="viewPanoramaSidebar"
+            accesskey="&sidePano.menu.accesskey;"/>
 </menupopup>
 </overlay>

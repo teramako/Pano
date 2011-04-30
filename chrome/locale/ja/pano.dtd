@@ -1,4 +1,5 @@
 <!ENTITY tabgroup.label "タブ・グループ">
 <!ENTITY sidePano.menu.accesskey "t">
+<!ENTITY sidePano.button.tooltip "タブ・グループ・サイドバーの開閉">
 <!ENTITY alltabs.group.label "他グループ">
 

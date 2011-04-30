@@ -5,4 +5,5 @@ skin pano classic/1.0 chrome/skin/
 resource pano modules/
 
 overlay chrome://browser/content/browser.xul chrome://pano/content/overlay.xul
+style chrome://global/content/customizeToolbar.xul chrome://pano/skin/pano.css
 

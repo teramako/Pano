@@ -39,4 +39,12 @@
                onpopuphidden="gPano.tabGroups.onPopuphidden(event);"/>
   </menu>
 </menupopup>
+
+<toolbarpalette id="BrowserToolbarPalette">
+  <toolbarbutton id="pano-sidebarbutton"
+                 class="chromeclass-toolbar-additional"
+                 observes="viewPanoramaSidebar"
+                 tooltiptext="&sidePano.button.tooltip;"/>
+</toolbarpalette>
+
 </overlay>

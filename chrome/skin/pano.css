@@ -1,5 +1,24 @@
 
+#pano-sidebarbutton,
 #pano-alltabs-group-menu {
   list-style-image: url("chrome://pano/content/pano.svg");
+}
+#pano-sidebarbutton {
+  -moz-appearance: none;
+  border-style: none;
+  padding: 0 3px;
+}
+#pano-sidebarbutton:hover {
+  background-image: -moz-linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.5)),
+                    -moz-linear-gradient(transparent, rgba(0,0,0,.25) 30%),
+                    -moz-linear-gradient(transparent, rgba(0,0,0,.25) 30%);
+  background-position: 1px -1px, 0 -1px, 100% -1px;
+  background-size: -moz-calc(100% - 2px) 100%, 1px 100%, 1px 100%;
+  background-repeat: no-repeat;
+}
+#pano-sidebarbutton .toolbarbutton-icon {
+  width: 18px;
+  height: 18px;
+  -moz-margin-end: 0;
 }
 

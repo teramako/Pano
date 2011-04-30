@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
+<?xml-stylesheet type="text/css" href="chrome://pano/skin/pano.css"?>
 <!DOCTYPE overlay SYSTEM "chrome://pano/locale/pano.dtd">
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+<script type="application/javascript" src="chrome://pano/content/pano.js"/>
 <broadcasterset id="mainBroadcasterSet">
   <broadcaster id="viewPanoramaSidebar"
                autoCheck="false"
@@ -23,5 +25,18 @@
             observes="viewPanoramaSidebar"
             key="viewPanoramaSidebarKb"
             accesskey="&sidePano.menu.accesskey;"/>
+</menupopup>
+
+<menupopup id="alltabs-popup">
+  <menu id="pano-alltabs-group-menu"
+        label="&alltabs.group.label;"
+        class="menu-iconic"
+        oncommand="gPano.tabGroups.selectTab(event);"
+        keepme="true"
+        insertbefore="alltabs-popup-separator">
+    <menupopup id="pano-alltabs-group-popup"
+               onpopupshowing="gPano.tabGroups.onPopupshowing(event);"
+               onpopuphidden="gPano.tabGroups.onPopuphidden(event);"/>
+  </menu>
 </menupopup>
 </overlay>

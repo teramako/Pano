@@ -89,9 +89,17 @@ const HANDLE_EVENT_TYPES = [
   "TabGroupMove",
 ];
 
+function Pano_moveTabToGroupItem (tab, groupItemId) {
+  this.originalMoveTabToGroupItem(tab, groupItemId);
+  var event = tab.ownerDocument.createEvent("Events");
+  event.initEvent("TabGroupMove", true, false);
+  tab.dispatchEvent(event);
+}
+
 function PanoramaSidebar (tabView) {
   this.tabView = tabView;
   this.gBrowser = tabView._window.gBrowser;
+  this.GI = tabView._window.GroupItems;
   this.treeBox = null;
   this.rows = [];
 }
@@ -103,20 +111,13 @@ PanoramaSidebar.prototype = {
       win.addEventListener(type, this, false);
     }
     this.build();
-    var orignalMoveTabToGroupItem = this.tabView._window.GroupItems.moveTabToGroupItem;
-    if (orignalMoveTabToGroupItem.name != "PS_moveTabToGroupItem") {
-      this.orignalMoveTabToGroupItem = orignalMoveTabToGroupItem.bind(this.tabView._window.GroupItems);
-      this.tabView._window.GroupItems.moveTabToGroupItem = this.moveTabToGroupItem.bind(this);
+    var originalMoveTabToGroupItem = this.GI.moveTabToGroupItem;
+    if (originalMoveTabToGroupItem.name != "Pano_moveTabToGroupItem") {
+      this.GI.originalMoveTabToGroupItem = originalMoveTabToGroupItem;
+      this.GI.moveTabToGroupItem = Pano_moveTabToGroupItem;
     }
   },
-  moveTabToGroupItem: function PS_moveTabToGroupItem (tab, groupItemId) {
-    this.orignalMoveTabToGroupItem(tab, groupItemId);
-    var event = this.tabView._window.document.createEvent("Events");
-    event.initEvent("TabGroupMove", true, false);
-    tab.dispatchEvent(event);
-  },
   destroy: function PS_destroy () {
-    this.tabView._window.GroupItems.moveTabToGroupItem = this.orignalMoveTabToGroupItem;
     var win = this.tabView._window.gWindow;
     for (let [, type] in Iterator(HANDLE_EVENT_TYPES)) {
       win.removeEventListener(type, this, false);

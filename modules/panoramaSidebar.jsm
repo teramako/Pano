@@ -134,8 +134,7 @@ PanoramaSidebar.prototype = {
     return tabs;
   },
   build: function PS_build () {
-    var gb = this.tabView._window.gBrowser,
-        rows = [];
+    var rows = [];
     rows.push(new AppTabsGroup());
     rows.push.apply(rows, this.getAppTabs());
     for (let [,group] in Iterator(this.GI.groupItems)) {

@@ -27,10 +27,6 @@
   list-style-image: url("chrome://pano/skin/bullet_black.png");
   -moz-image-region: auto;
 }
-#tabGroupTree treechildren::-moz-tree-twisty {
-  width: 0;
-  list-style-image: none;
-}
 #tabGroupTree treechildren::-moz-tree-cell-text(currentTab),
 #tabGroupTree treechildren::-moz-tree-cell-text(currentGroup) {
   font-weight: bold;

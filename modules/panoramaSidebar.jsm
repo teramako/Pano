@@ -43,19 +43,46 @@ var ItemPrototype = {
   level: 0,
   id: 0,
 };
-function AppTabsGroup () {
+function AppTabsGroup (win) {
+  this.win = win;
   this.title = bundle.GetStringFromName("appTabGroup");
 }
 AppTabsGroup.prototype = {
   __proto__: ItemPrototype,
   type: TAB_GROUP_TYPE | APPTAB_GROUP_TYPE,
+  isOpen: true,
+  get children () {
+    var tabs = [];
+    for (let [,tab] in Iterator(this.win.gBrowser.visibleTabs)) {
+      if (!tab.pinned)
+        return tabs;
+
+      tabs.push(new TabItem(tab));
+    }
+    return tabs;
+  },
+  get hasChild () {
+    return this.win.gBrowser.mTabs[0].pinned;
+  }
 };
-function OrphanedGroup () {
+function OrphanedGroup (win) {
+  this.win = win;
   this.title = bundle.GetStringFromName("orphanedGroup");
 }
 OrphanedGroup.prototype = {
   __proto__: ItemPrototype,
   type: TAB_GROUP_TYPE | ORPHANED_GROUP_TYPE,
+  isOpen: true,
+  get children () {
+    var tabs = [];
+    for (let [, tabItem] in Iterator(this.win.GroupItems.getOrphanedTabs())) {
+      tabs.push(new TabItem(tabItem.tab));
+    }
+    return tabs;
+  },
+  get hasChild () {
+    return this.win.GroupItems.getOrphanedTabs().length > 0;
+  },
 };
 
 function GroupItem (group) {
@@ -66,6 +93,17 @@ GroupItem.prototype = {
   type: TAB_GROUP_TYPE,
   get title () this.group.getTitle() || this.group.id,
   get id () this.group.id,
+  isOpen: true,
+  get children () {
+    var tabs = [];
+    for (let [, tabItem] in Iterator(this.group._children)) {
+      tabs.push(new TabItem(tabItem.tab));
+    }
+    return tabs;
+  },
+  get hasChild () {
+    return this.group._children.length > 0;
+  },
 };
 function TabItem (tab) {
   this.tab = tab;
@@ -135,21 +173,16 @@ PanoramaSidebar.prototype = {
   },
   build: function PS_build () {
     var rows = [];
-    rows.push(new AppTabsGroup());
-    rows.push.apply(rows, this.getAppTabs());
+    let item = new AppTabsGroup(this.tabView._window);
+    rows.push(item);
+    rows.push.apply(rows, item.children);
     for (let [,group] in Iterator(this.GI.groupItems)) {
-      rows.push(new GroupItem(group));
-      for (let [,tabItem] in Iterator(group.getChildren())) {
-        rows.push(new TabItem(tabItem.tab));
-      }
+      item = new GroupItem(group);
+      rows.push(item);
+      rows.push.apply(rows, item.children);
     }
-    rows.push(new OrphanedGroup());
-    var orphanedTabs = this.GI.getOrphanedTabs();
-    if (orphanedTabs.length > 0) {
-      for (let [,tabItem] in Iterator(orphanedTabs)) {
-        rows.push(new TabItem(tabItem.tab));
-      }
-    }
+    item = new OrphanedGroup(this.tabView._window);
+    rows.push.apply(rows, item.children);
     this.rows = rows;
   },
   getAtom: function PS_getAtom (name) {
@@ -173,6 +206,31 @@ PanoramaSidebar.prototype = {
       }
     }
     return -1;
+  },
+  getGroupRowForTab: function PS_getGroupRowForTab (aTab) {
+    if (aTab.pinned) {
+      return 0;
+    } else {
+      let group = aTab._tabViewTabItem.parent;
+      if (group) {
+        let row = this.getRowForGroup(group);
+        if (row > 0)
+          return row;
+
+        // 存在しないので作成
+        row = this.orphanedGroupRow;
+        this.rows.splice(row, 0, new GroupItem(group));
+        this.treeBox.rowCountChanged(row, 1);
+        return row;
+      }
+      return this.orphanedGroupRow;
+    }
+  },
+  get orphanedGroupRow () {
+    for (let i = this.rowCount -1; i > 0; i--) {
+      if (this.rows[i].type & ORPHANED_GROUP_TYPE)
+        return i;
+    }
   },
   getSourceIndexFromDrag: function PS_getSourceIndexFromDrag (aDataTransfer) {
     var tab = aDataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
@@ -209,43 +267,35 @@ PanoramaSidebar.prototype = {
   },
   onTabOpen: function PS_onTabOpen (aEvent) {
     var tab = aEvent.target;
-    var changeIndex = 0, changeCount = 1;
+    var groupRow = this.getGroupRowForTab(tab);
+    if (!this.rows[groupRow].isOpen)
+      return;
+
+    var changeIndex = 0;
     if (tab._tabViewTabItem) {
       let tabItem = tab._tabViewTabItem;
       if (tabItem.parent) {
         // グループに属しているタブ
-        let groupRow = this.getRowForGroup(tabItem.parent);
-        let groupItem;
-        if (groupRow == -1) {
-          groupItem = new GroupItem (tabItem.parent);
-          groupRow  = this.rows.length - 1;
-          for (; groupRow > 0; groupRow--) {
-            if (this.rows[groupRow].type & ORPHANED_GROUP_TYPE)
-              break;
-          }
-          this.rows.splice(groupRow, 0, groupItem);
-          changeIndex = groupRow;
-          changeCount++;
-        } else {
-          groupItem = this.rows[groupRow];
-        }
+        groupItem = this.rows[groupRow];
         let tabIndex = this.getIndexOfGroupForTab(tab, groupItem.group);
-        if (changeIndex == 0)
-          changeIndex = groupRow + tabIndex + 1;
-
-        this.rows.splice(groupRow + tabIndex + 1, 0, new TabItem(tab));
+        changeIndex = groupRow + tabIndex + 1;
+        this.rows.splice(changeIndex, 0, new TabItem(tab));
       } else {
         // 孤立タブ
         changeIndex = this.rows.push(new TabItem(tab)) - 1;
       }
     } else if (tab.pinned) {
-      this.rows.splice(1 + tab._tPos, 0, new TabItem(tab));
       changeIndex = i + tab._tPos;
+      this.rows.splice(changeIndex, 0, new TabItem(tab));
     }
-    this.treeBox.rowCountChanged(changeIndex, changeCount);
+    this.treeBox.rowCountChanged(changeIndex, 1);
   },
   onTabClose: function PS_onTabClose (aEvent) {
     var tab = aEvent.target;
+    var groupRow = this.getGroupRowForTab(tab);
+    if (!this.rows[groupRow].isOpen)
+      return;
+
     var row = this.getRowForTab(tab);
     if (row != -1) {
       this.rows.splice(row, 1);
@@ -255,25 +305,52 @@ PanoramaSidebar.prototype = {
   onTabMove: function PS_onTabMove (aEvent) {
     var tab = aEvent.target;
     var row = this.getRowForTab(tab);
-    if (row != -1) {
-      let items = this.rows.splice(row, 1);
+
+    var self = this;
+    function addTab (tab, item) {
+      var insertedRow = 0;
       if (tab.pinned) {
-        this.rows.splice(1 + tab._tPos, 0, items[0]);
+        insertedRow = 1 + tab._tPos;
+        self.rows.splice(insertedRow, 0, item);
       }
       else {
         let group = tab._tabViewTabItem.parent;
         if (group) {
           group._children.sort(function(a,b) a.tab._tPos - b.tab._tPos);
-          let groupRow = this.getRowForGroup(group);
-          let tabIndex = this.getIndexOfGroupForTab(tab, group);
-          this.rows.splice(groupRow + tabIndex + 1, 0, items[0]);
+          let groupRow = self.getRowForGroup(group);
+          let tabIndex = self.getIndexOfGroupForTab(tab, group);
+          insertedRow = groupRow + tabIndex + 1;
+          self.rows.splice(insertedRow, 0, item);
         }
         // 孤立タブ
         else {
-          this.rows.push(items[0]);
+          insertedRow = self.rows.push(item) - 1;
         }
       }
+      return insertedRow;
+    }
+
+    // row が -1 でないということは、移動元のグループは開いている
+    if (row != -1) {
+      let item = this.rows.splice(row, 1)[0];
+      let groupRow = this.getGroupRowForTab(tab);
+
+      // 移動先のグループが閉じているときは追加せずに、終了
+      if (!this.rows[groupRow].isOpen) {
+        this.treeBox.rowCountChanged(row, -1);
+        return;
+      }
+
+      addTab(tab, item);
       this.treeBox.invalidate();
+    }
+    // 移動元のグループは閉じている
+    else {
+      let groupRow = this.getGroupRowForTab(tab);
+      if (this.rows[groupRow].isOpen) {
+        let i = addTab(tab, new TabItem(tab));
+        this.treeBox.rowCountChanged(i ,1);
+      }
     }
   },
   // ==========================================================================
@@ -334,7 +411,7 @@ PanoramaSidebar.prototype = {
       // アプリタブ・グループへドロップ
       if (targetItem.type & APPTAB_GROUP_TYPE) {
         this.gBrowser.pinTab(item.tab);
-        if (aOrientation == Ci.nsITreeView.DROP_AFTER)
+        if (targetGroup.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER)
           this.gBrowser.moveTabTo(item.tab, 0);
       }
       // 孤立タブ・グループへドロップ
@@ -346,7 +423,7 @@ PanoramaSidebar.prototype = {
         if (tabItem.parent)
           tabItem.parent.remove(tabItem);
 
-        if (aOrientation == Ci.nsITreeView.DROP_AFTER && this.rows[aTargetIndex + 1])
+        if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && this.rows[aTargetIndex + 1])
             this.gBrowser.moveTabTo(item.tab, this.rows[aTargetIndex + 1].tab._tPos);
 
         this.onTabMove({type: "TabToOrphaned", target: item.tab})
@@ -355,13 +432,13 @@ PanoramaSidebar.prototype = {
       else if (item.tab.pinned) {
         this.gBrowser.unpinTab(item.tab);
         this.tabView.moveTabTo(item.tab, targetItem.group.id);
-        if (aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
+        if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
           this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
       }
       // 別グループへドロップ
       else if (targetItem.group !== item.tab._tabViewTabItem.parent) {
         this.tabView.moveTabTo(item.tab, targetItem.group.id);
-        if (aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
+        if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
           this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
       }
       // 同一グループの先頭へドロップ
@@ -426,10 +503,10 @@ PanoramaSidebar.prototype = {
     return this.rows[aRow].level === 0;
   },
   isContainerOpen: function PS_isContainerOpen (aRow) {
-    return true;
+    return this.rows[aRow].isOpen;
   },
   isContainerEmpty: function PS_isContainerEmpty (aRow) {
-    return !(this.rows[aRow+1] && this.rows[aRow+1].level > 0);
+    return !this.rows[aRow].hasChild;
   },
   isSeparator: function PS_isSeparator (aRow) {
     return false;
@@ -451,6 +528,26 @@ PanoramaSidebar.prototype = {
   },
   getProgressMode: function PS_getProgressMode (aRow, aColumn) {},
   toggleOpenState: function PS_toggleOpenState (aRow) {
+    var groupItem = this.rows[aRow],
+        start = aRow + 1;
+    if (groupItem.isOpen) {
+      groupItem.isOpen = false;
+      let i = 0;
+      while (this.rows[start + i] && this.rows[start + i].level == 1)
+        i++;
+
+      if (i > 0) {
+        this.rows.splice(start, i);
+        this.treeBox.rowCountChanged(start, -i);
+      }
+    } else {
+      groupItem.isOpen = true;
+      let tabItems = groupItem.children;
+      if (tabItems.length > 0) {
+        this.rows.splice.apply(this.rows, [start, 0].concat(tabItems));
+        this.treeBox.rowCountChanged(start, tabItems.length);
+      }
+    }
   },
   cycleHeader: function PS_cycleHeader (aColumn) {},
   selectionChanged: function PS_selectionChanged () {},

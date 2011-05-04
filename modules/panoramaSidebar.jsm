@@ -135,18 +135,17 @@ PanoramaSidebar.prototype = {
   },
   build: function PS_build () {
     var gb = this.tabView._window.gBrowser,
-        GI = this.tabView._window.GroupItems,
         rows = [];
     rows.push(new AppTabsGroup());
     rows.push.apply(rows, this.getAppTabs());
-    for (let [,group] in Iterator(GI.groupItems)) {
+    for (let [,group] in Iterator(this.GI.groupItems)) {
       rows.push(new GroupItem(group));
       for (let [,tabItem] in Iterator(group.getChildren())) {
         rows.push(new TabItem(tabItem.tab));
       }
     }
     rows.push(new OrphanedGroup());
-    var orphanedTabs = GI.getOrphanedTabs();
+    var orphanedTabs = this.GI.getOrphanedTabs();
     if (orphanedTabs.length > 0) {
       for (let [,tabItem] in Iterator(orphanedTabs)) {
         rows.push(new TabItem(tabItem.tab));
@@ -403,7 +402,7 @@ PanoramaSidebar.prototype = {
     if (item.level == 0) {
       aProperties.AppendElement(this.getAtom("group"));
 
-      if (item.group && item.group === this.tabView._window.GroupItems._activeGroupItem)
+      if (item.group && item.group === this.GI._activeGroupItem)
         aProperties.AppendElement(this.getAtom("currentGroup"));
 
       if (item.type & APPTAB_GROUP_TYPE)

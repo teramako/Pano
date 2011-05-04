@@ -3,7 +3,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>pano@teramako.github.com</em:id>
     <em:name>Pano</em:name>
-    <em:version>0.2</em:version>
+    <em:version>0.3</em:version>
     <em:creator>teramako</em:creator>
     <em:description>Show TabGroup list</em:description>
 

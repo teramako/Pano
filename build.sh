@@ -7,5 +7,5 @@ if [ -f $XPI ]; then
   rm $XPI;
 fi
 
-zip $XPI -r chrome modules install.rdf chrome.manifest license.txt README.md
+zip $XPI -r chrome modules install.rdf chrome.manifest license.txt README.md changelog-ja.md
 

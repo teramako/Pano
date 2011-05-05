@@ -293,10 +293,6 @@ PanoramaSidebar.prototype = {
   },
   onTabClose: function PS_onTabClose (aEvent) {
     var tab = aEvent.target;
-    var groupRow = this.getGroupRowForTab(tab);
-    if (!this.rows[groupRow].isOpen)
-      return;
-
     var row = this.getRowForTab(tab);
     if (row != -1) {
       this.rows.splice(row, 1);

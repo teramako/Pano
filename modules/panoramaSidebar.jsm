@@ -182,6 +182,7 @@ PanoramaSidebar.prototype = {
       rows.push.apply(rows, item.children);
     }
     item = new OrphanedGroup(this.tabView._window);
+    rows.push(item);
     rows.push.apply(rows, item.children);
     this.rows = rows;
   },

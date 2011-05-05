@@ -2,6 +2,7 @@
 <RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#" xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <Description about="urn:mozilla:install-manifest">
     <em:id>pano@teramako.github.com</em:id>
+    <em:type>2</em:type>
     <em:name>Pano</em:name>
     <em:version>0.3</em:version>
     <em:creator>teramako</em:creator>

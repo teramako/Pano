@@ -74,6 +74,19 @@ var gPanoramaTree = {
       }
     },
   },
+  select: function PT_select () {
+    var index = this.view.selection.currentIndex;
+    if (index > 0 && this.view.rows[index].type & this.TAB_ITEM_TYPE) {
+      gWin.gBrowser.mTabContainer.selectedIndex = this.view.rows[index].tab._tPos;
+    }
+  },
+  editGroupName: function PT_editGroupName () {
+    var index = this.view.selection.currentIndex;
+    if (index > 0 && this.view.rows[index].type & this.TAB_GROUP_TYPE &&
+        this.view.isEditable(index, this.view.treeBox.columns[0])) {
+      this.tree.startEditing(index, this.view.treeBox.columns[0]);
+    }
+  }
 };
 
 /**

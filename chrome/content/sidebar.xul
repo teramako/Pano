@@ -6,6 +6,10 @@
         onunload="gPanoramaTree.destroy();"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/javascript" src="chrome://pano/content/sidebar.js"/>
+  <keyset id="panoKeySet">
+    <key keycode="VK_RETURN" oncommand="gPanoramaTree.select()"/>
+    <key keycode="VK_F2" oncommand="gPanoramaTree.editGroupName()"/>
+  </keyset>
   <popupset id="panoramaSidebarPopupSet">
     <tooltip id="tabTooltip"
              noautohide="true"

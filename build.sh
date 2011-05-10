@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION=0.3
+VERSION=0.4
 XPI=pano-${VERSION}.xpi
 
 if [ -f $XPI ]; then

@@ -193,6 +193,9 @@ PanoramaSidebar.prototype = {
     return atomCache[name] = atomService.getAtom(name);
   },
   getRowForGroup: function PS_getRowForGroup (aGroup) {
+    if (!aGroup)
+      return -1;
+
     for (let [i, item] in Iterator(this.rows)) {
       if (item.type & TAB_GROUP_TYPE && item.group === aGroup) {
         return i;

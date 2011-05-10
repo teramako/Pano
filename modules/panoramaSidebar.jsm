@@ -87,6 +87,7 @@ OrphanedGroup.prototype = {
 
 function GroupItem (group) {
   this.group = group;
+  group.addSubscriber(this, "close", Pano_dispatchGroupCloseEvent);
 }
 GroupItem.prototype = {
   __proto__: ItemPrototype,
@@ -125,6 +126,7 @@ const HANDLE_EVENT_TYPES = [
   "TabUnpinned",
   "TabAttrModified",
   "TabGroupMove",
+  "TabGroupClose",
 ];
 
 function Pano_moveTabToGroupItem (tab, groupItemId) {
@@ -132,6 +134,18 @@ function Pano_moveTabToGroupItem (tab, groupItemId) {
   var event = tab.ownerDocument.createEvent("Events");
   event.initEvent("TabGroupMove", true, false);
   tab.dispatchEvent(event);
+}
+
+/**
+ * dipatch an Event when the group is closed
+ */
+function Pano_dispatchGroupCloseEvent (groupItem, eventInfo) {
+  // get TabView window object
+  var win = Components.utils.getGlobalForObject(groupItem._children),
+      event = win.document.createEvent("UIEvents");
+  // set groupItem.id to UIEvent.detail
+  event.initUIEvent("TabGroupClose", true, false, win, groupItem.id);
+  win.gBrowser.dispatchEvent(event);
 }
 
 function PanoramaSidebar (tabView) {
@@ -265,6 +279,9 @@ PanoramaSidebar.prototype = {
     case "TabGroupMove":
       this.onTabMove(aEvent);
       break;
+    case "TabGroupClose":
+      this.onTabGroupClose(aEvent);
+      break;
     default:
       this.treeBox.invalidate();
     }
@@ -350,6 +367,17 @@ PanoramaSidebar.prototype = {
       if (this.rows[groupRow].isOpen) {
         let i = addTab(tab, new TabItem(tab));
         this.treeBox.rowCountChanged(i ,1);
+      }
+    }
+  },
+  onTabGroupClose: function PS_onTabGroupClose (aEvent) {
+    // グループが削除される時、既にタブは削除されているので考慮の必要なし
+    var id = aEvent.detail;
+    for (let [i, item] in Iterator(this.rows)) {
+      if (item.type & TAB_GROUP_TYPE && item.id == id) {
+        this.rows.splice(i, 1);
+        this.treeBox.rowCountChanged(i, -1);
+        break;
       }
     }
   },

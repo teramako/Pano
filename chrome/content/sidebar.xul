@@ -17,7 +17,8 @@
       </vbox>
     </tooltip>
   </popupset>
-  <tree id="tabGroupTree" flex="1" hidecolumnpicker="true" editable="true">
+  <tree id="tabGroupTree" flex="1" hidecolumnpicker="true" editable="true"
+        seltype="single">
     <treecols>
       <treecol anonid="title" flex="1"
                hideheader="true"

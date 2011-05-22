@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
 <?xml-stylesheet type="text/css" href="chrome://pano/skin/sidebar.css"?>
+<!DOCTYPE window SYSTEM "chrome://pano/locale/sidebar.dtd">
 <window id="panoramaSidebarWindow"
         onload="gPanoramaTree.init();"
         onunload="gPanoramaTree.destroy();"
@@ -28,17 +29,17 @@
                onpopupshowing="gPanoramaTree.contextMenu.build(event);"
                onpopuphiding="gPanoramaTree.contextMenu.onPopupHiding();">
       <menuitem id="menu_newGroup"
-                label="Create a new group" accesskey="N"
+                label="&menu.newGroup;" accesskey="N"
                 command="cmdNewGroup"/>
       <menuitem id="menu_groupClose"
-                label="Close the group" accesskey="C"
+                label="&menu.closeGroup;" accesskey="C"
                 command="cmdClose"/>
       <menuitem id="menu_tabClose"
-                label="Close the tab" accesskey="C"
+                label="&menu.closeTab;" accesskey="C"
                 command="cmdClose"/>
       <menuseparator/>
       <menuitem id="menu_sidebarClose"
-                label="Close sidebar" accesskey="W"
+                label="&menu.closeSidebar;" accesskey="W"
                 oncommand="gWin.toggleSidebar()"/>
     </menupopup>
   </popupset>

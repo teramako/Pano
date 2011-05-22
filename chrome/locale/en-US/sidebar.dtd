@@ -1,0 +1,5 @@
+<!ENTITY menu.newGroup "Create a new tabgroup">
+<!ENTITY menu.closeGroup "Close the tabgroup">
+<!ENTITY menu.closeTab "Close the tab">
+<!ENTITY menu.closeSidebar "Close the sidebar">
+

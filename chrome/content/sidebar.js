@@ -49,13 +49,10 @@ var gPanoramaTree = {
   tooltip: {
     show: function PS_showTooltip (aEvent) {
       aEvent.stopPropagation();
-      var row = {}, col = {}, elt = {};
-      gPanoramaTree.tree.treeBoxObject.getCellAt(aEvent.clientX, aEvent.clientY, row, col, elt); 
-      if (row.value < 0) {
-        aEvent.preventDefault();
+      var item = gPanoramaTree.getItemFromEvent(aEvent);
+      if (!item)
         return;
-      }
-      var item = gPanoramaTree.view.rows[row.value];
+
       if (!(item.type & gPanoramaTree.TAB_ITEM_TYPE)) {
         aEvent.preventDefault();
         return;

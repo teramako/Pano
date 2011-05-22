@@ -80,13 +80,77 @@ var gPanoramaTree = {
       gWin.gBrowser.mTabContainer.selectedIndex = this.view.rows[index].tab._tPos;
     }
   },
+  newGroup: function PT_newGroup () {
+    gWin.TabView._window.GroupItems.newGroup().newTab();
+  },
   editGroupName: function PT_editGroupName () {
     var index = this.view.selection.currentIndex;
     if (index > 0 && this.view.rows[index].type & this.TAB_GROUP_TYPE &&
         this.view.isEditable(index, this.view.treeBox.columns[0])) {
       this.tree.startEditing(index, this.view.treeBox.columns[0]);
     }
-  }
+  },
+  getItemFromEvent: function PT_getItemFromEvent (aEvent) {
+    var row = {}, col = {}, elt = {};
+    this.tree.treeBoxObject.getCellAt(aEvent.clientX, aEvent.clientY, row, col, elt);
+    if (row.value != -1)
+      return this.view.rows[row.value];
+
+    return null;
+  },
+  contextMenu: (function () {
+    function lazyGetter (aProperty, aGetter) {
+      XPCOMUtils.defineLazyGetter(pub, aProperty, aGetter);
+    }
+    var currentItem = null;
+    var menus = [
+      "menu_newGroup",
+      "menu_groupClose",
+      "menu_sidebarClose",
+      "menu_tabClose",
+    ];
+    var public = {
+      build: function PT_buildContextMenu (aEvent) {
+        currentItem = gPanoramaTree.getItemFromEvent(aEvent);
+        if (currentItem) {
+          let isTabItem = (currentItem.type & gPanoramaTree.TAB_ITEM_TYPE) > 0;
+          let isNormalGroup = currentItem.type == gPanoramaTree.TAB_GROUP_TYPE;
+          this.showItem("menu_groupClose",isNormalGroup);
+          this.showItem("menu_tabClose", isTabItem);
+        } else {
+          this.showItem("menu_groupClose", false);
+          this.showItem("menu_tabClose", false);
+        }
+      },
+      showItem: function PT_showMenuItem (aID, aShow) {
+        this[aID].hidden = !aShow;
+      },
+      onPopupHiding: function PT_onContextMenuHidden () {
+        currentItem = null;
+      },
+      closeItem: function PT_closeItemFromContextMenu () {
+        if (!currentItem)
+          return;
+
+        var isTabItem = (currentItem.type & gPanoramaTree.TAB_ITEM_TYPE) > 0;
+        if (isTabItem)
+          gWin.gBrowser.removeTab(currentItem.tab);
+        else if (currentItem.type == gPanoramaTree.TAB_GROUP_TYPE) {
+          currentItem.group._children.forEach(function(tabItem) {
+            gWin.gBrowser.removeTab(tabItem.tab);
+          });
+          currentItem.group.close({ immediately: true });
+        }
+      },
+    };
+    for each (let val in menus) {
+      // see: https://bugzilla.mozilla.org/show_bug.cgi?id=449811
+      let id = val;
+      XPCOMUtils.defineLazyGetter(public, id, function () document.getElementById(id));
+    }
+
+    return public;
+  }()),
 };
 
 /**

@@ -9,3 +9,6 @@ fi
 
 zip $XPI -r chrome modules install.rdf chrome.manifest license.txt README.md changelog-ja.md
 
+echo ""
+echo "Created: ${XPI}"
+

@@ -9,7 +9,6 @@
   <broadcaster id="viewPanoramaSidebar"
                autoCheck="false"
                label="&tabgroup.label;"
-               type="checkbox"
                group="sidebar"
                oncommand="toggleSidebar('viewPanoramaSidebar')"
                sidebarurl="chrome://pano/content/sidebar.xul"/>
@@ -22,6 +21,7 @@
 </keyset>
 <menupopup id="viewSidebarMenu">
   <menuitem id="menu_panoramaSidebar"
+            type="checkbox"
             observes="viewPanoramaSidebar"
             key="viewPanoramaSidebarKb"
             accesskey="&sidePano.menu.accesskey;"/>
@@ -42,9 +42,15 @@
 
 <toolbarpalette id="BrowserToolbarPalette">
   <toolbarbutton id="pano-sidebarbutton"
+                 type="menu-button"
                  class="chromeclass-toolbar-additional"
                  observes="viewPanoramaSidebar"
-                 tooltiptext="&sidePano.button.tooltip;"/>
+                 tooltiptext="&sidePano.button.tooltip;">
+    <menupopup id="pano-toolbarbutton-popup"
+               onpopupshowing="gPano.tabGroups.onPopupshowing(event);"
+               onpopuphidden="gPano.tabGroups.onPopuphidden(event);"
+               oncommand="gPano.buttonmenu.onSelect(event);"/>
+  </toolbarbutton>
 </toolbarpalette>
 
 </overlay>

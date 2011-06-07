@@ -3,28 +3,28 @@
  * @namespace
  */
 var gPano = {
+  createElement: function pano_createElement (aTagName, aAttributes) {
+    var element = document.createElement(aTagName);
+    for (let [name, value] in Iterator(aAttributes)) {
+      element.setAttribute(name, value);
+    }
+    return element;
+  },
   tabGroups: {
-    createElement: function pano_createElement (aTagName, aAttributes) {
-      var element = document.createElement(aTagName);
-      for (let [name, value] in Iterator(aAttributes)) {
-        element.setAttribute(name, value);
-      }
-      return element;
-    },
     createMenu: function pano_createMenu (aGroupItem) {
       var groupId = aGroupItem.id,
           label = aGroupItem.getTitle() || groupId;
-      var menu = this.createElement("menu", {
+      var menu = gPano.createElement("menu", {
         label: label,
       });
-      menu.appendChild(this.createElement("menupopup", {
+      menu.appendChild(gPano.createElement("menupopup", {
         value: groupId,
         onpopupshowing: "gPano.tabGroups.onPopupshowing(event);",
       }))
       return menu;
     },
     createMenuItem: function pano_createMenuItem (aTabItem) {
-      return this.createElement("menuitem", {
+      return gPano.createElement("menuitem", {
         label: aTabItem.tab.label,
         image: aTabItem.tab.image,
         crop: aTabItem.tab.getAttribute("crop"),
@@ -57,7 +57,22 @@ var gPano = {
               popup.appendChild(self.createMenuItem(tabItem));
           }
         });
-      } else {
+      }
+      else if (popup.id == "pano-toolbarbutton-popup") {
+        TabView._initFrame(function () {
+          var GI = TabView._window.GroupItems;
+          var currentGroup = GI.getActiveGroupItem();
+          for (let [, group] in Iterator(GI.groupItems)) {
+            if (group !== currentGroup) {
+              popup.appendChild(gPano.createElement("menuitem", {
+                label: group.getTitle() || group.id,
+                value: group.id,
+              }));
+            }
+          }
+        });
+      }
+      else {
         let groupId = popup.getAttribute("value");
         TabView._initFrame(function () {
           var group = TabView._window.GroupItems.groupItem(groupId);
@@ -72,6 +87,22 @@ var gPano = {
       var popup = aEvent.target;
       while (popup.hasChildNodes()) {
         popup.removeChild(popup.firstChild);
+      }
+    },
+  },
+  buttonmenu: {
+    onSelect: function pano_onGroupMenuItemSelect (aEvent) {
+      aEvent.stopPropagation();
+      var menuitem = aEvent.target;
+      if (menuitem.localName == "menuitem" && menuitem.hasAttribute("value")) {
+        let gID = parseInt(menuitem.getAttribute("value"), 10);
+        let group = TabView._window.GroupItems.groupItem(gID);
+        if (group) {
+          let tabItem = group.getActiveTab() || group.getChild(0);
+          if (tabItem) {
+            gBrowser.mTabContainer.selectedIndex = tabItem.tab._tPos;
+          }
+        }
       }
     },
   },

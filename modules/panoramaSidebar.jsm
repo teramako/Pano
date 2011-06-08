@@ -16,7 +16,8 @@ const APPTAB_GROUP_TYPE   = 1 << 0,
       TAB_GROUP_TYPE      = 1 << 2,
       TAB_ITEM_TYPE       = 1 << 3;
 
-const TAB_DROP_TYPE = "application/x-moz-tabbrowser-tab";
+const TAB_DROP_TYPE = "application/x-moz-tabbrowser-tab",
+      GROUP_DROP_TYPE = "application/x-moz-pano-group";
 
 /**
  * @namespace
@@ -25,7 +26,7 @@ const TAB_DROP_TYPE = "application/x-moz-tabbrowser-tab";
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 /**
  * @namespace
- * @name Serivces
+ * @name Services
  */
 Cu.import("resource://gre/modules/Services.jsm");
 
@@ -250,13 +251,13 @@ PanoramaSidebar.prototype = {
         return i;
     }
   },
-  getSourceIndexFromDrag: function PS_getSourceIndexFromDrag (aDataTransfer) {
-    var tab = aDataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
-    for (let [i, item] in Iterator(this.rows)) {
-      if (item.type & TAB_ITEM_TYPE && item.tab === tab) {
-        return i;
-      }
-    }
+  getSourceIndexFromDrag: function PS_getSourceIndexFromDrag (aDataTransfer, index) {
+    var types = aDataTransfer.mozTypesAt(index);
+    if (types.contains(TAB_DROP_TYPE))
+      return this.getRowForTab(aDataTransfer.mozGetDataAt(TAB_DROP_TYPE, index));
+    else if (types.contains(GROUP_DROP_TYPE))
+      return this.getRowForGroup(aDataTransfer.mozGetDataAt(GROUP_DROP_TYPE, index));
+
     return -1;
   },
   getIndexOfGroupForTab: function PS_getIndexOfGroupForTab (tab, group) {
@@ -418,82 +419,123 @@ PanoramaSidebar.prototype = {
     return "";
   },
   canDrop: function PS_canDrop (aTargetIndex, aOrientation, aDataTransfer) {
-    var sourceIndex = this.getSourceIndexFromDrag(aDataTransfer);
-    return sourceIndex != -1 &&
-           (this.rows[sourceIndex].type & TAB_ITEM_TYPE) > 0 &&
-           sourceIndex != aTargetIndex &&
-           sourceIndex != (aTargetIndex + aOrientation) &&
-           aTargetIndex + aOrientation != 0;
+    var sourceIndex = this.getSourceIndexFromDrag(aDataTransfer, 0);
+    if (sourceIndex == -1 ||
+        sourceIndex == aTargetIndex ||
+        sourceIndex == (aTargetIndex + aOrientation) ||
+        aTargetIndex + aOrientation == 0)
+      return false;
+
+    if (this.rows[sourceIndex].type === TAB_GROUP_TYPE)
+      return (this.rows[aTargetIndex].type === TAB_GROUP_TYPE);
+
+    return (this.rows[sourceIndex].type & TAB_ITEM_TYPE) > 0;
   },
   drop: function PS_drop (aTargetIndex, aOrientation, aDataTransfer) {
-    var sourceIndex = this.getSourceIndexFromDrag(aDataTransfer);
-    var item = this.rows[sourceIndex];
     if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation == Ci.nsITreeView.DROP_BEFORE) {
       aTargetIndex--;
       aOrientation = Ci.nsITreeView.DROP_AFTER;
     }
     var targetItem = this.rows[aTargetIndex];
 
-    if (targetItem.type & TAB_GROUP_TYPE) {
-      let indexOfGroup = 0;
-      // アプリタブ・グループへドロップ
-      if (targetItem.type & APPTAB_GROUP_TYPE) {
-        this.gBrowser.pinTab(item.tab);
-        if (targetGroup.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER)
-          this.gBrowser.moveTabTo(item.tab, 0);
-      }
-      // 孤立タブ・グループへドロップ
-      else if (targetItem.type & ORPHANED_GROUP_TYPE) {
-        if (item.tab.pinned)
-          this.gBrowser.unpinTab(item.tab);
+    var itemCount = aDataTransfer.mozItemCount;
+    for (let i = 0; i < itemCount; ++i) {
+      let sourceIndex = this.getSourceIndexFromDrag(aDataTransfer, i);
+      if (sourceIndex === -1)
+        continue;
 
-        let tabItem = item.tab._tabViewTabItem;
-        if (tabItem.parent)
-          tabItem.parent.remove(tabItem);
+      let item = this.rows[sourceIndex];
+      if (item.type === TAB_GROUP_TYPE) {
+        let items = [item];
+        if (item.isOpen) {
+          let i = sourceIndex + 1;
+          for (; i < this.rows.length; ++i) {
+            if (this.rows[i].type & TAB_ITEM_TYPE) {
+              items.push(this.rows[i]);
+            } else {
+              break;
+            }
+          }
+        }
+        this.rows.splice(sourceIndex, items.length);
+        this.rows.splice.apply(this.rows, [this.rows.indexOf(targetItem), 0].concat(items));
 
-        if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && this.rows[aTargetIndex + 1])
-            this.gBrowser.moveTabTo(item.tab, this.rows[aTargetIndex + 1].tab._tPos);
+        let gi = this.GI.groupItems;
+        gi.splice(gi.indexOf(item.group), 1);
+        gi.splice(gi.indexOf(targetItem.group), 0, item.group);
+        let data = {};
+        for (let j = 0, len = gi.length; j < len; ++j) {
+          let g = gi[j];
+          data[g.id] = g.getStorageData();
+        }
+        this.tabView._window.Storage._sessionStore.setWindowValue(this.tabView._window.gWindow,
+          "tabview-group", JSON.stringify(data));
 
-        this.onTabMove({type: "TabToOrphaned", target: item.tab})
+        this.treeBox.invalidate();
       }
-      // 移動元のタブはアプリタブ
-      else if (item.tab.pinned) {
-        this.gBrowser.unpinTab(item.tab);
-        this.tabView.moveTabTo(item.tab, targetItem.group.id);
-        if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
-          this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
-      }
-      // 別グループへドロップ
-      else if (targetItem.group !== item.tab._tabViewTabItem.parent) {
-        this.tabView.moveTabTo(item.tab, targetItem.group.id);
-        if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
-          this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
-      }
-      // 同一グループの先頭へドロップ
-      else if (aOrientation == Ci.nsITreeView.DROP_AFTER) {
-        this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
-      }
-    }
-    else if (targetItem.type & TAB_ITEM_TYPE) {
-      let sourceGroup = item.tab._tabViewTabItem ? item.tab._tabViewTabItem.parent : null;
-      let targetGroup = targetItem.tab._tabViewTabItem ? targetItem.tab._tabViewTabItem.parent : null;
-      if (targetGroup) {
-        if (item.tab.pinned)
-          this.gBrowser.unpinTab(item.tab);
+      else if (item.type & TAB_ITEM_TYPE) {
+        if (targetItem.type & TAB_GROUP_TYPE) {
+          let indexOfGroup = 0;
+          // アプリタブ・グループへドロップ
+          if (targetItem.type & APPTAB_GROUP_TYPE) {
+            this.gBrowser.pinTab(item.tab);
+            if (targetGroup.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER)
+              this.gBrowser.moveTabTo(item.tab, 0);
+          }
+          // 孤立タブ・グループへドロップ
+          else if (targetItem.type & ORPHANED_GROUP_TYPE) {
+            if (item.tab.pinned)
+              this.gBrowser.unpinTab(item.tab);
 
-        if (sourceGroup != targetGroup)
-          this.tabView.moveTabTo(item.tab, targetGroup.id);
+            let tabItem = item.tab._tabViewTabItem;
+            if (tabItem.parent)
+              tabItem.parent.remove(tabItem);
+
+            if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && this.rows[aTargetIndex + 1])
+                this.gBrowser.moveTabTo(item.tab, this.rows[aTargetIndex + 1].tab._tPos);
+
+            this.onTabMove({type: "TabToOrphaned", target: item.tab})
+          }
+          // 移動元のタブはアプリタブ
+          else if (item.tab.pinned) {
+            this.gBrowser.unpinTab(item.tab);
+            this.tabView.moveTabTo(item.tab, targetItem.group.id);
+            if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
+              this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
+          }
+          // 別グループへドロップ
+          else if (targetItem.group !== item.tab._tabViewTabItem.parent) {
+            this.tabView.moveTabTo(item.tab, targetItem.group.id);
+            if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
+              this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
+          }
+          // 同一グループの先頭へドロップ
+          else if (aOrientation == Ci.nsITreeView.DROP_AFTER) {
+            this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
+          }
+        }
+        else if (targetItem.type & TAB_ITEM_TYPE) {
+          let sourceGroup = item.tab._tabViewTabItem ? item.tab._tabViewTabItem.parent : null;
+          let targetGroup = targetItem.tab._tabViewTabItem ? targetItem.tab._tabViewTabItem.parent : null;
+          if (targetGroup) {
+            if (item.tab.pinned)
+              this.gBrowser.unpinTab(item.tab);
+
+            if (sourceGroup != targetGroup)
+              this.tabView.moveTabTo(item.tab, targetGroup.id);
+          }
+          else if (targetItem.tab.pinned) {
+            if (!item.tab.pinned)
+              this.gBrowser.pinTab(item.tab);
+          }
+          else {
+            // move to OrphanedGroup
+            if (sourceGroup)
+              sourceGroup.remove(item);
+          }
+          this.gBrowser.moveTabTo(item.tab, targetItem.tab._tPos + aOrientation);
+        }
       }
-      else if (targetItem.tab.pinned) {
-        if (!item.tab.pinned)
-          this.gBrowser.pinTab(item.tab);
-      }
-      else {
-        // move to OrphanedGroup
-        if (sourceGroup)
-          sourceGroup.remove(item);
-      }
-      this.gBrowser.moveTabTo(item.tab, targetItem.tab._tPos + aOrientation);
     }
   },
   selection: null,
@@ -598,21 +640,67 @@ PanoramaSidebar.prototype = {
   performActionOnCell: function PS_performActionOnCell (aAction, aRow, aColumn) {},
 };
 
-function onDragStart (aEvent, view) {
-  var tree = aEvent.target.parentNode;
-  var index = tree.view.selection.currentIndex;
-  if (index != -1) {
-    let item = view.rows[index];
-    if (item.type & TAB_ITEM_TYPE) {
-      let dt = aEvent.dataTransfer;
-      dt.mozSetDataAt(TAB_DROP_TYPE, item.tab, 0);
-      dt.mozSetDataAt("text/x-moz-text-internal", item.url, 0);
-      dt.mozCursor = "default";
-      let canvas = view.tabView._window.gWindow.tabPreviews.capture(item.tab, false);
-      dt.setDragImage(canvas, 0, 0);
-      dt.effectAllowed = "move";
+function getSelectedItems (view) {
+  var sel = view.selection,
+      rangeCount = sel.getRangeCount(),
+      items = [];
+  for (let i = 0; i < rangeCount; ++i) {
+    let start = {}, end = {};
+    sel.getRangeAt(i, start, end);
+    for (let k = start.value; k <= end.value; ++k) {
+      items.push(view.rows[k]);
     }
   }
+  return items;
+}
+
+function onDragStart (aEvent, view) {
+  var items = getSelectedItems(view);
+  if (items.length == 0)
+    return;
+
+  var dt = aEvent.dataTransfer;
+
+  if (items.length == 1 && (items[0].type === TAB_GROUP_TYPE)) {
+    dt.mozSetDataAt(GROUP_DROP_TYPE, items[0].group, 0);
+  }
+  else {
+    items = items.filter(function(item) (item.type & TAB_ITEM_TYPE) > 0);
+
+    const aspectRatio = 0.5625; // 16:9
+    var canvas = view.tabView._window.document.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
+    canvas.mozOpaque = true;
+    var offset = 15 * (items.length - 1);
+    var cWidth = Math.ceil(view.tabView._window.gWindow.screen.availWidth / 5.75);
+    canvas.width = cWidth + offset;
+    canvas.height = Math.round(cWidth * aspectRatio) + offset;
+    var ctx = canvas.getContext("2d");
+
+    for (let i = 0, len = items.length; i < len; ++i) {
+      let item = items[i];
+      dt.mozSetDataAt(TAB_DROP_TYPE, item.tab, i);
+      dt.mozSetDataAt("text/x-moz-text-internal", item.url, i);
+
+      let win = item.tab.linkedBrowser.contentWindow;
+      let snippetWidth = win.innerWidth * 0.6;
+      // browser.sessionstore.max_concurrent_tabs が 0 の場合などで
+      // ドキュメントがロードされていない場合、
+      // innerWidth が 0 で、scale値がInfinityとなる
+      // canvas に書き込むのはスキップ
+      if (snippetWidth == 0)
+        continue;
+
+      let scale = cWidth / snippetWidth;
+      ctx.save();
+      ctx.translate(15 * i, 15 * i);
+      ctx.scale(scale, scale);
+      ctx.drawWindow(win, win.scrollX, win.scrollY, snippetWidth, snippetWidth * aspectRatio, "rgb(255,255,255)");
+      ctx.restore();
+    }
+
+    dt.setDragImage(canvas, 0, 0);
+  }
+  dt.effectAllowed = "move";
   aEvent.stopPropagation();
 }
 PanoramaSidebar.onDragStart = onDragStart;

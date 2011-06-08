@@ -43,8 +43,7 @@
                 oncommand="gWin.toggleSidebar()"/>
     </menupopup>
   </popupset>
-  <tree id="tabGroupTree" flex="1" hidecolumnpicker="true" editable="true"
-        seltype="single">
+  <tree id="tabGroupTree" flex="1" hidecolumnpicker="true" editable="true">
     <treecols>
       <treecol anonid="title" flex="1"
                hideheader="true"

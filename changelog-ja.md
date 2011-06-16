@@ -16,6 +16,9 @@ Changelog
  * サイドバーのDrag&Dropを改良
    * 複数のタブをDrag可能に（グループは不可）
    * 1グループをDrag可能に
+ * [サイドバーのツリーの開閉状態を保存するようにした](https://github.com/teramako/Pano/issues/2)
+ * Bug fix
+   * https://github.com/teramako/Pano/issues/1
  
 ##version 0.3
 

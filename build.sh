@@ -1,7 +1,11 @@
 #!/bin/sh
 
-VERSION=0.4
-XPI=pano-${VERSION}.xpi
+if [ -z "$1" ];then
+  echo abort.
+  exit 1
+fi
+
+XPI=$1
 
 if [ -f $XPI ]; then
   rm $XPI;

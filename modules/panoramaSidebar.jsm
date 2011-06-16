@@ -19,6 +19,8 @@ const APPTAB_GROUP_TYPE   = 1 << 0,
 const TAB_DROP_TYPE = "application/x-moz-tabbrowser-tab",
       GROUP_DROP_TYPE = "application/x-moz-pano-group";
 
+const PANO_SESSION_ID = "pano-tabview-group";
+
 /**
  * @namespace
  * @name XPCOMUtils
@@ -32,6 +34,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 
 XPCOMUtils.defineLazyServiceGetter(this, "atomService", "@mozilla.org/atom-service;1", "nsIAtomService");
+XPCOMUtils.defineLazyServiceGetter(this, "SessionStore", "@mozilla.org/browser/sessionstore;1", "nsISessionStore");
 XPCOMUtils.defineLazyGetter(this, "bundle", function () {
   return Services.strings.createBundle("chrome://pano/locale/sidebar.properties");
 });
@@ -43,10 +46,17 @@ var ItemPrototype = {
   url: "",
   level: 0,
   id: 0,
+  getSessionData: function PanoItem_getSessionData () {
+    return {
+      openState: this.isOpen
+    };
+  },
 };
-function AppTabsGroup (win) {
+function AppTabsGroup (win, session) {
   this.win = win;
   this.title = bundle.GetStringFromName("appTabGroup");
+  if (session && ("openState" in session))
+    this.isOpen = !!session.openState;
 }
 AppTabsGroup.prototype = {
   __proto__: ItemPrototype,
@@ -66,9 +76,11 @@ AppTabsGroup.prototype = {
     return this.win.gBrowser.mTabs[0].pinned;
   }
 };
-function OrphanedGroup (win) {
+function OrphanedGroup (win, session) {
   this.win = win;
   this.title = bundle.GetStringFromName("orphanedGroup");
+  if (session && ("openState" in session))
+    this.isOpen = !!session.openState;
 }
 OrphanedGroup.prototype = {
   __proto__: ItemPrototype,
@@ -86,9 +98,11 @@ OrphanedGroup.prototype = {
   },
 };
 
-function GroupItem (group) {
+function GroupItem (group, session) {
   this.group = group;
   group.addSubscriber(this, "close", Pano_dispatchGroupCloseEvent);
+  if (session && ("openState" in session))
+    this.isOpen = !!session.openState;
 }
 GroupItem.prototype = {
   __proto__: ItemPrototype,
@@ -155,25 +169,64 @@ function PanoramaSidebar (tabView) {
   this.GI = tabView._window.GroupItems;
   this.treeBox = null;
   this.rows = [];
+  this.inited = false;
 }
 
 PanoramaSidebar.prototype = {
   init: function PS_init () {
+    if (this.inited)
+      return;
+
     var win = this.tabView._window.gWindow;
     for (let [, type] in Iterator(HANDLE_EVENT_TYPES)) {
       win.addEventListener(type, this, false);
     }
-    this.build();
+    this.build(this.getSession(win));
     var originalMoveTabToGroupItem = this.GI.moveTabToGroupItem;
     if (originalMoveTabToGroupItem.name != "Pano_moveTabToGroupItem") {
       this.GI.originalMoveTabToGroupItem = originalMoveTabToGroupItem;
       this.GI.moveTabToGroupItem = Pano_moveTabToGroupItem;
     }
+    this.inited = true;
   },
   destroy: function PS_destroy () {
     var win = this.tabView._window.gWindow;
     for (let [, type] in Iterator(HANDLE_EVENT_TYPES)) {
       win.removeEventListener(type, this, false);
+    }
+    this.saveSession(win);
+  },
+  saveSession: function PS_saveSession (aWindow) {
+    var data = {
+      apptabs: {},
+      groups: {},
+      orphans: {}
+    };
+    for (let [, item] in Iterator(this.rows)) {
+      switch (item.type) {
+      case TAB_GROUP_TYPE:
+        data.groups[item.id] = item.getSessionData();
+        break;
+      case TAB_GROUP_TYPE | APPTAB_GROUP_TYPE:
+        data.apptabs = item.getSessionData();
+        break;
+      case TAB_GROUP_TYPE | ORPHANED_GROUP_TYPE:
+        data.orphans = item.getSessionData();
+        break;
+      }
+    }
+    SessionStore.setWindowValue(aWindow, PANO_SESSION_ID, JSON.stringify(data));
+  },
+  getSession: function PS_getSession (aWindow) {
+    var data = SessionStore.getWindowValue(aWindow, PANO_SESSION_ID);
+        failedData = { apptabs: {}, groups: {}, orphans: {} };
+    try {
+      if (!data)
+        return failedData;
+
+      return JSON.parse(data);
+    } catch (e) {
+      return failedData;
     }
   },
   getAppTabs: function PS_getAppTabs () {
@@ -186,19 +239,28 @@ PanoramaSidebar.prototype = {
     }
     return tabs;
   },
-  build: function PS_build () {
+  build: function PS_build (aSession) {
+    if (!aSession)
+      aSession = { apptabs: {}, groups: {}, orphans: {} };
+
     var rows = [];
-    let item = new AppTabsGroup(this.tabView._window);
+    let item = new AppTabsGroup(this.tabView._window, aSession.apptabs);
     rows.push(item);
-    rows.push.apply(rows, item.children);
-    for (let [,group] in Iterator(this.GI.groupItems)) {
-      item = new GroupItem(group);
-      rows.push(item);
+    if (item.isOpen)
       rows.push.apply(rows, item.children);
+
+    for (let [,group] in Iterator(this.GI.groupItems)) {
+      item = new GroupItem(group, aSession.groups[group.id]);
+      rows.push(item);
+      if (item.isOpen)
+        rows.push.apply(rows, item.children);
     }
-    item = new OrphanedGroup(this.tabView._window);
+
+    item = new OrphanedGroup(this.tabView._window, aSession.orphans);
     rows.push(item);
-    rows.push.apply(rows, item.children);
+    if (item.isOpen)
+      rows.push.apply(rows, item.children);
+
     this.rows = rows;
   },
   getAtom: function PS_getAtom (name) {

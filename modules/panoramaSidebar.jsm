@@ -488,13 +488,17 @@ PanoramaSidebar.prototype = {
               this.gBrowser.unpinTab(item.tab);
 
             let tabItem = item.tab._tabViewTabItem;
-            if (tabItem.parent)
-              tabItem.parent.remove(tabItem);
+            let itemGroup = tabItem.parent;
+            if (itemGroup)
+              itemGroup.remove(tabItem);
 
             if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && this.rows[aTargetIndex + 1])
                 this.gBrowser.moveTabTo(item.tab, this.rows[aTargetIndex + 1].tab._tPos);
 
             this.onTabMove({type: "TabToOrphaned", target: item.tab})
+
+            if (itemGroup && itemGroup === this.GI._activeGroupItem)
+              this.gBrowser.hideTab(tabItem.tab);
           }
           // 移動元のタブはアプリタブ
           else if (item.tab.pinned) {
@@ -515,25 +519,29 @@ PanoramaSidebar.prototype = {
           }
         }
         else if (targetItem.type & TAB_ITEM_TYPE) {
-          let sourceGroup = item.tab._tabViewTabItem ? item.tab._tabViewTabItem.parent : null;
+          let tab = item.tab;
+          let sourceGroup = tab._tabViewTabItem ? tab._tabViewTabItem.parent : null;
           let targetGroup = targetItem.tab._tabViewTabItem ? targetItem.tab._tabViewTabItem.parent : null;
           if (targetGroup) {
-            if (item.tab.pinned)
-              this.gBrowser.unpinTab(item.tab);
+            if (tab.pinned)
+              this.gBrowser.unpinTab(tab);
 
             if (sourceGroup != targetGroup)
-              this.tabView.moveTabTo(item.tab, targetGroup.id);
+              this.tabView.moveTabTo(tab, targetGroup.id);
           }
           else if (targetItem.tab.pinned) {
-            if (!item.tab.pinned)
-              this.gBrowser.pinTab(item.tab);
+            if (!tab.pinned)
+              this.gBrowser.pinTab(tab);
           }
           else {
             // move to OrphanedGroup
-            if (sourceGroup)
-              sourceGroup.remove(item);
+            if (sourceGroup) {
+              sourceGroup.remove(tab._tabViewTabItem);
+              if (sourceGroup === this.GI._activeGroupItem)
+                this.gBrowser.hideTab(tab);
+            }
           }
-          this.gBrowser.moveTabTo(item.tab, targetItem.tab._tPos + aOrientation);
+          this.gBrowser.moveTabTo(tab, targetItem.tab._tPos + aOrientation);
         }
       }
     }

@@ -239,6 +239,31 @@ PanoramaSidebar.prototype = {
     }
     return tabs;
   },
+  isFiltering: false,
+  setFilter: function PS_setFilter (aValue) {
+    var count = this.rowCount,
+        rows = [],
+        reg;
+    if (!aValue) {
+      let win = Components.utils.getGlobalForObject(this.gBrowser);
+      rows = this.build(this.getSession(win));
+      this.isFiltering = false;
+    } else {
+      reg = (typeof aValue === "string") ? blob(aValue, "i") : aValue;
+
+      if (reg instanceof RegExp) {
+        for (let [, tab] in Iterator(this.gBrowser.tabs)) {
+          if (reg.test(tab.label) ||
+              reg.test(tab.linkedBrowser.currentURI.spec))
+            rows.push(new TabItem(tab));
+        }
+        this.rows = rows;
+        this.isFiltering = true;
+      }
+    }
+    this.treeBox.rowCountChanged(rows.length, rows.length - count);
+    this.treeBox.invalidate();
+  },
   build: function PS_build (aSession) {
     if (!aSession)
       aSession = { apptabs: {}, groups: {}, orphans: {} };
@@ -261,7 +286,7 @@ PanoramaSidebar.prototype = {
     if (item.isOpen)
       rows.push.apply(rows, item.children);
 
-    this.rows = rows;
+    return this.rows = rows;
   },
   getAtom: function PS_getAtom (name) {
     if (atomCache[name])
@@ -472,7 +497,7 @@ PanoramaSidebar.prototype = {
     return "";
   },
   getLevel: function PS_getLevel (aRow) {
-    return this.rows[aRow].level;
+    return this.isFiltering ? 0 : this.rows[aRow].level;
   },
   getImageSrc: function PS_getImageSrc (aRow, aColumn) {
     if (aColumn.index == 0 && this.rows[aRow].level > 0) {
@@ -481,6 +506,9 @@ PanoramaSidebar.prototype = {
     return "";
   },
   canDrop: function PS_canDrop (aTargetIndex, aOrientation, aDataTransfer) {
+    if (this.isFiltering)
+      return false;
+
     var sourceIndex = this.getSourceIndexFromDrag(aDataTransfer, 0);
     if (sourceIndex == -1 ||
         sourceIndex == aTargetIndex ||
@@ -725,6 +753,9 @@ function getSelectedItems (view) {
 }
 
 function onDragStart (aEvent, view) {
+  if (view.isFiltering)
+    return;
+
   var items = getSelectedItems(view);
   if (items.length == 0)
     return;
@@ -774,4 +805,39 @@ function onDragStart (aEvent, view) {
   aEvent.stopPropagation();
 }
 PanoramaSidebar.onDragStart = onDragStart;
+
+function blob (aString, aOption) {
+  if (typeof aString !== "string")
+    throw new TypeError("arguments must be string");
+
+  var regStr = "";
+  for (let [, char] in Iterator(aString)) {
+    switch (char) {
+    case "*":
+      regStr += ".*";
+      break;
+    case "\\":
+    case "?":
+    case "+":
+    case "^":
+    case "$":
+    case "(":
+    case ")":
+    case "{":
+    case "}":
+    case "[":
+    case "]":
+    case ".":
+      regStr += "\\" + char;
+      break;
+    case " ":
+      regStr += "\\s+";
+      break;
+    default:
+      regStr += char;
+      break;
+    }
+  }
+  return new RegExp(regStr, aOption);
+}
 

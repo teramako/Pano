@@ -148,6 +148,9 @@ var gPanoramaTree = {
 
     return public;
   }()),
+  search: function PT_search (str) {
+    this.view.setFilter(str ? str : null);
+  },
 };
 
 /**

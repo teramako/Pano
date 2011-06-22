@@ -43,6 +43,13 @@
                 oncommand="gWin.toggleSidebar()"/>
     </menupopup>
   </popupset>
+
+  <hbox id="searchbar" align="center">
+    <label id="search-label" value="Search" accesskey="S" control="search-box"/>
+    <textbox id="search-box" flex="1" type="search" class="compact"
+             oncommand="gPanoramaTree.search(this.value);"/>
+  </hbox>
+
   <tree id="tabGroupTree" flex="1" hidecolumnpicker="true" editable="true">
     <treecols>
       <treecol anonid="title" flex="1"

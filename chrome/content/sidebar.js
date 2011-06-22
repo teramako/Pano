@@ -50,13 +50,12 @@ var gPanoramaTree = {
     show: function PS_showTooltip (aEvent) {
       aEvent.stopPropagation();
       var item = gPanoramaTree.getItemFromEvent(aEvent);
-      if (!item)
-        return;
 
-      if (!(item.type & gPanoramaTree.TAB_ITEM_TYPE)) {
+      if (!item || !(item.type & gPanoramaTree.TAB_ITEM_TYPE)) {
         aEvent.preventDefault();
         return;
       }
+
       this.titleElm.setAttribute("value", item.title);
       this.urlElm.setAttribute("value", item.url);
       this.imageElm.classList.remove("hide")

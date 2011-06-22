@@ -2,4 +2,5 @@
 <!ENTITY menu.closeGroup "タブグループを閉じる">
 <!ENTITY menu.closeTab "タブを閉じる">
 <!ENTITY menu.closeSidebar "サイドバーを閉じる">
+<!ENTITY search.label "フィルター">
 

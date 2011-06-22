@@ -2,4 +2,5 @@
 <!ENTITY menu.closeGroup "Close the tabgroup">
 <!ENTITY menu.closeTab "Close the tab">
 <!ENTITY menu.closeSidebar "Close the sidebar">
+<!ENTITY search.label "Filter">
 

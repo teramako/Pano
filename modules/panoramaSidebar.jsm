@@ -239,7 +239,7 @@ PanoramaSidebar.prototype = {
     }
     return tabs;
   },
-  isFiltering: false,
+  filter: null,
   setFilter: function PS_setFilter (aValue) {
     var count = this.rowCount,
         rows = [],
@@ -247,7 +247,7 @@ PanoramaSidebar.prototype = {
     if (!aValue) {
       let win = Components.utils.getGlobalForObject(this.gBrowser);
       rows = this.build(this.getSession(win));
-      this.isFiltering = false;
+      this.filter = null;
     } else {
       reg = (typeof aValue === "string") ? blob(aValue, "i") : aValue;
 
@@ -258,7 +258,7 @@ PanoramaSidebar.prototype = {
             rows.push(new TabItem(tab));
         }
         this.rows = rows;
-        this.isFiltering = true;
+        this.filter = reg;
       }
     }
     this.treeBox.rowCountChanged(rows.length, rows.length - count);
@@ -314,6 +314,9 @@ PanoramaSidebar.prototype = {
     return -1;
   },
   getGroupRowForTab: function PS_getGroupRowForTab (aTab) {
+    if (this.filter)
+      return -1;
+
     if (aTab.pinned) {
       return 0;
     } else {
@@ -370,14 +373,21 @@ PanoramaSidebar.prototype = {
     case "TabGroupClose":
       this.onTabGroupClose(aEvent);
       break;
+    case "TabAttrModified":
+      this.onTabAttrModified(aEvent);
     default:
       this.treeBox.invalidate();
     }
   },
+  onTabAttrModified: function PS_onTabAttrModified (aEvent) {
+    if (this.filter)
+      this.setFilter(this.filter);
+  },
   onTabOpen: function PS_onTabOpen (aEvent) {
     var tab = aEvent.target;
     var groupRow = this.getGroupRowForTab(tab);
-    if (!this.rows[groupRow].isOpen)
+
+    if (groupRow === -1 || !this.rows[groupRow].isOpen)
       return;
 
     var changeIndex = 0;
@@ -408,6 +418,9 @@ PanoramaSidebar.prototype = {
     }
   },
   onTabMove: function PS_onTabMove (aEvent) {
+    if (this.filter)
+      return;
+
     var tab = aEvent.target;
     var row = this.getRowForTab(tab);
 
@@ -497,7 +510,7 @@ PanoramaSidebar.prototype = {
     return "";
   },
   getLevel: function PS_getLevel (aRow) {
-    return this.isFiltering ? 0 : this.rows[aRow].level;
+    return this.filter ? 0 : this.rows[aRow].level;
   },
   getImageSrc: function PS_getImageSrc (aRow, aColumn) {
     if (aColumn.index == 0 && this.rows[aRow].level > 0) {
@@ -506,7 +519,7 @@ PanoramaSidebar.prototype = {
     return "";
   },
   canDrop: function PS_canDrop (aTargetIndex, aOrientation, aDataTransfer) {
-    if (this.isFiltering)
+    if (this.filter)
       return false;
 
     var sourceIndex = this.getSourceIndexFromDrag(aDataTransfer, 0);
@@ -753,7 +766,7 @@ function getSelectedItems (view) {
 }
 
 function onDragStart (aEvent, view) {
-  if (view.isFiltering)
+  if (view.filter)
     return;
 
   var items = getSelectedItems(view);

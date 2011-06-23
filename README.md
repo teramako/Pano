@@ -1,3 +1,4 @@
+[English](http://teramako.github.com/Pano/)
 
 #なんぞコレ？
 Firefox 4のタブグループをリストする拡張機能だよん。

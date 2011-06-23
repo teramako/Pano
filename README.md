@@ -3,8 +3,9 @@
 Firefox 4のタブグループをリストする拡張機能だよん。
 
 #キャプチャ画像
-![sidebar](http://cdn-ak.f.st-hatena.com/images/fotolife/t/teramako/20110430/20110430211403.png)
-![tablist](http://cdn-ak.f.st-hatena.com/images/fotolife/t/teramako/20110430/20110430211402.png)
+![sidebar](http://teramako.github.com/Pano/sidebar-0.4.png "Pano sidebar")
+![PanoButton](http://teramako.github.com/Pano/pano-button-menu.png "Pano Button")
+![tablist](http://teramako.github.com/Pano/all-tabs-list.png "All tabs list button")
 
 #使い方
 
@@ -16,6 +17,13 @@ Firefox 4のタブグループをリストする拡張機能だよん。
  * タブのアイテムをダブルクリックでタブ選択
  * グループのアイテムをダブルクリックするとグループ名の編集
  * 一応ドラッグ&ドロップ可
+
+##Panoボタン
+
+ * サイドバーの開閉
+ * メニューから他のグループへスイッチ
+
+初期状態では「ツールバーのカスタマイズ」内にボタンがあるので、ドラッグ＆ドロップして使ってください。
 
 ##タブ一覧
 

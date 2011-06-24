@@ -1,6 +1,6 @@
 
 var EXPORTED_SYMBOLS = [
-  "PanoramaSidebar",
+  "PanoramaTreeView",
   "APPTAB_GROUP_TYPE",
   "ORPHANED_GROUP_TYPE",
   "TAB_GROUP_TYPE",
@@ -163,7 +163,7 @@ function Pano_dispatchGroupCloseEvent (groupItem, eventInfo) {
   win.gBrowser.dispatchEvent(event);
 }
 
-function PanoramaSidebar (tabView) {
+function PanoramaTreeView (tabView) {
   this.tabView = tabView;
   this.gBrowser = tabView._window.gBrowser;
   this.GI = tabView._window.GroupItems;
@@ -172,8 +172,8 @@ function PanoramaSidebar (tabView) {
   this.inited = false;
 }
 
-PanoramaSidebar.prototype = {
-  init: function PS_init () {
+PanoramaTreeView.prototype = {
+  init: function PTV_init () {
     if (this.inited)
       return;
 
@@ -189,14 +189,14 @@ PanoramaSidebar.prototype = {
     }
     this.inited = true;
   },
-  destroy: function PS_destroy () {
+  destroy: function PTV_destroy () {
     var win = this.tabView._window.gWindow;
     for (let [, type] in Iterator(HANDLE_EVENT_TYPES)) {
       win.removeEventListener(type, this, false);
     }
     this.saveSession(win);
   },
-  saveSession: function PS_saveSession (aWindow) {
+  saveSession: function PTV_saveSession (aWindow) {
     var data = {
       apptabs: {},
       groups: {},
@@ -217,7 +217,7 @@ PanoramaSidebar.prototype = {
     }
     SessionStore.setWindowValue(aWindow, PANO_SESSION_ID, JSON.stringify(data));
   },
-  getSession: function PS_getSession (aWindow) {
+  getSession: function PTV_getSession (aWindow) {
     var data = SessionStore.getWindowValue(aWindow, PANO_SESSION_ID);
         failedData = { apptabs: {}, groups: {}, orphans: {} };
     try {
@@ -229,7 +229,7 @@ PanoramaSidebar.prototype = {
       return failedData;
     }
   },
-  getAppTabs: function PS_getAppTabs () {
+  getAppTabs: function PTV_getAppTabs () {
     var tabs = [];
     for (let [,tab] in Iterator(this.gBrowser.visibleTabs)) {
       if (!tab.pinned)
@@ -240,7 +240,7 @@ PanoramaSidebar.prototype = {
     return tabs;
   },
   filter: null,
-  setFilter: function PS_setFilter (aValue) {
+  setFilter: function PTV_setFilter (aValue) {
     var count = this.rowCount,
         rows = [],
         reg;
@@ -264,7 +264,7 @@ PanoramaSidebar.prototype = {
     this.treeBox.rowCountChanged(rows.length, rows.length - count);
     this.treeBox.invalidate();
   },
-  build: function PS_build (aSession) {
+  build: function PTV_build (aSession) {
     if (!aSession)
       aSession = { apptabs: {}, groups: {}, orphans: {} };
 
@@ -288,13 +288,13 @@ PanoramaSidebar.prototype = {
 
     return this.rows = rows;
   },
-  getAtom: function PS_getAtom (name) {
+  getAtom: function PTV_getAtom (name) {
     if (atomCache[name])
       return atomCache[name];
 
     return atomCache[name] = atomService.getAtom(name);
   },
-  getRowForGroup: function PS_getRowForGroup (aGroup) {
+  getRowForGroup: function PTV_getRowForGroup (aGroup) {
     if (!aGroup)
       return -1;
 
@@ -305,7 +305,7 @@ PanoramaSidebar.prototype = {
     }
     return -1;
   },
-  getRowForTab: function PS_getRowForTab (aTab) {
+  getRowForTab: function PTV_getRowForTab (aTab) {
     for (let [i, item] in Iterator(this.rows)) {
       if (item.type & TAB_ITEM_TYPE && item.tab === aTab) {
         return i;
@@ -313,7 +313,7 @@ PanoramaSidebar.prototype = {
     }
     return -1;
   },
-  getGroupRowForTab: function PS_getGroupRowForTab (aTab) {
+  getGroupRowForTab: function PTV_getGroupRowForTab (aTab) {
     if (this.filter)
       return -1;
 
@@ -341,7 +341,7 @@ PanoramaSidebar.prototype = {
         return i;
     }
   },
-  getSourceIndexFromDrag: function PS_getSourceIndexFromDrag (aDataTransfer, index) {
+  getSourceIndexFromDrag: function PTV_getSourceIndexFromDrag (aDataTransfer, index) {
     var types = aDataTransfer.mozTypesAt(index);
     if (types.contains(TAB_DROP_TYPE))
       return this.getRowForTab(aDataTransfer.mozGetDataAt(TAB_DROP_TYPE, index));
@@ -350,13 +350,28 @@ PanoramaSidebar.prototype = {
 
     return -1;
   },
-  getIndexOfGroupForTab: function PS_getIndexOfGroupForTab (tab, group) {
+  getIndexOfGroupForTab: function PTV_getIndexOfGroupForTab (tab, group) {
     return group._children.indexOf(tab._tabViewTabItem);
+  },
+  getItemFromEvent: function PTV_getItemFromEvent (aEvent) {
+    var row = {}, col = {}, elt = {};
+    this.treeBox.getCellAt(aEvent.clientX, aEvent.clientY, row, col, elt);
+    if (row.value != -1)
+      return this.rows[row.value];
+
+    return null;
+  },
+  editGroupName: function PTV_editGroupName () {
+    var index = this.selection.currentIndex;
+    if (index > 0 && this.rows[index].type & TAB_GROUP_TYPE &&
+        this.isEditable(index, this.treeBox.columns[0])) {
+      this.treeBox.element.startEditing(index, this.treeBox.columns[0]);
+    }
   },
   // ==========================================================================
   // Handlers
   // ==========================================================================
-  handleEvent: function PS_handEvent (aEvent) {
+  handleEvent: function PTV_handEvent (aEvent) {
     switch (aEvent.type) {
     case "TabOpen":
       this.onTabOpen(aEvent);
@@ -379,11 +394,11 @@ PanoramaSidebar.prototype = {
       this.treeBox.invalidate();
     }
   },
-  onTabAttrModified: function PS_onTabAttrModified (aEvent) {
+  onTabAttrModified: function PTV_onTabAttrModified (aEvent) {
     if (this.filter)
       this.setFilter(this.filter);
   },
-  onTabOpen: function PS_onTabOpen (aEvent) {
+  onTabOpen: function PTV_onTabOpen (aEvent) {
     var tab = aEvent.target;
     var groupRow = this.getGroupRowForTab(tab);
 
@@ -409,7 +424,7 @@ PanoramaSidebar.prototype = {
     }
     this.treeBox.rowCountChanged(changeIndex, 1);
   },
-  onTabClose: function PS_onTabClose (aEvent) {
+  onTabClose: function PTV_onTabClose (aEvent) {
     var tab = aEvent.target;
     var row = this.getRowForTab(tab);
     if (row != -1) {
@@ -417,7 +432,7 @@ PanoramaSidebar.prototype = {
       this.treeBox.rowCountChanged(row, -1);
     }
   },
-  onTabMove: function PS_onTabMove (aEvent) {
+  onTabMove: function PTV_onTabMove (aEvent) {
     if (this.filter)
       return;
 
@@ -471,7 +486,7 @@ PanoramaSidebar.prototype = {
       }
     }
   },
-  onTabGroupClose: function PS_onTabGroupClose (aEvent) {
+  onTabGroupClose: function PTV_onTabGroupClose (aEvent) {
     // グループが削除される時、既にタブは削除されているので考慮の必要なし
     var id = aEvent.detail;
     for (let [i, item] in Iterator(this.rows)) {
@@ -489,11 +504,11 @@ PanoramaSidebar.prototype = {
   get rowCount () {
     return this.rows.length;
   },
-  setTree: function PS_setTree (treeBox) {
+  setTree: function PTV_setTree (treeBox) {
     this.treeBox = treeBox;
     this.init();
   },
-  getCellText: function PS_getCellText (aRow, aColumn) {
+  getCellText: function PTV_getCellText (aRow, aColumn) {
     switch(aColumn.element.getAttribute("anonid")) {
     case "title":
       return this.rows[aRow].title;
@@ -502,23 +517,23 @@ PanoramaSidebar.prototype = {
     }
     return "";
   },
-  getCellValue: function PS_getCellValue (aRow, aColumn) {
+  getCellValue: function PTV_getCellValue (aRow, aColumn) {
     if (aColumn.element.getAttribute("anonid") == "title") {
       let item = this.rows[aRow];
       return item.id;
     }
     return "";
   },
-  getLevel: function PS_getLevel (aRow) {
+  getLevel: function PTV_getLevel (aRow) {
     return this.filter ? 0 : this.rows[aRow].level;
   },
-  getImageSrc: function PS_getImageSrc (aRow, aColumn) {
+  getImageSrc: function PTV_getImageSrc (aRow, aColumn) {
     if (aColumn.index == 0 && this.rows[aRow].level > 0) {
       return this.rows[aRow].tab.image;
     }
     return "";
   },
-  canDrop: function PS_canDrop (aTargetIndex, aOrientation, aDataTransfer) {
+  canDrop: function PTV_canDrop (aTargetIndex, aOrientation, aDataTransfer) {
     if (this.filter)
       return false;
 
@@ -534,7 +549,7 @@ PanoramaSidebar.prototype = {
 
     return (this.rows[sourceIndex].type & TAB_ITEM_TYPE) > 0;
   },
-  drop: function PS_drop (aTargetIndex, aOrientation, aDataTransfer) {
+  drop: function PTV_drop (aTargetIndex, aOrientation, aDataTransfer) {
     if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation == Ci.nsITreeView.DROP_BEFORE) {
       aTargetIndex--;
       aOrientation = Ci.nsITreeView.DROP_AFTER;
@@ -650,8 +665,8 @@ PanoramaSidebar.prototype = {
     }
   },
   selection: null,
-  getRowProperties: function PS_getRowProperties (aRow, aProperties) {},
-  getCellProperties: function PS_getCellProperties (aRow, aColumn, aProperties) {
+  getRowProperties: function PTV_getRowProperties (aRow, aProperties) {},
+  getCellProperties: function PTV_getCellProperties (aRow, aColumn, aProperties) {
     if (aColumn.element.getAttribute("anonid") != "title")
       return;
 
@@ -679,23 +694,23 @@ PanoramaSidebar.prototype = {
         aProperties.AppendElement(this.getAtom("orphaned"));
     }
   },
-  getColumnProperties: function PS_getColumnProperties (aRow, aProperties) {},
-  isContainer: function PS_isContainer (aRow) {
+  getColumnProperties: function PTV_getColumnProperties (aRow, aProperties) {},
+  isContainer: function PTV_isContainer (aRow) {
     return this.rows[aRow].level === 0;
   },
-  isContainerOpen: function PS_isContainerOpen (aRow) {
+  isContainerOpen: function PTV_isContainerOpen (aRow) {
     return this.rows[aRow].isOpen;
   },
-  isContainerEmpty: function PS_isContainerEmpty (aRow) {
+  isContainerEmpty: function PTV_isContainerEmpty (aRow) {
     return !this.rows[aRow].hasChild;
   },
-  isSeparator: function PS_isSeparator (aRow) {
+  isSeparator: function PTV_isSeparator (aRow) {
     return false;
   },
   isSorted: function (aRow) {
     return false;
   },
-  getParentIndex: function PS_getParentIndex (aRow) {
+  getParentIndex: function PTV_getParentIndex (aRow) {
     if (this.rows[aRow].level != 1)
       return -1;
     for ( ; aRow > 0; aRow--) {
@@ -704,11 +719,11 @@ PanoramaSidebar.prototype = {
     }
     return -1;
   },
-  hasNextSibling: function PS_hasNextSibling (aRow, aAfterRow) {
+  hasNextSibling: function PTV_hasNextSibling (aRow, aAfterRow) {
     return (this.rows[aAfterRow] && this.rows[aAfterRow].level == this.rows[aRow].level);
   },
-  getProgressMode: function PS_getProgressMode (aRow, aColumn) {},
-  toggleOpenState: function PS_toggleOpenState (aRow) {
+  getProgressMode: function PTV_getProgressMode (aRow, aColumn) {},
+  toggleOpenState: function PTV_toggleOpenState (aRow) {
     var groupItem = this.rows[aRow],
         start = aRow + 1;
     if (groupItem.isOpen) {
@@ -730,25 +745,25 @@ PanoramaSidebar.prototype = {
       }
     }
   },
-  cycleHeader: function PS_cycleHeader (aColumn) {},
-  selectionChanged: function PS_selectionChanged () {},
-  cycleCell: function PS_cycleCell (aRow, aColumn) {},
-  isEditable: function PS_isEditable (aRow, aColumn) {
+  cycleHeader: function PTV_cycleHeader (aColumn) {},
+  selectionChanged: function PTV_selectionChanged () {},
+  cycleCell: function PTV_cycleCell (aRow, aColumn) {},
+  isEditable: function PTV_isEditable (aRow, aColumn) {
     if (aColumn.element.getAttribute("anonid") != "title")
       return false;
 
     return (this.rows[aRow] instanceof GroupItem)
   },
-  isSelectable: function PS_isSelectable (aRow, aColumn) {
+  isSelectable: function PTV_isSelectable (aRow, aColumn) {
     return false;
   },
-  setCellValue: function PS_setCellValue (aRow, aColumn, aValue) {},
-  setCellText: function PS_setCellText (aRow, aColumn, aValue) {
+  setCellValue: function PTV_setCellValue (aRow, aColumn, aValue) {},
+  setCellText: function PTV_setCellText (aRow, aColumn, aValue) {
     this.rows[aRow].group.setTitle(aValue);
   },
-  performAction: function PS_performAction (aAction) {},
-  performActionOnRow: function PS_performActionOnRow (aAction, aRow) {},
-  performActionOnCell: function PS_performActionOnCell (aAction, aRow, aColumn) {},
+  performAction: function PTV_performAction (aAction) {},
+  performActionOnRow: function PTV_performActionOnRow (aAction, aRow) {},
+  performActionOnCell: function PTV_performActionOnCell (aAction, aRow, aColumn) {},
 };
 
 function getSelectedItems (view) {
@@ -817,7 +832,7 @@ function onDragStart (aEvent, view) {
   dt.effectAllowed = "move";
   aEvent.stopPropagation();
 }
-PanoramaSidebar.onDragStart = onDragStart;
+PanoramaTreeView.onDragStart = onDragStart;
 
 function blob (aString, aOption) {
   if (typeof aString !== "string")

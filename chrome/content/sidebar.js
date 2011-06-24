@@ -32,7 +32,7 @@ var gPanoramaTree = {
   },
   view: null,
   tabViewCallback: function PT_tabViewCallback () {
-    this.view = new this.PanoramaSidebar(gWin.TabView);
+    this.view = new this.PanoramaTreeView(gWin.TabView);
     this.tree.view = this.view;
   },
   onDblClick: function PT_onDblClick (aEvent) {
@@ -44,12 +44,12 @@ var gPanoramaTree = {
     }
   },
   onDragStart: function PT_onDragStart (aEvent) {
-    this.PanoramaSidebar.onDragStart(aEvent, this.view);
+    this.PanoramaTreeView.onDragStart(aEvent, this.view);
   },
   tooltip: {
     show: function PS_showTooltip (aEvent) {
       aEvent.stopPropagation();
-      var item = gPanoramaTree.getItemFromEvent(aEvent);
+      var item = gPanoramaTree.view.getItemFromEvent(aEvent);
 
       if (!item || !(item.type & gPanoramaTree.TAB_ITEM_TYPE)) {
         aEvent.preventDefault();
@@ -79,21 +79,6 @@ var gPanoramaTree = {
   newGroup: function PT_newGroup () {
     gWin.TabView._window.GroupItems.newGroup().newTab();
   },
-  editGroupName: function PT_editGroupName () {
-    var index = this.view.selection.currentIndex;
-    if (index > 0 && this.view.rows[index].type & this.TAB_GROUP_TYPE &&
-        this.view.isEditable(index, this.view.treeBox.columns[0])) {
-      this.tree.startEditing(index, this.view.treeBox.columns[0]);
-    }
-  },
-  getItemFromEvent: function PT_getItemFromEvent (aEvent) {
-    var row = {}, col = {}, elt = {};
-    this.tree.treeBoxObject.getCellAt(aEvent.clientX, aEvent.clientY, row, col, elt);
-    if (row.value != -1)
-      return this.view.rows[row.value];
-
-    return null;
-  },
   contextMenu: (function () {
     function lazyGetter (aProperty, aGetter) {
       XPCOMUtils.defineLazyGetter(pub, aProperty, aGetter);
@@ -107,7 +92,7 @@ var gPanoramaTree = {
     ];
     var public = {
       build: function PT_buildContextMenu (aEvent) {
-        currentItem = gPanoramaTree.getItemFromEvent(aEvent);
+        currentItem = gPanoramaTree.view.getItemFromEvent(aEvent);
         if (currentItem) {
           let isTabItem = (currentItem.type & gPanoramaTree.TAB_ITEM_TYPE) > 0;
           let isNormalGroup = currentItem.type == gPanoramaTree.TAB_GROUP_TYPE;

@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
 <?xml-stylesheet type="text/css" href="chrome://pano/skin/sidebar.css"?>
+
+<?xul-overlay href="chrome://pano/content/pano-tree-overlay.xul"?>
+
 <!DOCTYPE window SYSTEM "chrome://pano/locale/sidebar.dtd">
 <window id="panoramaSidebarWindow"
         onload="gPanoramaTree.init();"
@@ -8,57 +11,35 @@
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/javascript" src="chrome://pano/content/sidebar.js"/>
   <commandset id="panoCommandSet">
-    <command id="cmdNewGroup" oncommand="gPanoramaTree.newGroup();"/>
-    <command id="cmdClose" oncommand="gPanoramaTree.contextMenu.closeItem();"/>
+    <command id="panoCmdNewGroup" oncommand="gPanoramaTree.newGroup();"/>
+    <command id="panoCmdClose" oncommand="gPanoramaTree.contextMenu.closeItem();"/>
   </commandset>
   <keyset id="panoKeySet">
     <key keycode="VK_RETURN" oncommand="gPanoramaTree.select()"/>
     <key keycode="VK_F2" oncommand="gPanoramaTree.editGroupName()"/>
   </keyset>
-  <popupset id="panoramaSidebarPopupSet">
-    <tooltip id="tabTooltip"
-             noautohide="true"
-             onpopupshowing="gPanoramaTree.tooltip.show(event);">
-      <vbox id="tooltipBox">
-        <label id="tooltipTitle" flex="1"/>
-        <label id="tooltipURL" flex="1"/>
-        <box id="tooltipImage"/>
-      </vbox>
+  <popupset id="panoSidebarPopupSet">
+    <tooltip id="panoTreeTabTooltip"
+             onpopupshowing="gPanoramaTree.tooltip.build(event);">
     </tooltip>
     <menupopup id="panoContextMenu"
                onpopupshowing="gPanoramaTree.contextMenu.build(event);"
                onpopuphiding="gPanoramaTree.contextMenu.onPopupHiding();">
-      <menuitem id="menu_newGroup"
-                label="&menu.newGroup;" accesskey="N"
-                command="cmdNewGroup"/>
-      <menuitem id="menu_groupClose"
-                label="&menu.closeGroup;" accesskey="C"
-                command="cmdClose"/>
-      <menuitem id="menu_tabClose"
-                label="&menu.closeTab;" accesskey="C"
-                command="cmdClose"/>
-      <menuseparator/>
-      <menuitem id="menu_sidebarClose"
+      <menuseparator id="panoContextMenuSep"/>
+      <menuitem id="panoContextMenu_sidebarClose"
                 label="&menu.closeSidebar;" accesskey="W"
                 oncommand="gWin.toggleSidebar()"/>
     </menupopup>
   </popupset>
 
-  <hbox id="searchbar" align="center">
-    <label id="search-label" value="&search.label;" accesskey="F" control="search-box"/>
-    <textbox id="search-box" flex="1" type="search" class="compact"
-             oncommand="gPanoramaTree.search(this.value);"/>
+  <hbox id="panoSearchbar">
+    <label id="panoSearchLabel"/>
+    <textbox id="panoSearchBox" oncommand="gPanoramaTree.setFilter(this.value);"/>
   </hbox>
 
-  <tree id="tabGroupTree" flex="1" hidecolumnpicker="true" editable="true">
-    <treecols>
-      <treecol anonid="title" flex="1"
-               hideheader="true"
-               editable="true" primary="true"/>
-    </treecols>
-    <treechildren ondblclick="gPanoramaTree.onDblClick(event);"
-                  ondragstart="gPanoramaTree.onDragStart(event);"
-                  context="panoContextMenu"
-                  tooltip="tabTooltip"/>
+  <tree id="panoTabGroupTree">
+    <treechildren id="panoTabGroupTreeChildren"
+                  ondblclick="gPanoramaTree.selectTab(event);"
+                  ondragstart="gPanoramaTree.onDragStart(event);"/>
   </tree>
 </window>

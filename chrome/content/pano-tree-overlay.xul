@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE overlay SYSTEM "chrome://pano/locale/sidebar.dtd">
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<tooltip id="panoTreeTabTooltip" noautohide="true">
+  <vbox id="panoTreeTooltipBox">
+    <label id="panoTreeTooltipTitle" flex="1"/>
+    <label id="panoTreeTooltipURL" flex="1"/>
+    <box id="panoTreeTooltipImage" flex="1"/>
+  </vbox>
+</tooltip>
+
+<menupopup id="panoContextMenu">
+  <menuitem id="panoContextMenu_newGroup"
+            label="&menu.newGroup;" accesskey="N"
+            command="panoCmdNewGroup"
+            insertbefore="panoContextMenuSep"/>
+  <menuitem id="panoContextMenu_groupClose"
+            label="&menu.closeGroup;" accesskey="C"
+            command="panoCmdClose"
+            insertbefore="panoContextMenuSep"/>
+  <menuitem id="panoContextMenu_tabClose"
+            label="&menu.closeTab;" accesskey="C"
+            command="panoCmdClose"
+            insertbefore="panoContextMenuSep"/>
+</menupopup>
+
+
+<hbox id="panoSearchbar" align="center">
+  <label id="panoSearchLabel" value="&search.label;" accesskey="F" control="search-box"/>
+  <textbox id="panoSearchBox" flex="1" type="search" class="compact"/>
+</hbox>
+<tree id="panoTabGroupTree" class="pano-tree" flex="1" hidecolumnpicker="true" editable="true">
+  <treecols>
+    <treecol anonid="title" flex="1"
+             hideheader="true"
+             editable="true" primary="true"/>
+  </treecols>
+  <treechildren id="panoTabGroupTreeChildren"
+                context="panoContextMenu"
+                tooltip="panoTreeTabTooltip"/>
+</tree>
+
+</overlay>

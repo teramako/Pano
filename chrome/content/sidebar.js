@@ -44,6 +44,6 @@ var gPanoramaTree = {
  * @memberOf gPanoramaTree
  * @type {Element}
  */
-XPCOMUtils.defineLazyGetter(gPanoramaTree, "tree", function () document.getElementById("tabGroupTree"));
+XPCOMUtils.defineLazyGetter(gPanoramaTree, "tree", function () document.getElementById("panoTabGroupTree"));
 
 

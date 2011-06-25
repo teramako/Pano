@@ -1,8 +1,7 @@
-
 /**
  * @namespace
  */
-var gPano = {
+const gPano = {
   createElement: function pano_createElement (aTagName, aAttributes) {
     var element = document.createElement(aTagName);
     for (let [name, value] in Iterator(aAttributes)) {

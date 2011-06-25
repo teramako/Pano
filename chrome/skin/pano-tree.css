@@ -1,0 +1,40 @@
+
+.pano-tree treechildren::-moz-tree-image {
+  padding-right: 2px;
+  margin: 0px 2px;
+  width: 16px;
+  height: 16px;
+}
+.pano-tree treechildren::-moz-tree-image(item) {
+  list-style-image: url("chrome://mozapps/skin/places/defaultFavicon.png");
+}
+.pano-tree treechildren::-moz-tree-image(group) {
+  list-style-image: url("chrome://browser/skin/tabview/tabview.png");
+  -moz-image-region: rect(1px, 35px, 16px, 19px);
+}
+.pano-tree treechildren::-moz-tree-image(group, AppTabs) {
+  list-style-image: url("chrome://pano/skin/application_double.png");
+  -moz-image-region: auto;
+}
+.pano-tree treechildren::-moz-tree-image(group, Orphaned) {
+  list-style-image: url("chrome://pano/skin/bullet_black.png");
+  -moz-image-region: auto;
+}
+.pano-tree treechildren::-moz-tree-cell-text(currentTab),
+.pano-tree treechildren::-moz-tree-cell-text(currentGroup) {
+  font-weight: bold;
+}
+
+/* tooltip */
+#panoTreeTooltipImage {
+  min-width: 400px;
+  height: 250px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: -moz-element(#panoTabCapture);
+}
+#panoTreeTooltipImage.hide {
+  height: 0;
+  overflow: hidden;
+}
+

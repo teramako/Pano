@@ -7,6 +7,7 @@ Firefox 4のタブグループをリストする拡張機能だよん。
 ![sidebar](http://teramako.github.com/Pano/sidebar-0.4.png "Pano sidebar")
 ![PanoButton](http://teramako.github.com/Pano/pano-button-menu.png "Pano Button")
 ![tablist](http://teramako.github.com/Pano/all-tabs-list.png "All tabs list button")
+![PanoPanel](http://teramako.github.com/Pano/pano-pane.png "Pano panel")
 
 #使い方
 
@@ -29,6 +30,13 @@ Firefox 4のタブグループをリストする拡張機能だよん。
 ##タブ一覧
 
  * タブ一覧を表示するボタン -> 他グループ から他のグループとそのタブの一覧がでるよ
+
+##Panoパネル
+
+ * 基本的にサイドバーと同じで、ツリー上のリストを表示します
+ * ポップアップなのでサイドバーで幅を取られたくない場合などに使い道があるかと
+ * Panoボタンと同様に「ツールバーのカスタマイズ」内にボタンがあります
+ * Alt + p でポップアップさせることも可能
 
 #License
 

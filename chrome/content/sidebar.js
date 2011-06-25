@@ -32,7 +32,7 @@ var gPanoramaTree = {
   },
   view: null,
   tabViewCallback: function PT_tabViewCallback () {
-    this.view = new this.PanoramaTreeView(gWin.TabView);
+    this.view = new this.PanoramaTreeView(gWin);
     this.tree.view = this.view;
   },
   onDblClick: function PT_onDblClick (aEvent) {

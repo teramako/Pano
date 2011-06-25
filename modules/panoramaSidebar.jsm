@@ -163,10 +163,16 @@ function Pano_dispatchGroupCloseEvent (groupItem, eventInfo) {
   win.gBrowser.dispatchEvent(event);
 }
 
-function PanoramaTreeView (tabView) {
-  this.tabView = tabView;
-  this.gBrowser = tabView._window.gBrowser;
-  this.GI = tabView._window.GroupItems;
+/**
+ * PanoramaTreeView [implemented nsITreeView]
+ * @class
+ * @param {Window} gWindow Firefox's window
+ */
+function PanoramaTreeView (gWindow) {
+  this.gWindow = gWindow;
+  this.tabView = gWindow.TabView;
+  this.gBrowser = gWindow.gBrowser;
+  this.GI = gWindow.TabView._window.GroupItems;
   this.treeBox = null;
   this.rows = [];
   this.inited = false;
@@ -177,11 +183,10 @@ PanoramaTreeView.prototype = {
     if (this.inited)
       return;
 
-    var win = this.tabView._window.gWindow;
     for (let [, type] in Iterator(HANDLE_EVENT_TYPES)) {
-      win.addEventListener(type, this, false);
+      this.gWindow.addEventListener(type, this, false);
     }
-    this.build(this.getSession(win));
+    this.build();
     var originalMoveTabToGroupItem = this.GI.moveTabToGroupItem;
     if (originalMoveTabToGroupItem.name != "Pano_moveTabToGroupItem") {
       this.GI.originalMoveTabToGroupItem = originalMoveTabToGroupItem;
@@ -190,13 +195,15 @@ PanoramaTreeView.prototype = {
     this.inited = true;
   },
   destroy: function PTV_destroy () {
-    var win = this.tabView._window.gWindow;
     for (let [, type] in Iterator(HANDLE_EVENT_TYPES)) {
-      win.removeEventListener(type, this, false);
+      this.gWindow.removeEventListener(type, this, false);
     }
-    this.saveSession(win);
+    this.saveSession();
   },
   saveSession: function PTV_saveSession (aWindow) {
+    if (!aWindow)
+      aWindow = this.gWindow;
+
     var data = {
       apptabs: {},
       groups: {},
@@ -218,6 +225,9 @@ PanoramaTreeView.prototype = {
     SessionStore.setWindowValue(aWindow, PANO_SESSION_ID, JSON.stringify(data));
   },
   getSession: function PTV_getSession (aWindow) {
+    if (!aWindow)
+      aWindow = this.gWindow;
+
     var data = SessionStore.getWindowValue(aWindow, PANO_SESSION_ID);
         failedData = { apptabs: {}, groups: {}, orphans: {} };
     try {
@@ -245,10 +255,12 @@ PanoramaTreeView.prototype = {
         rows = [],
         reg;
     if (!aValue) {
-      let win = Components.utils.getGlobalForObject(this.gBrowser);
-      rows = this.build(this.getSession(win));
+      rows = this.build();
       this.filter = null;
     } else {
+      if (!this.filter)
+        this.saveSession();
+
       reg = (typeof aValue === "string") ? blob(aValue, "i") : aValue;
 
       if (reg instanceof RegExp) {
@@ -268,7 +280,7 @@ PanoramaTreeView.prototype = {
   },
   build: function PTV_build (aSession) {
     if (!aSession)
-      aSession = { apptabs: {}, groups: {}, orphans: {} };
+      aSession = this.getSession();
 
     var rows = [];
     let item = new AppTabsGroup(this.tabView._window, aSession.apptabs);

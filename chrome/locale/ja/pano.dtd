@@ -2,4 +2,6 @@
 <!ENTITY sidePano.menu.accesskey "t">
 <!ENTITY sidePano.button.tooltip "タブ・グループ・サイドバーの開閉">
 <!ENTITY alltabs.group.label "他グループ">
+<!ENTITY panoPane.label "Pano パネル">
+<!ENTITY panoPane.tooltip "Pano パネルのポップアップ">
 

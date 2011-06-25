@@ -2,4 +2,6 @@
 <!ENTITY sidePano.menu.accesskey "t">
 <!ENTITY sidePano.button.tooltip "Toggle open sidebar of tab group list">
 <!ENTITY alltabs.group.label "The other groups">
+<!ENTITY panoPane.label "Pano panel">
+<!ENTITY panoPane.tooltip "Popup Pano panel">
 

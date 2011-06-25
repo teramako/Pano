@@ -35,8 +35,8 @@
         keepme="true"
         insertbefore="alltabs-popup-separator">
     <menupopup id="pano-alltabs-group-popup"
-               onpopupshowing="gPano.tabGroups.onPopupshowing(event);"
-               onpopuphidden="gPano.tabGroups.onPopuphidden(event);"/>
+               onpopupshowing="gPano.tabGroups.onPopupShowing(event);"
+               onpopuphidden="gPano.tabGroups.onPopupHidden(event);"/>
   </menu>
 </menupopup>
 
@@ -47,9 +47,9 @@
                  observes="viewPanoramaSidebar"
                  tooltiptext="&sidePano.button.tooltip;">
     <menupopup id="pano-toolbarbutton-popup"
-               onpopupshowing="gPano.tabGroups.onPopupshowing(event);"
-               onpopuphidden="gPano.tabGroups.onPopuphidden(event);"
-               oncommand="gPano.buttonmenu.onSelect(event);"/>
+               onpopupshowing="gPano.tabGroups.onPopupShowing(event);"
+               onpopuphidden="gPano.tabGroups.onPopupHidden(event);"
+               oncommand="gPano.tabGroups.selectGroup(event);"/>
   </toolbarbutton>
 </toolbarpalette>
 

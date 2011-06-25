@@ -27,7 +27,7 @@
 
 
 <hbox id="panoSearchbar" align="center">
-  <label id="panoSearchLabel" value="&search.label;" accesskey="F" control="search-box"/>
+  <label id="panoSearchLabel" value="&search.label;" accesskey="F" control="panoSearchBox"/>
   <textbox id="panoSearchBox" flex="1" type="search" class="compact"/>
 </hbox>
 <tree id="panoTabGroupTree" class="pano-tree" flex="1" hidecolumnpicker="true" editable="true">

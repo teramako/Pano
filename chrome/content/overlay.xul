@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
 <?xml-stylesheet type="text/css" href="chrome://pano/skin/pano.css"?>
+
+<?xul-overlay href="chrome://pano/content/pano-tree-overlay.xul"?>
+
 <!DOCTYPE overlay SYSTEM "chrome://pano/locale/pano.dtd">
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
@@ -19,6 +22,32 @@
        key="p"
        modifiers="accel,alt"/>
 </keyset>
+<popupset id="mainPopupSet">
+  <panel id="pano-pane" type="arrow" position="bottomcenter topright" orient="vertical" side="top"
+         onpopupshowing="gPano.pane.onPopupShowing();"
+         onpopupshown="gPano.pane.onPopupShown();">
+    <commandset id="panoCommandSet">
+      <command id="panoCmdNewGroup" oncommand="gPano.pane.newGroup();"/>
+      <command id="panoCmdClose" oncommand="gPano.pane.contextMenu.closeItem();"/>
+    </commandset>
+    <hbox id="panoSearchbar">
+      <label id="panoSearchLabel"/>
+      <textbox id="panoSearchBox" oncommand="gPano.pane.setFilter(this.value);"/>
+    </hbox>
+    <tree id="panoTabGroupTree">
+      <treechildren id="panoTabGroupTreeChildren"
+                    ondblclick="gPano.pane.selectTab(event);"
+                    ondragstart="gPano.pane.onDragStart(event);"/>
+    </tree>
+  </panel>
+
+  <tooltip id="panoTreeTabTooltip"
+           onpopupshowing="gPano.pane.tooltip.build(event);"/>
+  <menupopup id="panoContextMenu"
+             onpopupshowing="gPano.pane.contextMenu.build(event);"
+             onpopuphiding="gPano.pane.contextMenu.onPopupHiding();"/>
+</popupset>
+
 <menupopup id="viewSidebarMenu">
   <menuitem id="menu_panoramaSidebar"
             type="checkbox"
@@ -50,6 +79,11 @@
                onpopupshowing="gPano.tabGroups.onPopupShowing(event);"
                onpopuphidden="gPano.tabGroups.onPopupHidden(event);"
                oncommand="gPano.tabGroups.selectGroup(event);"/>
+  </toolbarbutton>
+  <toolbarbutton id="pano-pane-button"
+                 class="chromeclass-toolbar-additional toolbarbutton-1"
+                 label="PanoTree"
+                 oncommand="gPano.pane.toggleOpen();">
   </toolbarbutton>
 </toolbarpalette>
 

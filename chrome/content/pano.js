@@ -8,6 +8,12 @@ const gPano = {
       this.onPopupShowing(aEvent);
     },
   },
+  pane: {
+    toggleOpen: function PanoPane_init () {
+      Cu.import("resource://pano/panoramaTree.jsm", this);
+      Services.scriptloader.loadSubScript("chrome://pano/content/pano-pane.sub.js", this);
+      this.toggleOpen();
+      Services.scriptloader.loadSubScript("chrome://pano/content/pano-tree.sub.js", this);
     },
   },
 };

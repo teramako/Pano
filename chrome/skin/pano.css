@@ -1,12 +1,11 @@
+@import "chrome://pano/skin/pano-tree.css";
 
 #pano-sidebarbutton,
 #pano-alltabs-group-menu {
   list-style-image: url("chrome://pano/content/pano.svg");
 }
-#pano-sidebarbutton {
-  -moz-appearance: none;
-  border-style: none;
-  padding: 0 3px;
+#pano-pane-button {
+  list-style-image: url("chrome://pano/content/pano-pane.svg");
 }
 #pano-sidebarbutton:hover {
   background-image: -moz-linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.5)),
@@ -16,9 +15,16 @@
   background-size: -moz-calc(100% - 2px) 100%, 1px 100%, 1px 100%;
   background-repeat: no-repeat;
 }
-#pano-sidebarbutton .toolbarbutton-icon {
+:-moz-any(#pano-sidebarbutton, #pano-pane-button) .toolbarbutton-icon {
   width: 18px;
   height: 18px;
   -moz-margin-end: 0;
+}
+
+#panoTabGroupTree {
+  min-width: 300px;
+  min-height: 200px;
+  max-height: 600px;
+  -moz-transition: height 0.3s;
 }
 

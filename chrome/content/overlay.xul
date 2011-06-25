@@ -83,6 +83,7 @@
   <toolbarbutton id="pano-pane-button"
                  class="chromeclass-toolbar-additional toolbarbutton-1"
                  label="PanoTree"
+                 accesskey="P"
                  oncommand="gPano.pane.toggleOpen();">
   </toolbarbutton>
 </toolbarpalette>

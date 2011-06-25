@@ -252,7 +252,9 @@ PanoramaTreeView.prototype = {
       reg = (typeof aValue === "string") ? blob(aValue, "i") : aValue;
 
       if (reg instanceof RegExp) {
-        for (let [, tab] in Iterator(this.gBrowser.tabs)) {
+        let tabs = this.gBrowser.tabs;
+        for (let i = 0, len = tabs.length; i < len; ++i) {
+          let tab = tabs[i];
           if (reg.test(tab.label) ||
               reg.test(tab.linkedBrowser.currentURI.spec))
             rows.push(new TabItem(tab));

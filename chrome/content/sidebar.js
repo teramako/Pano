@@ -24,7 +24,7 @@ var gWin = window.top;
  */
 var gPanoramaTree = {
   init: function PT_init () {
-    Cu.import("resource://pano/panoramaSidebar.jsm", this);
+    Cu.import("resource://pano/panoramaTree.jsm", this);
     gWin.TabView._initFrame(this.tabViewCallback.bind(this));
   },
   destroy: function PT_destroy () {

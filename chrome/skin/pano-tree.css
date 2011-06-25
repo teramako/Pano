@@ -27,7 +27,7 @@
 
 /* tooltip */
 #panoTreeTooltipImage {
-  min-width: 400px;
+  min-width: 250px;
   height: 250px;
   background-size: cover;
   background-repeat: no-repeat;

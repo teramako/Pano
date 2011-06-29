@@ -142,6 +142,8 @@ const HANDLE_EVENT_TYPES = [
   "TabAttrModified",
   "TabGroupMove",
   "TabGroupClose",
+  "tabviewshown",
+  "tabviewhidden",
 ];
 
 function Pano_moveTabToGroupItem (tab, groupItemId) {
@@ -387,6 +389,14 @@ PanoramaTreeView.prototype = {
   // ==========================================================================
   handleEvent: function PTV_handEvent (aEvent) {
     switch (aEvent.type) {
+    case "tabviewshown":
+      if (!this.filter)
+        this.saveSession();
+      break;
+    case "tabviewhidden":
+      if (!this.filter)
+        this.build();
+      break;
     case "TabOpen":
       this.onTabOpen(aEvent);
       break;

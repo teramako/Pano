@@ -4,7 +4,7 @@
 Firefox 4のタブグループをリストする拡張機能だよん。
 
 #キャプチャ画像
-![sidebar](http://teramako.github.com/Pano/sidebar-0.4.png "Pano sidebar")
+![sidebar](http://teramako.github.com/Pano/sidebar.png "Pano sidebar")
 ![PanoButton](http://teramako.github.com/Pano/pano-button-menu.png "Pano Button")
 ![tablist](http://teramako.github.com/Pano/all-tabs-list.png "All tabs list button")
 ![PanoPanel](http://teramako.github.com/Pano/pano-pane.png "Pano panel")
@@ -19,6 +19,7 @@ Firefox 4のタブグループをリストする拡張機能だよん。
  * タブのアイテムをダブルクリックでタブ選択
  * グループのアイテムをダブルクリックするとグループ名の編集
  * 一応ドラッグ&ドロップ可
+ * フィルタ機能あり
 
 ##Panoボタン
 
@@ -37,6 +38,14 @@ Firefox 4のタブグループをリストする拡張機能だよん。
  * ポップアップなのでサイドバーで幅を取られたくない場合などに使い道があるかと
  * Panoボタンと同様に「ツールバーのカスタマイズ」内にボタンがあります
  * Alt + p でポップアップさせることも可能
+ * フィルタ機能あり
+
+##フィルタ機能
+
+ * サイドバーやパネルで使用可能
+ * `*` がワイルドカード
+ * `|` が OR 検索
+ * フィルタリング中はドラッグ＆ドロップできません :(
 
 #License
 

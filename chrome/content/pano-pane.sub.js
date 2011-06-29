@@ -37,4 +37,10 @@ function toggleOpen () {
   }
 };
 
+window.addEventListener("unload", function () {
+  window.removeEventListener("unload", arguments.callee, false);
+  if (view)
+    view.destroy();
+}, false);
+
 // vim: sw=2 ts=2 et:

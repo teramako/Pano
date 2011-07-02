@@ -687,6 +687,7 @@ PanoramaTreeView.prototype = {
         }
       }
     }
+    this.selection.clearSelection();
   },
   selection: null,
   getRowProperties: function PTV_getRowProperties (aRow, aProperties) {},

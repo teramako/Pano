@@ -20,7 +20,7 @@ function selectTab (aEvent) {
 }
 
 function newGroup () {
-  gWin.TabView._window.GroupItems.newGroup().newTab();
+  view.GI.newGroup().newTab();
 }
 
 function setFilter (aString) {

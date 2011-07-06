@@ -16,7 +16,7 @@
   </commandset>
   <keyset id="panoKeySet">
     <key keycode="VK_RETURN" oncommand="gPanoramaTree.selectTab()"/>
-    <key keycode="VK_F2" oncommand="gPanoramaTree.editGroupName()"/>
+    <key keycode="VK_F2" oncommand="gPanoramaTree.view.editGroupName()"/>
   </keyset>
   <popupset id="panoSidebarPopupSet">
     <tooltip id="panoTreeTabTooltip"

@@ -15,6 +15,11 @@ function selectTab (aEvent) {
       aEvent.preventDefault();
       aEvent.stopPropagation();
     }
+    if (!item.tab.pinned) {
+      let tabItem = item.tab._tabViewTabItem;
+      view.tabView._window.UI.setActiveTab(tabItem);
+      view.GI.setActiveGroupItem(tabItem.parent);
+    }
     gBrowser.mTabContainer.selectedIndex = item.tab._tPos;
   }
 }

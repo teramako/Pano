@@ -578,7 +578,8 @@ PanoramaTreeView.prototype = {
       aTargetIndex--;
       aOrientation = Ci.nsITreeView.DROP_AFTER;
     }
-    var targetItem = this.rows[aTargetIndex];
+    var targetItem = this.rows[aTargetIndex],
+        activeGroupItem = this.GI._activeGroupItem;
 
     var itemCount = aDataTransfer.mozItemCount;
     for (let i = 0; i < itemCount; ++i) {
@@ -634,7 +635,7 @@ PanoramaTreeView.prototype = {
 
             this.onTabMove({type: "TabToOrphaned", target: item.tab})
 
-            if (itemGroup && itemGroup === this.GI._activeGroupItem)
+            if (itemGroup && itemGroup === activeGroupItem)
               this.gBrowser.hideTab(tabItem.tab);
           }
           // 移動元のタブはアプリタブ
@@ -678,7 +679,7 @@ PanoramaTreeView.prototype = {
           else if (sourceGroup) {
             sourceGroup.remove(tab._tabViewTabItem);
             this.onTabMove({type: "TabToOrphaned", target: tab});
-            if (sourceGroup === this.GI._activeGroupItem)
+            if (sourceGroup === activeGroupItem)
               this.gBrowser.hideTab(tab);
           }
 
@@ -689,6 +690,7 @@ PanoramaTreeView.prototype = {
         aOrientation = Ci.nsITreeView.DROP_AFTER;
       }
     }
+    this.GI.setActiveGroupItem(activeGroupItem);
     this.selection.clearSelection();
   },
   selection: null,

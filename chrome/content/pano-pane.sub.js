@@ -2,6 +2,7 @@
 var panel = document.getElementById("pano-pane"),
     button = document.getElementById("pano-pane-button"),
     tree = panel.getElementsByTagName("tree")[0],
+    keyset = document.getElementById("panoKeySet"),
     view;
 
 function onPopupShowing (aEvent) {
@@ -20,6 +21,12 @@ function onPopupShown () {
     tree.treeBoxObject.getCoordsForCellItem(count - 1, tree.columns[0], "cell", {}, y, {}, h);
     tree.style.height = (y.value + h.value + 20) + "px";
   }
+  if (keyset.hasAttribute("disabled"))
+    keyset.removeAttribute("disabled");
+}
+
+function onPopupHiding () {
+  keyset.setAttribute("disabled", "true");
 }
 
 function toggleOpen () {

@@ -25,11 +25,16 @@
 <popupset id="mainPopupSet">
   <panel id="pano-pane" type="arrow" position="bottomcenter topright" orient="vertical" side="top"
          onpopupshowing="gPano.pane.onPopupShowing();"
-         onpopupshown="gPano.pane.onPopupShown();">
+         onpopupshown="gPano.pane.onPopupShown();"
+         onpopuphiding="gPano.pane.onPopupHiding();">
     <commandset id="panoCommandSet">
       <command id="panoCmdNewGroup" oncommand="gPano.pane.newGroup();"/>
       <command id="panoCmdClose" oncommand="gPano.pane.contextMenu.closeItem();"/>
     </commandset>
+    <keyset id="panoKeySet" disabled="true">
+      <key keycode="VK_RETURN" oncommand="gPano.pane.selectTab()"/>
+      <key keycode="VK_F2" oncommand="gPano.pane.view.editGroupName()"/>
+    </keyset>
     <hbox id="panoSearchbar">
       <label id="panoSearchLabel"/>
       <textbox id="panoSearchBox" oncommand="gPano.pane.setFilter(this.value);"/>

@@ -621,8 +621,6 @@ PanoramaTreeView.prototype = {
           // アプリタブ・グループへドロップ
           if (targetItem.type & APPTAB_GROUP_TYPE) {
             this.gBrowser.pinTab(item.tab);
-            if (targetGroup.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER)
-              this.gBrowser.moveTabTo(item.tab, 0);
           }
           // 孤立タブ・グループへドロップ
           else if (targetItem.type & ORPHANED_GROUP_TYPE) {
@@ -634,9 +632,6 @@ PanoramaTreeView.prototype = {
             if (itemGroup)
               itemGroup.remove(tabItem);
 
-            if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && this.rows[aTargetIndex + 1])
-                this.gBrowser.moveTabTo(item.tab, this.rows[aTargetIndex + 1].tab._tPos);
-
             this.onTabMove({type: "TabToOrphaned", target: item.tab})
 
             if (itemGroup && itemGroup === this.GI._activeGroupItem)
@@ -646,19 +641,23 @@ PanoramaTreeView.prototype = {
           else if (item.tab.pinned) {
             this.gBrowser.unpinTab(item.tab);
             this.tabView.moveTabTo(item.tab, targetItem.group.id);
-            if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
-              this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
           }
           // 別グループへドロップ
           else if (targetItem.group !== item.tab._tabViewTabItem.parent) {
             this.tabView.moveTabTo(item.tab, targetItem.group.id);
-            if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER && targetItem.group._columns > 0)
-              this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
           }
-          // 同一グループの先頭へドロップ
-          else if (aOrientation == Ci.nsITreeView.DROP_AFTER) {
-            this.gBrowser.moveTabTo(item.tab, targetItem.group.getChild(0).tab._tPos);
+
+          let children = targetItem.children;
+          if (children.length > 0) {
+            let tabIndex = children.length - 1;
+            if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER)
+              tabIndex = 0;
+
+            let targetTab = children[tabIndex].tab;
+            this.gBrowser.moveTabTo(item.tab,
+              getMoveTabPosition(targetTab._tPos, item.tab._tPos, Ci.nsITreeView.DROP_AFTER));
           }
+
         }
         else if (targetItem.type & TAB_ITEM_TYPE) {
           let tab = item.tab;
@@ -675,16 +674,19 @@ PanoramaTreeView.prototype = {
             if (!tab.pinned)
               this.gBrowser.pinTab(tab);
           }
-          else {
-            // move to OrphanedGroup
-            if (sourceGroup) {
-              sourceGroup.remove(tab._tabViewTabItem);
-              if (sourceGroup === this.GI._activeGroupItem)
-                this.gBrowser.hideTab(tab);
-            }
+          // move to OrphanedGroup
+          else if (sourceGroup) {
+            sourceGroup.remove(tab._tabViewTabItem);
+            this.onTabMove({type: "TabToOrphaned", target: tab});
+            if (sourceGroup === this.GI._activeGroupItem)
+              this.gBrowser.hideTab(tab);
           }
-          this.gBrowser.moveTabTo(tab, targetItem.tab._tPos + aOrientation);
+
+          this.gBrowser.moveTabTo(tab,
+            getMoveTabPosition(targetItem.tab._tPos, tab._tPos, aOrientation));
         }
+        targetItem = item;
+        aOrientation = Ci.nsITreeView.DROP_AFTER;
       }
     }
     this.selection.clearSelection();
@@ -892,5 +894,12 @@ function blob (aString, aOption) {
     }
   }
   return new RegExp(regStr, aOption);
+}
+
+function getMoveTabPosition (aTargetTabPosition, aSourceTabPosition, aOrientation) {
+  if (aSourceTabPosition < aTargetTabPosition)
+    return aTargetTabPosition + (aOrientation == Ci.nsITreeView.DROP_AFTER ? 0 : -1);
+  else
+    return aTargetTabPosition + (aOrientation == Ci.nsITreeView.DROP_BEFORE ? 0 : 1);
 }
 

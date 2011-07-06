@@ -15,7 +15,7 @@
     <command id="panoCmdClose" oncommand="gPanoramaTree.contextMenu.closeItem();"/>
   </commandset>
   <keyset id="panoKeySet">
-    <key keycode="VK_RETURN" oncommand="gPanoramaTree.select()"/>
+    <key keycode="VK_RETURN" oncommand="gPanoramaTree.selectTab()"/>
     <key keycode="VK_F2" oncommand="gPanoramaTree.editGroupName()"/>
   </keyset>
   <popupset id="panoSidebarPopupSet">

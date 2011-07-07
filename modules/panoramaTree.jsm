@@ -347,8 +347,13 @@ PanoramaTreeView.prototype = {
           return row;
 
         // 存在しないので作成
-        row = this.lastGroupRow;
-        this.rows.splice(row, 0, new GroupItem(group));
+        if (existOrphans) {
+          // 孤立タブのグループが存在するなら、その手前に新規グループを追加
+          row = this.lastGroupRow;
+          this.rows.splice(row, 0, new GroupItem(group));
+        } else {
+          row = this.rows.push(new GroupItem(group)) - 1;
+        }
         this.treeBox.rowCountChanged(row, 1);
         return row;
       }

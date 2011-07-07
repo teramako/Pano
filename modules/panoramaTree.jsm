@@ -736,7 +736,7 @@ PanoramaTreeView.prototype = {
 
       if (item.tab.pinned)
         aProperties.AppendElement(this.getAtom("apptab"));
-      else if (!item.tab._tabViewTabItem)
+      else if (!item.tab._tabViewTabItem.parent)
         aProperties.AppendElement(this.getAtom("orphaned"));
     }
   },

@@ -32,6 +32,8 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
  */
 Cu.import("resource://gre/modules/Services.jsm");
 
+// since 8.0a1, OrphanedTabs don't exist
+const existOrphans = Services.vc.compare("8.0a1", Services.appinfo.version) > 0;
 
 XPCOMUtils.defineLazyServiceGetter(this, "atomService", "@mozilla.org/atom-service;1", "nsIAtomService");
 XPCOMUtils.defineLazyServiceGetter(this, "SessionStore", "@mozilla.org/browser/sessionstore;1", "nsISessionStore");
@@ -297,10 +299,12 @@ PanoramaTreeView.prototype = {
         rows.push.apply(rows, item.children);
     }
 
-    item = new OrphanedGroup(this.tabView._window, aSession.orphans);
-    rows.push(item);
-    if (item.isOpen)
-      rows.push.apply(rows, item.children);
+    if (existOrphans) {
+      item = new OrphanedGroup(this.tabView._window, aSession.orphans);
+      rows.push(item);
+      if (item.isOpen)
+        rows.push.apply(rows, item.children);
+    }
 
     return this.rows = rows;
   },
@@ -343,12 +347,20 @@ PanoramaTreeView.prototype = {
           return row;
 
         // 存在しないので作成
-        row = this.orphanedGroupRow;
+        row = this.lastGroupRow;
         this.rows.splice(row, 0, new GroupItem(group));
         this.treeBox.rowCountChanged(row, 1);
         return row;
       }
-      return this.orphanedGroupRow;
+      if (existOrphans)
+        return this.orphanedGroupRow;
+    }
+    return -1;
+  },
+  get lastGroupRow () {
+    for (let i = this.rowCount -1; i > 0; i--) {
+      if (this.rows[i].type & TAB_GROUP_TYPE)
+        return i;
     }
   },
   get orphanedGroupRow () {

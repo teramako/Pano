@@ -1,6 +1,12 @@
 Changelog
 =========
 
+##version 0.6 (2011-07-07)
+
+ * 主にバグ修正 [#7](https://github.com/teramako/Pano/issues/7) [#8](https://github.com/teramako/Pano/issues/8)
+   [#9](https://github.com/teramako/Pano/issues/9) etc...
+ * [Firefox 8.0a1 対応](https://github.com/teramako/Pano/issues?state=closed&page=1&milestone=3)
+
 ##version 0.5
 
  * サイドバーとパネルタブにフィルタ機能(検索ボックス)を追加

@@ -582,7 +582,7 @@ PanoramaTreeView.prototype = {
     if (sourceIndex == -1 ||
         sourceIndex == aTargetIndex ||
         sourceIndex == (aTargetIndex + aOrientation) ||
-        aTargetIndex + aOrientation == 0)
+        aTargetIndex + aOrientation < 0)
       return false;
 
     if (this.rows[sourceIndex].type === TAB_GROUP_TYPE)

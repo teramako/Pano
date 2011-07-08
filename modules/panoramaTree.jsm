@@ -401,6 +401,19 @@ PanoramaTreeView.prototype = {
       this.treeBox.element.startEditing(index, this.treeBox.columns[0]);
     }
   },
+  getSelectedItems: function PTV_getSelectedItems () {
+    var sel = this.selection,
+        rangeCount = sel.getRangeCount(),
+        items = [];
+    for (let i = 0; i < rangeCount; ++i) {
+      let start = {}, end = {};
+      sel.getRangeAt(i, start, end);
+      for (let k = start.value; k <= end.value; ++k) {
+        items.push(this.rows[k]);
+      }
+    }
+    return items;
+  },
   // ==========================================================================
   // Handlers
   // ==========================================================================
@@ -827,25 +840,11 @@ PanoramaTreeView.prototype = {
   performActionOnCell: function PTV_performActionOnCell (aAction, aRow, aColumn) {},
 };
 
-function getSelectedItems (view) {
-  var sel = view.selection,
-      rangeCount = sel.getRangeCount(),
-      items = [];
-  for (let i = 0; i < rangeCount; ++i) {
-    let start = {}, end = {};
-    sel.getRangeAt(i, start, end);
-    for (let k = start.value; k <= end.value; ++k) {
-      items.push(view.rows[k]);
-    }
-  }
-  return items;
-}
-
 function onDragStart (aEvent, view) {
   if (view.filter)
     return;
 
-  var items = getSelectedItems(view);
+  var items = view.getSelectedItems();
   if (items.length == 0)
     return;
 

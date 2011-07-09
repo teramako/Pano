@@ -112,13 +112,20 @@ var contextMenu = {
       return;
 
     var isTabItem = (item.type & TAB_ITEM_TYPE) > 0;
-    if (isTabItem)
-      gBrowser.removeTab(item.tab);
-    else if (item.type == TAB_GROUP_TYPE) {
-      item.group._children.forEach(function(tabItem) {
-        gBrowser.removeTab(tabItem.tab);
+    var selectedItems = view.getSelectedItems();
+    if (isTabItem) {
+      selectedItems.forEach(function (item) {
+        if (item.type & TAB_ITEM_TYPE)
+          gBrowser.removeTab(item.tab);
       });
-      item.group.close({ immediately: true });
+    } else if (item.type == TAB_GROUP_TYPE) {
+      selectedItems.forEach(function (item) {
+        if (item.type == TAB_GROUP_TYPE) {
+          let childTabs = item.group._children.map(function(tabItem) tabItem.tab);
+          childTabs.forEach(function(tab) gBrowser.removeTab(tab));
+          item.group.close({ immediately: true });
+        }
+      });
     }
   },
 };

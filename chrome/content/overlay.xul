@@ -28,6 +28,7 @@
          onpopupshown="gPano.pane.onPopupShown();"
          onpopuphiding="gPano.pane.onPopupHiding();">
     <commandset id="panoCommandSet">
+      <command id="panoCmdNewTab" oncommand="gPano.pane.contextMenu.newTab();"/>
       <command id="panoCmdNewGroup" oncommand="gPano.pane.newGroup();"/>
       <command id="panoCmdClose" oncommand="gPano.pane.contextMenu.closeItem();"/>
     </commandset>

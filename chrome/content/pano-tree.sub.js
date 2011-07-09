@@ -77,6 +77,11 @@ var tooltip = {
 };
 
 var contextMenu = {
+  get newTabElm () {
+    var elm = document.getElementById("panoContextMenu_newTab");
+    delete this.newTabElm
+    return this.newTabElm = elm;
+  },
   get groupCloseElm () {
     var elm = document.getElementById("panoContextMenu_groupClose");
     delete this.groupCloseElm;
@@ -95,6 +100,7 @@ var contextMenu = {
       let isNormalGroup = item.type == TAB_GROUP_TYPE;
       this.showItem("groupCloseElm",isNormalGroup);
       this.showItem("tabCloseElm", isTabItem);
+      this.showItem("newTabElm", isNormalGroup && !item.hasChild);
     } else {
       this.showItem("groupCloseElm", false);
       this.showItem("tabCloseElm", false);
@@ -105,6 +111,12 @@ var contextMenu = {
   },
   onPopupHiding: function onContextMenuHidden () {
     this.currentItem = null;
+  },
+  newTab: function newTabFromContextMenu () {
+    var item = this.currentItem;
+    if (item && item.type == TAB_GROUP_TYPE) {
+      item.group.newTab();
+    }
   },
   closeItem: function PT_closeItemFromContextMenu () {
     var item = this.currentItem;

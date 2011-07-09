@@ -11,6 +11,7 @@
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/javascript" src="chrome://pano/content/sidebar.js"/>
   <commandset id="panoCommandSet">
+    <command id="panoCmdNewTab" oncommand="gPanoramaTree.contextMenu.newTab();"/>
     <command id="panoCmdNewGroup" oncommand="gPanoramaTree.newGroup();"/>
     <command id="panoCmdClose" oncommand="gPanoramaTree.contextMenu.closeItem();"/>
   </commandset>

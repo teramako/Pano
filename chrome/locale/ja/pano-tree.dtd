@@ -1,3 +1,4 @@
+<!ENTITY menu.newTab "新しいタブを開く">
 <!ENTITY menu.newGroup "新しいタブグループ">
 <!ENTITY menu.closeGroup "選択したタブグループを閉じる">
 <!ENTITY menu.closeTab "選択したタブを閉じる">

@@ -11,6 +11,10 @@
 </tooltip>
 
 <menupopup id="panoContextMenu">
+  <menuitem id="panoContextMenu_newTab"
+            label="&menu.newTab;"
+            command="panoCmdNewTab"
+            insertbefore="panoContextMenuSep"/>
   <menuitem id="panoContextMenu_newGroup"
             label="&menu.newGroup;" accesskey="N"
             command="panoCmdNewGroup"

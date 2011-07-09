@@ -484,22 +484,24 @@ PanoramaTreeView.prototype = {
     if (row != -1) {
       this.rows.splice(row, 1);
       this.treeBox.rowCountChanged(row, -1);
-    }
 
-    // 削除したタブ側にアクティブグループが移ってしまうのでリセット
-    // その際、アプリタブからはグループを取れないので表示しているタブから
-    // 普通のタブを取り出す
-    var groupedTab = this.gBrowser.selectedTab;
-    if (groupedTab.pinned) {
-      let visibleTabs = this.gBrowser.visibleTabs;
-      for (let i = 0, len = visibleTabs.length; i < len; ++i) {
-        if (!visibleTabs[i].pinned) {
-          groupedTab = visibleTabs[i];
-          break;
+      // 削除したタブ側にアクティブグループが移ってしまうのでリセット
+      // その際、アプリタブからはグループを取れないので表示しているタブから
+      // 普通のタブを取り出す
+      let groupedTab = this.gBrowser.selectedTab;
+      if (groupedTab.pinned) {
+        let visibleTabs = this.gBrowser.visibleTabs;
+        for (let i = 0, len = visibleTabs.length; i < len; ++i) {
+          if (!visibleTabs[i].pinned) {
+            groupedTab = visibleTabs[i];
+            break;
+          }
         }
       }
+      if (groupedTab && groupedTab._tabViewTabItem)
+        this.GI.setActiveGroupItem(groupedTab._tabViewTabItem.parent);
     }
-    this.GI.setActiveGroupItem(groupedTab._tabViewTabItem.parent);
+
   },
   onTabMove: function PTV_onTabMove (aEvent) {
     if (this.filter)

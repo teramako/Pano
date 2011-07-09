@@ -4,7 +4,7 @@
 
 <?xul-overlay href="chrome://pano/content/pano-tree-overlay.xul"?>
 
-<!DOCTYPE window SYSTEM "chrome://pano/locale/sidebar.dtd">
+<!DOCTYPE window SYSTEM "chrome://pano/locale/pano-tree.dtd">
 <window id="panoramaSidebarWindow"
         onload="gPanoramaTree.init();"
         onunload="gPanoramaTree.destroy();"

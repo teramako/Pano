@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE overlay SYSTEM "chrome://pano/locale/sidebar.dtd">
+<!DOCTYPE overlay SYSTEM "chrome://pano/locale/pano-tree.dtd">
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <tooltip id="panoTreeTabTooltip" noautohide="true">

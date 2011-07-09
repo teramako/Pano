@@ -38,7 +38,7 @@ const existOrphans = Services.vc.compare("8.0a1", Services.appinfo.version) > 0;
 XPCOMUtils.defineLazyServiceGetter(this, "atomService", "@mozilla.org/atom-service;1", "nsIAtomService");
 XPCOMUtils.defineLazyServiceGetter(this, "SessionStore", "@mozilla.org/browser/sessionstore;1", "nsISessionStore");
 XPCOMUtils.defineLazyGetter(this, "bundle", function () {
-  return Services.strings.createBundle("chrome://pano/locale/sidebar.properties");
+  return Services.strings.createBundle("chrome://pano/locale/pano-tree.properties");
 });
 
 var atomCache = {};

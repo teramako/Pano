@@ -100,7 +100,7 @@ var contextMenu = {
       let isNormalGroup = item.type == TAB_GROUP_TYPE;
       this.showItem("groupCloseElm",isNormalGroup);
       this.showItem("tabCloseElm", isTabItem);
-      this.showItem("newTabElm", isNormalGroup && !item.hasChild);
+      this.showItem("newTabElm", isNormalGroup);
     } else {
       this.showItem("groupCloseElm", false);
       this.showItem("tabCloseElm", false);

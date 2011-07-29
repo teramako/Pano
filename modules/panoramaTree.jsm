@@ -32,8 +32,8 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
  */
 Cu.import("resource://gre/modules/Services.jsm");
 
-// since 8.0a1, OrphanedTabs don't exist
-const existOrphans = Services.vc.compare("8.0a1", Services.appinfo.version) > 0;
+// since 7.0a1, OrphanedTabs don't exist
+const existOrphans = Services.vc.compare("7.0a1", Services.appinfo.version) > 0;
 
 XPCOMUtils.defineLazyServiceGetter(this, "atomService", "@mozilla.org/atom-service;1", "nsIAtomService");
 XPCOMUtils.defineLazyServiceGetter(this, "SessionStore", "@mozilla.org/browser/sessionstore;1", "nsISessionStore");

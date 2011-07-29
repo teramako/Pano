@@ -6,7 +6,7 @@ function onDragStart (aEvent) {
 
 function selectTab (aEvent) {
   var index = view.selection.currentIndex;
-  if (index == -1)
+  if (index === -1)
     return;
 
   var item = view.rows[index];
@@ -97,7 +97,7 @@ var contextMenu = {
     var item = this.currentItem = view.getItemFromEvent(aEvent);
     if (item) {
       let isTabItem = (item.type & TAB_ITEM_TYPE) > 0;
-      let isNormalGroup = item.type == TAB_GROUP_TYPE;
+      let isNormalGroup = item.type === TAB_GROUP_TYPE;
       this.showItem("groupCloseElm",isNormalGroup);
       this.showItem("tabCloseElm", isTabItem);
       this.showItem("newTabElm", isNormalGroup);
@@ -114,7 +114,7 @@ var contextMenu = {
   },
   newTab: function newTabFromContextMenu () {
     var item = this.currentItem;
-    if (item && item.type == TAB_GROUP_TYPE) {
+    if (item && item.type === TAB_GROUP_TYPE) {
       item.group.newTab();
     }
   },
@@ -130,9 +130,9 @@ var contextMenu = {
         if (item.type & TAB_ITEM_TYPE)
           gBrowser.removeTab(item.tab);
       });
-    } else if (item.type == TAB_GROUP_TYPE) {
+    } else if (item.type === TAB_GROUP_TYPE) {
       selectedItems.forEach(function (item) {
-        if (item.type == TAB_GROUP_TYPE) {
+        if (item.type === TAB_GROUP_TYPE) {
           let childTabs = item.group._children.map(function(tabItem) tabItem.tab);
           childTabs.forEach(function(tab) gBrowser.removeTab(tab));
           item.group.close({ immediately: true });

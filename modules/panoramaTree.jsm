@@ -192,7 +192,7 @@ PanoramaTreeView.prototype = {
     }
     this.build();
     var originalMoveTabToGroupItem = this.GI.moveTabToGroupItem;
-    if (originalMoveTabToGroupItem.name != "Pano_moveTabToGroupItem") {
+    if (originalMoveTabToGroupItem.name !== "Pano_moveTabToGroupItem") {
       this.GI.originalMoveTabToGroupItem = originalMoveTabToGroupItem;
       this.GI.moveTabToGroupItem = Pano_moveTabToGroupItem;
     }
@@ -389,7 +389,7 @@ PanoramaTreeView.prototype = {
   getItemFromEvent: function PTV_getItemFromEvent (aEvent) {
     var row = {}, col = {}, elt = {};
     this.treeBox.getCellAt(aEvent.clientX, aEvent.clientY, row, col, elt);
-    if (row.value != -1)
+    if (row.value !== -1)
       return this.rows[row.value];
 
     return null;
@@ -481,7 +481,7 @@ PanoramaTreeView.prototype = {
   onTabClose: function PTV_onTabClose (aEvent) {
     var tab = aEvent.target;
     var row = this.getRowForTab(tab);
-    if (row != -1) {
+    if (row !== -1) {
       this.rows.splice(row, 1);
       this.treeBox.rowCountChanged(row, -1);
 
@@ -535,7 +535,7 @@ PanoramaTreeView.prototype = {
     }
 
     // row が -1 でないということは、移動元のグループは開いている
-    if (row != -1) {
+    if (row !== -1) {
       let item = this.rows.splice(row, 1)[0];
       let groupRow = this.getGroupRowForTab(tab);
 
@@ -589,7 +589,7 @@ PanoramaTreeView.prototype = {
     return "";
   },
   getCellValue: function PTV_getCellValue (aRow, aColumn) {
-    if (aColumn.element.getAttribute("anonid") == "title") {
+    if (aColumn.element.getAttribute("anonid") === "title") {
       let item = this.rows[aRow];
       return item.id;
     }
@@ -599,7 +599,7 @@ PanoramaTreeView.prototype = {
     return this.filter ? 0 : this.rows[aRow].level;
   },
   getImageSrc: function PTV_getImageSrc (aRow, aColumn) {
-    if (aColumn.index == 0 && this.rows[aRow].level > 0) {
+    if (aColumn.index === 0 && this.rows[aRow].level > 0) {
       return this.rows[aRow].tab.image;
     }
     return "";
@@ -609,9 +609,9 @@ PanoramaTreeView.prototype = {
       return false;
 
     var sourceIndex = this.getSourceIndexFromDrag(aDataTransfer, 0);
-    if (sourceIndex == -1 ||
-        sourceIndex == aTargetIndex ||
-        sourceIndex == (aTargetIndex + aOrientation) ||
+    if (sourceIndex === -1 ||
+        sourceIndex === aTargetIndex ||
+        sourceIndex === (aTargetIndex + aOrientation) ||
         aTargetIndex + aOrientation < 0)
       return false;
 
@@ -621,7 +621,7 @@ PanoramaTreeView.prototype = {
     return (this.rows[sourceIndex].type & TAB_ITEM_TYPE) > 0;
   },
   drop: function PTV_drop (aTargetIndex, aOrientation, aDataTransfer) {
-    if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation == Ci.nsITreeView.DROP_BEFORE) {
+    if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation === Ci.nsITreeView.DROP_BEFORE) {
       aTargetIndex--;
       aOrientation = Ci.nsITreeView.DROP_AFTER;
     }
@@ -698,7 +698,7 @@ PanoramaTreeView.prototype = {
           let children = targetItem.children;
           if (children.length > 0) {
             let tabIndex = children.length - 1;
-            if (targetItem.isOpen && aOrientation == Ci.nsITreeView.DROP_AFTER)
+            if (targetItem.isOpen && aOrientation === Ci.nsITreeView.DROP_AFTER)
               tabIndex = 0;
 
             let targetTab = children[tabIndex].tab;
@@ -715,7 +715,7 @@ PanoramaTreeView.prototype = {
             if (tab.pinned)
               this.gBrowser.unpinTab(tab);
 
-            if (sourceGroup != targetGroup)
+            if (sourceGroup !== targetGroup)
               this.tabView.moveTabTo(tab, targetGroup.id);
           }
           else if (targetItem.tab.pinned) {
@@ -743,11 +743,11 @@ PanoramaTreeView.prototype = {
   selection: null,
   getRowProperties: function PTV_getRowProperties (aRow, aProperties) {},
   getCellProperties: function PTV_getCellProperties (aRow, aColumn, aProperties) {
-    if (aColumn.element.getAttribute("anonid") != "title")
+    if (aColumn.element.getAttribute("anonid") !== "title")
       return;
 
     var item = this.rows[aRow];
-    if (item.level == 0) {
+    if (item.level === 0) {
       aProperties.AppendElement(this.getAtom("group"));
 
       if (item.group && item.group === this.GI._activeGroupItem)
@@ -787,16 +787,16 @@ PanoramaTreeView.prototype = {
     return false;
   },
   getParentIndex: function PTV_getParentIndex (aRow) {
-    if (this.rows[aRow].level != 1)
+    if (this.rows[aRow].level !== 1)
       return -1;
     for ( ; aRow > 0; aRow--) {
-      if (this.rows[aRow].level == 0)
+      if (this.rows[aRow].level === 0)
         return aRow;
     }
     return -1;
   },
   hasNextSibling: function PTV_hasNextSibling (aRow, aAfterRow) {
-    return (this.rows[aAfterRow] && this.rows[aAfterRow].level == this.rows[aRow].level);
+    return (this.rows[aAfterRow] && this.rows[aAfterRow].level === this.rows[aRow].level);
   },
   getProgressMode: function PTV_getProgressMode (aRow, aColumn) {},
   toggleOpenState: function PTV_toggleOpenState (aRow) {
@@ -805,7 +805,7 @@ PanoramaTreeView.prototype = {
     if (groupItem.isOpen) {
       groupItem.isOpen = false;
       let i = 0;
-      while (this.rows[start + i] && this.rows[start + i].level == 1)
+      while (this.rows[start + i] && this.rows[start + i].level === 1)
         i++;
 
       if (i > 0) {
@@ -825,7 +825,7 @@ PanoramaTreeView.prototype = {
   selectionChanged: function PTV_selectionChanged () {},
   cycleCell: function PTV_cycleCell (aRow, aColumn) {},
   isEditable: function PTV_isEditable (aRow, aColumn) {
-    if (aColumn.element.getAttribute("anonid") != "title")
+    if (aColumn.element.getAttribute("anonid") !== "title")
       return false;
 
     return (this.rows[aRow] instanceof GroupItem)
@@ -847,12 +847,12 @@ function onDragStart (aEvent, view) {
     return;
 
   var items = view.getSelectedItems();
-  if (items.length == 0)
+  if (items.length === 0)
     return;
 
   var dt = aEvent.dataTransfer;
 
-  if (items.length == 1 && (items[0].type === TAB_GROUP_TYPE)) {
+  if (items.length === 1 && (items[0].type === TAB_GROUP_TYPE)) {
     dt.mozSetDataAt(GROUP_DROP_TYPE, items[0].group, 0);
   }
   else {
@@ -878,7 +878,7 @@ function onDragStart (aEvent, view) {
       // ドキュメントがロードされていない場合、
       // innerWidth が 0 で、scale値がInfinityとなる
       // canvas に書き込むのはスキップ
-      if (snippetWidth == 0)
+      if (snippetWidth === 0)
         continue;
 
       let scale = cWidth / snippetWidth;
@@ -933,8 +933,8 @@ function blob (aString, aOption) {
 
 function getMoveTabPosition (aTargetTabPosition, aSourceTabPosition, aOrientation) {
   if (aSourceTabPosition < aTargetTabPosition)
-    return aTargetTabPosition + (aOrientation == Ci.nsITreeView.DROP_AFTER ? 0 : -1);
+    return aTargetTabPosition + (aOrientation === Ci.nsITreeView.DROP_AFTER ? 0 : -1);
   else
-    return aTargetTabPosition + (aOrientation == Ci.nsITreeView.DROP_BEFORE ? 0 : 1);
+    return aTargetTabPosition + (aOrientation === Ci.nsITreeView.DROP_BEFORE ? 0 : 1);
 }
 

@@ -31,7 +31,7 @@ function createMenuItem (aTabItem) {
 function selectTab (aEvent) {
   aEvent.stopPropagation();
   var menuitem = aEvent.target;
-  if (menuitem.localName == "menuitem" && menuitem.hasAttribute("tPos")) {
+  if (menuitem.localName === "menuitem" && menuitem.hasAttribute("tPos")) {
     let tPos = parseInt(menuitem.getAttribute("tPos"), 10);
     gBrowser.mTabContainer.selectedIndex = tPos;
   }
@@ -40,7 +40,7 @@ function selectTab (aEvent) {
 function selectGroup (aEvent) {
   aEvent.stopPropagation();
   var menuitem = aEvent.target;
-  if (menuitem.localName == "menuitem" && menuitem.hasAttribute("value")) {
+  if (menuitem.localName === "menuitem" && menuitem.hasAttribute("value")) {
     let gID = menuitem.getAttribute("value");
     let group = TabView._window.GroupItems.groupItem(gID);
     if (group) {
@@ -58,7 +58,7 @@ function onPopupShowing (aEvent) {
     return;
 
   aEvent.stopPropagation();
-  if (popup.id == "pano-alltabs-group-popup") {
+  if (popup.id === "pano-alltabs-group-popup") {
     TabView._initFrame(function () {
       var GI = TabView._window.GroupItems;
       var currentGroup = GI.getActiveGroupItem();
@@ -72,7 +72,7 @@ function onPopupShowing (aEvent) {
       }
     });
   }
-  else if (popup.id == "pano-toolbarbutton-popup") {
+  else if (popup.id === "pano-toolbarbutton-popup") {
     TabView._initFrame(function () {
       var GI = TabView._window.GroupItems;
       var currentGroup = GI.getActiveGroupItem();

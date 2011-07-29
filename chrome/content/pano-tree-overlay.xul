@@ -13,6 +13,7 @@
 <menupopup id="panoContextMenu">
   <menuitem id="panoContextMenu_newTab"
             label="&menu.newTab;"
+            accesskey="T"
             command="panoCmdNewTab"
             insertbefore="panoContextMenuSep"/>
   <menuitem id="panoContextMenu_newGroup"

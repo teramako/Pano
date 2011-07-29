@@ -17,15 +17,18 @@
             command="panoCmdNewTab"
             insertbefore="panoContextMenuSep"/>
   <menuitem id="panoContextMenu_newGroup"
-            label="&menu.newGroup;" accesskey="N"
+            label="&menu.newGroup;"
+            accesskey="N"
             command="panoCmdNewGroup"
             insertbefore="panoContextMenuSep"/>
   <menuitem id="panoContextMenu_groupClose"
-            label="&menu.closeGroup;" accesskey="C"
+            label="&menu.closeGroup;"
+            accesskey="C"
             command="panoCmdClose"
             insertbefore="panoContextMenuSep"/>
   <menuitem id="panoContextMenu_tabClose"
-            label="&menu.closeTab;" accesskey="C"
+            label="&menu.closeTab;"
+            accesskey="C"
             command="panoCmdClose"
             insertbefore="panoContextMenuSep"/>
 </menupopup>

@@ -70,7 +70,6 @@
         keepme="true"
         insertbefore="alltabs-popup-separator">
     <menupopup id="pano-alltabs-group-popup"
-               onpopupshowing="gPano.tabGroups.onPopupShowing(event);"
                onpopuphidden="gPano.tabGroups.onPopupHidden(event);"/>
   </menu>
 </menupopup>

@@ -1,4 +1,3 @@
-
 function createElement (aTagName, aAttributes) {
   var element = document.createElement(aTagName);
   for (let [name, value] in Iterator(aAttributes)) {
@@ -54,8 +53,11 @@ function selectGroup (aEvent) {
 }
 
 function onPopupShowing (aEvent) {
-  aEvent.stopPropagation();
   var popup = aEvent.target;
+  if (popup.id === "alltabs-popup")
+    return;
+
+  aEvent.stopPropagation();
   if (popup.id == "pano-alltabs-group-popup") {
     TabView._initFrame(function () {
       var GI = TabView._window.GroupItems;
@@ -84,7 +86,7 @@ function onPopupShowing (aEvent) {
       }
     });
   }
-  else {
+  else if (popup.parentNode.parentNode.id === "pano-alltabs-group-popup") {
     let groupId = popup.getAttribute("value");
     TabView._initFrame(function () {
       var group = TabView._window.GroupItems.groupItem(groupId);

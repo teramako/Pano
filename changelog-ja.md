@@ -1,11 +1,13 @@
 Changelog
 =========
 
-##version 0.7
+##version 0.7 (2011-07-29)
 
  * バグ修正
    * [#13: Can't drop tabs to the AppTabsGroup](https://github.com/teramako/Pano/issues/13)
    * [#15: 非アクティブグループのタブを閉じた後の不整合](https://github.com/teramako/Pano/issues/15)
+   * [#17: Auroraで動作しなかった不具合](https://github.com/teramako/Pano/issues/17)
+   * [#18: 「他のパソコンで開いていたタブ」項目が増殖する](https://github.com/teramako/Pano/issues/18)
  * コンテキストメニュー
    * [#14: "Close all selected" in the context menu](https://github.com/teramako/Pano/issues/14)
    * [#16: 「新しいタブを開く」メニューの追加](https://github.com/teramako/Pano/issues/16)

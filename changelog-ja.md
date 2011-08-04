@@ -3,6 +3,12 @@ Changelog
 
 ##version 0.8
 
+ * [#19: タブバーを隠す機能を追加](https://github.com/teramako/Pano/issues/19)
+   * サイドバーが開いているときのみ
+   * サイドバー下部のチェックボックスから設定可能
+ * [#21: ダブルクリックではなく1クリックでタブにスイッチ](https://github.com/teramako/Pano/issues/21)
+   * about:config の `extensions.pano.swichTabBySingleClick` を `true` に設定すると可能
+
 ##version 0.7 (2011-07-29)
 
  * バグ修正

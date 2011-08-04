@@ -46,6 +46,7 @@
   <hbox>
     <checkbox id="hideTabbarCheck"
               label="&hidetabbar.label;"
+              tooltiptext="&hidetabbar.tooltip;"
               oncommand="gPanoramaTree.tabbar.toggleHide();"/>
   </hbox>
 </window>

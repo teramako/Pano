@@ -42,4 +42,10 @@
     <treechildren id="panoTabGroupTreeChildren"
                   ondragstart="gPanoramaTree.onDragStart(event);"/>
   </tree>
+  <hbox>
+    <checkbox id="hideTabbarCheck"
+              label="&hidetabbar.label;"
+              tooltiptext="&hidetabbar.tooltip;"
+              oncommand="gPanoramaTree.tabbar.toggleHide();"/>
+  </hbox>
 </window>

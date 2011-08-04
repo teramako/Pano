@@ -4,4 +4,5 @@
 <!ENTITY menu.closeTab "Close the selected tab(s)">
 <!ENTITY menu.closeSidebar "Close the sidebar">
 <!ENTITY search.label "Filter">
+<!ENTITY hidetabbar.label "Hide Tabbar">
 

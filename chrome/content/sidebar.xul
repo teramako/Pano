@@ -43,4 +43,9 @@
                   ondblclick="gPanoramaTree.selectTab(event);"
                   ondragstart="gPanoramaTree.onDragStart(event);"/>
   </tree>
+  <hbox>
+    <checkbox id="hideTabbarCheck"
+              label="&hidetabbar.label;"
+              oncommand="gPanoramaTree.tabbar.toggleHide();"/>
+  </hbox>
 </window>

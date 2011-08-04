@@ -40,7 +40,6 @@
 
   <tree id="panoTabGroupTree">
     <treechildren id="panoTabGroupTreeChildren"
-                  ondblclick="gPanoramaTree.selectTab(event);"
                   ondragstart="gPanoramaTree.onDragStart(event);"/>
   </tree>
 </window>

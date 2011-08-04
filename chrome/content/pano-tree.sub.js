@@ -5,6 +5,9 @@ function onDragStart (aEvent) {
 }
 
 function selectTab (aEvent) {
+  if (aEvent.button !== 0 || aEvent.ctrlKey || aEvent.shiftKey || aEvent.metaKey || aEvent.altKey)
+    return;
+
   var index = view.selection.currentIndex;
   if (index === -1)
     return;
@@ -28,6 +31,23 @@ function selectTab (aEvent) {
     gBrowser.mTabContainer.selectedIndex = item.tab._tPos;
   }
 }
+
+const PREF_SWITCH_BY = "extensions.pano.swichTabBySingleClick";
+function toggleSwitchTabHandler () {
+  var type = Services.prefs.getBoolPref(PREF_SWITCH_BY) ?  "click" : "dblclick";
+  tree.removeEventListener("click", selectTab, false);
+  tree.removeEventListener("dblclick", selectTab, false);
+  tree.addEventListener(type, selectTab, false);
+}
+toggleSwitchTabHandler();
+
+function observe (aSubject, aTopic, aData) {
+  Services.console.logStringMessage(Array.slice(arguments));
+  if (aTopic === "nsPref:changed" && aData === PREF_SWITCH_BY) {
+    toggleSwitchTabHandler();
+  }
+}
+Services.prefs.addObserver(PREF_SWITCH_BY, this, false);
 
 function newGroup () {
   view.GI.newGroup().newTab();

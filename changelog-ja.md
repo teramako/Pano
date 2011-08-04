@@ -1,6 +1,8 @@
 Changelog
 =========
 
+##version 0.8
+
 ##version 0.7 (2011-07-29)
 
  * バグ修正

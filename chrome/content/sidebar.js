@@ -33,8 +33,8 @@ var gPanoramaTree = {
   destroy: function PT_destroy () {
     this.view.destroy();
     Services.prefs.removeObserver(this.PREF_SWITCH_BY, this);
-    if (this.tabbar.pref && this.tabbar.toolbar.collapsed) {
-      this.tabbar.toolbar.collapsed = false;
+    if (this.tabbar.pref) {
+      this.tabbar.toolbar.style.visibility = "visible";
     }
   },
   view: null,
@@ -68,7 +68,7 @@ var gPanoramaTree = {
     toggleHide: function () {
       var bool = this.checkBox.checked;
       this.pref = bool;
-      gWin.document.getElementById("TabsToolbar").collapsed = bool;
+      this.toolbar.style.visibility = bool ? "collapse" : "visible";
     },
   },
 };

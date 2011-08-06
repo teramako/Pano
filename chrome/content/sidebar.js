@@ -32,7 +32,7 @@ var gPanoramaTree = {
   },
   destroy: function PT_destroy () {
     this.view.destroy();
-    Serivces.prefs.removeObserver(this.PREF_SWITCH_BY, this);
+    Services.prefs.removeObserver(this.PREF_SWITCH_BY, this);
     if (this.tabbar.pref && this.tabbar.toolbar.collapsed) {
       this.tabbar.toolbar.collapsed = false;
     }

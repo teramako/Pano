@@ -30,6 +30,7 @@ function onPopupHiding () {
 }
 
 function toggleOpen () {
+  panel.popupBoxObject.setConsumeRollupEvent(Ci.nsIPopupBoxObject.ROLLUP_CONSUME);
   switch (panel.state) {
   case "open":
     panel.hidePopup();

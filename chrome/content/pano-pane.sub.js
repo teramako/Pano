@@ -23,10 +23,13 @@ function onPopupShown () {
   }
   if (keyset.hasAttribute("disabled"))
     keyset.removeAttribute("disabled");
+
+  window.addEventListener("tabviewshown", onTabViewShown, false);
 }
 
 function onPopupHiding () {
   keyset.setAttribute("disabled", "true");
+  window.removeEventListener("tabviewshown", onTabViewShown, false);
 }
 
 function toggleOpen () {
@@ -44,6 +47,11 @@ function toggleOpen () {
     break;
   }
 };
+
+function onTabViewShown () {
+  if (panel.state === "open")
+    panel.hidePopup();
+}
 
 window.addEventListener("unload", function () {
   window.removeEventListener("unload", arguments.callee, false);

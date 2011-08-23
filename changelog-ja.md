@@ -8,6 +8,7 @@ Changelog
    * サイドバー下部のチェックボックスから設定可能
  * [#21: ダブルクリックではなく1クリックでタブにスイッチ](https://github.com/teramako/Pano/issues/21)
    * about:config の `extensions.pano.swichTabBySingleClick` を `true` に設定すると可能
+ * BugFix: [#25: アクティブグループの最後のタブを閉じた時の挙動](https://github.com/teramako/Pano/issues/25)
 
 ##version 0.7 (2011-07-29)
 

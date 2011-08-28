@@ -3,13 +3,17 @@ Changelog
 
 ##version 0.8
 
+ * Firefox 9.0a1 をサポート対象に追加
  * [#19: タブバーを隠す機能を追加](https://github.com/teramako/Pano/issues/19)
    * サイドバーが開いているときのみ
    * サイドバー下部のチェックボックスから設定可能
  * [#21: ダブルクリックではなく1クリックでタブにスイッチ](https://github.com/teramako/Pano/issues/21)
    * about:config の `extensions.pano.swichTabBySingleClick` を `true` に設定すると可能
  * [#22: 中ボタンクリックでタブを閉じる機能](https://github.com/teramako/Pano/issues/22)
+ * BugFix: [#24: Panoパネル・ボタンによるトグル開閉](https://github.com/teramako/Pano/issues/24)
+   * Panoパネルのボタンをクリックした時、既に開いている時は閉じるように修正
  * BugFix: [#25: アクティブグループの最後のタブを閉じた時の挙動](https://github.com/teramako/Pano/issues/25)
+   * Panoramaのビューが開いたとき、Panoパネルが開いていたら閉じるように修正
 
 ##version 0.7 (2011-07-29)
 

@@ -1,7 +1,7 @@
 Changelog
 =========
 
-##version 0.8
+##version 0.8 (2011-08-28)
 
  * Firefox 9.0a1 をサポート対象に追加
  * [#19: タブバーを隠す機能を追加](https://github.com/teramako/Pano/issues/19)

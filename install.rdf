@@ -4,12 +4,14 @@
     <em:id>pano@teramako.github.com</em:id>
     <em:type>2</em:type>
     <em:name>Pano</em:name>
-    <em:version>0.8pre</em:version>
+    <em:version>0.8</em:version>
     <em:creator>teramako</em:creator>
     <em:description>Show TabGroup list</em:description>
 
     <em:homepageURL>https://github.com/teramako/Pano</em:homepageURL>
     <em:iconURL>chrome://pano/content/pano.svg</em:iconURL>
+
+    <em:contributor>Higmmer</em:contributor>
 
     <em:localized>
       <Description>

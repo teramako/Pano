@@ -32,6 +32,18 @@ function selectTab (aEvent) {
   }
 }
 
+function closeTab (aEvent) {
+  if (aEvent.button !== 1)
+    return;
+
+  var item = view.getItemFromEvent(aEvent);
+  if (!item || !(item.type & TAB_ITEM_TYPE)) {
+    return;
+  }
+  gBrowser.removeTab(item.tab, { animate: true, byMouse: true });
+}
+tree.addEventListener("click", closeTab, false);
+
 const PREF_SWITCH_BY = "extensions.pano.swichTabBySingleClick";
 function toggleSwitchTabHandler () {
   var type = Services.prefs.getBoolPref(PREF_SWITCH_BY) ?  "click" : "dblclick";

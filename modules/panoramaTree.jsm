@@ -31,6 +31,11 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
  * @name Services
  */
 Cu.import("resource://gre/modules/Services.jsm");
+/**
+ * @namespace
+ * @name PlacesUtils
+ */
+Cu.import("resource://gre/modules/PlacesUtils.jsm");
 
 // since 7.0a1, OrphanedTabs don't exist
 const existOrphans = Services.vc.compare("7.0a1", Services.appinfo.version) > 0;
@@ -414,6 +419,48 @@ PanoramaTreeView.prototype = {
     }
     return items;
   },
+  openTabs: function PTV_openTabs (aURLs, aGroupItem, aTabPos) {
+    var group;
+    if (!aGroupItem)
+      group = this.GI._activeGroupItem;
+    else if ("group" in aGroupItem)
+      group = aGroupItem.group;
+    else
+      group = this.GI.newGroup();
+
+    this.GI.setActiveGroupItem(group);
+    var tab = this.gBrowser.loadOneTab(null, { inBackground: false, skipAnimation: true });
+    if (aTabPos >=  0)
+      this.gBrowser.moveTabTo(tab, aTabPos);
+
+    this.gBrowser.loadTabs(aURLs, false, true);
+  },
+  getDropPosition: function PTV_getDropPosition (aTargetIndex, aOrientation) {
+    var targetItem = this.rows[aTargetIndex],
+        tPos = -1,
+        groupItem;
+
+    if (targetItem.type & TAB_ITEM_TYPE) {
+      if (!targetItem.tab.pinned)
+        tPos = targetItem.tab._tPos + (aOrientation == -1 ? 0 : 1);
+
+      let groupRow = this.getGroupRowForTab(targetItem.tab);
+      if (groupRow !== -1)
+        groupItem = this.rows[groupRow];
+      else {
+        Cu.reportError("Not found group row");
+        return [null, null];
+      }
+    } else {
+      groupItem = targetItem;
+      if (aOrientation === Ci.nsITreeView.DROP_AFTER && "group" in groupItem) {
+        let tabItem = groupItem.group._children[0];
+        if (tabItem)
+          tPos = tabItem.tab._tPos;
+      }
+    }
+    return [groupItem, tPos];
+  },
   // ==========================================================================
   // Handlers
   // ==========================================================================
@@ -608,6 +655,10 @@ PanoramaTreeView.prototype = {
     if (this.filter)
       return false;
 
+    let types = aDataTransfer.mozTypesAt(0);
+    if (types.contains(PlacesUtils.TYPE_X_MOZ_URL))
+      return aTargetIndex + aOrientation >= 0;
+
     var sourceIndex = this.getSourceIndexFromDrag(aDataTransfer, 0);
     if (sourceIndex === -1 ||
         sourceIndex === aTargetIndex ||
@@ -620,11 +671,74 @@ PanoramaTreeView.prototype = {
 
     return (this.rows[sourceIndex].type & TAB_ITEM_TYPE) > 0;
   },
+  dropPlaces: function PTV_dropPlaces (aTargetIndex, aOrientation, aDataTransfer) {
+    var itemCount = aDataTransfer.mozItemCount,
+        urls = [];
+
+    for (let i = 0; i < itemCount; ++i) {
+      let node,
+          data = aDataTransfer.mozGetDataAt(PlacesUtils.TYPE_X_MOZ_PLACE, i);
+      try {
+        node = PlacesUtils.unwrapNodes(data, PlacesUtils.TYPE_X_MOZ_PLACE)[0]
+      } catch (e) {
+        Cu.reportError(e);
+        return false;
+      }
+      if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER)
+        addUrlsFromContainer(node.children, urls);
+      else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE && !/^place:/.test(node.uri))
+        urls.push(node.uri);
+    }
+
+    if (urls.length === 0)
+      return;
+
+    var [groupItem, tPos] = this.getDropPosition(aTargetIndex, aOrientation);
+    this.openTabs(urls, groupItem, tPos);
+
+    function addUrlsFromContainer (children, urls) {
+      for (let i = 0; i < children.length; ++i) {
+        let node = children[i];
+        if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER) {
+          openContainer(node.children, urls);
+        } else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE && !/^place:/.test(node.uri)) {
+          urls.push(node.uri);
+        }
+      }
+    }
+  },
+  dropURL: function PTV_dropURL (aTargetIndex, aOrientation, aDataTransfer) {
+    var itemCount = aDataTransfer.mozItemCount,
+        urls = [];
+
+    for (let i = 0; i < itemCount; ++i) {
+      let data = aDataTransfer.mozGetDataAt(PlacesUtils.TYPE_X_MOZ_URL, i);
+      let [url, title]  = data.split("\n");
+      if (url)
+        urls.push(url);
+    }
+
+    if (urls.length === 0)
+      return;
+
+    var [groupItem, tPos] = this.getDropPosition(aTargetIndex, aOrientation);
+    this.openTabs(urls, groupItem, tPos);
+  },
   drop: function PTV_drop (aTargetIndex, aOrientation, aDataTransfer) {
     if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation === Ci.nsITreeView.DROP_BEFORE) {
       aTargetIndex--;
       aOrientation = Ci.nsITreeView.DROP_AFTER;
     }
+
+    var types = aDataTransfer.mozTypesAt(0);
+    if (types.contains(PlacesUtils.TYPE_X_MOZ_PLACE)) {
+      this.dropPlaces(aTargetIndex, aOrientation, aDataTransfer);
+      return;
+    } else if (types.contains(PlacesUtils.TYPE_X_MOZ_URL)) {
+      this.dropURL(aTargetIndex, aOrientation, aDataTransfer);
+      return;
+    }
+
     var targetItem = this.rows[aTargetIndex],
         activeGroupItem = this.GI._activeGroupItem;
 

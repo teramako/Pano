@@ -24,6 +24,7 @@
 </keyset>
 <popupset id="mainPopupSet">
   <panel id="pano-pane" type="arrow" position="bottomcenter topright" orient="vertical" side="top"
+         backdrag="true"
          onpopupshowing="gPano.pane.onPopupShowing();"
          onpopupshown="gPano.pane.onPopupShown();"
          onpopuphiding="gPano.pane.onPopupHiding();">

@@ -1,6 +1,8 @@
 Changelog
 =========
 
+##version 0.9
+
 ##version 0.8 (2011-08-28)
 
  * Firefox 9.0a1 をサポート対象に追加

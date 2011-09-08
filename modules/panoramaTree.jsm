@@ -636,9 +636,12 @@ PanoramaTreeView.prototype = {
     return "";
   },
   getCellValue: function PTV_getCellValue (aRow, aColumn) {
-    if (aColumn.element.getAttribute("anonid") === "title") {
-      let item = this.rows[aRow];
+    var item = this.rows[aRow];
+    switch (aColumn.element.getAttribute("anonid")) {
+    case "title":
       return item.id;
+    case "closebutton":
+      return true;
     }
     return "";
   },
@@ -855,11 +858,7 @@ PanoramaTreeView.prototype = {
     this.selection.clearSelection();
   },
   selection: null,
-  getRowProperties: function PTV_getRowProperties (aRow, aProperties) {},
-  getCellProperties: function PTV_getCellProperties (aRow, aColumn, aProperties) {
-    if (aColumn.element.getAttribute("anonid") !== "title")
-      return;
-
+  getRowProperties: function PTV_getRowProperties (aRow, aProperties) {
     var item = this.rows[aRow];
     if (item.level === 0) {
       aProperties.AppendElement(this.getAtom("group"));
@@ -884,7 +883,14 @@ PanoramaTreeView.prototype = {
         aProperties.AppendElement(this.getAtom("orphaned"));
     }
   },
-  getColumnProperties: function PTV_getColumnProperties (aRow, aProperties) {},
+  getCellProperties: function PTV_getCellProperties (aRow, aColumn, aProperties) {
+    var anonid = aColumn.element.getAttribute("anonid");
+    if (anonid === "closebutton") {
+      aProperties.AppendElement(this.getAtom("closebutton"));
+    }
+    this.getRowProperties(aRow, aProperties);
+  },
+  getColumnProperties: function PTV_getColumnProperties (aColumn, aProperties) {},
   isContainer: function PTV_isContainer (aRow) {
     return this.rows[aRow].level === 0;
   },
@@ -939,15 +945,21 @@ PanoramaTreeView.prototype = {
   selectionChanged: function PTV_selectionChanged () {},
   cycleCell: function PTV_cycleCell (aRow, aColumn) {},
   isEditable: function PTV_isEditable (aRow, aColumn) {
-    if (aColumn.element.getAttribute("anonid") !== "title")
-      return false;
+    if (aColumn.element.getAttribute("anonid") === "title")
+      return (this.rows[aRow] instanceof GroupItem)
 
-    return (this.rows[aRow] instanceof GroupItem)
+    return true;
   },
   isSelectable: function PTV_isSelectable (aRow, aColumn) {
     return false;
   },
-  setCellValue: function PTV_setCellValue (aRow, aColumn, aValue) {},
+  setCellValue: function PTV_setCellValue (aRow, aColumn, aValue) {
+    if (aColumn.element.getAttribute("anonid") === "closebutton" &&
+        aValue === "false" &&
+        (this.rows[aRow].type & TAB_ITEM_TYPE)) {
+      this.gBrowser.removeTab(this.rows[aRow].tab)
+    }
+  },
   setCellText: function PTV_setCellText (aRow, aColumn, aValue) {
     this.rows[aRow].group.setTitle(aValue);
   },

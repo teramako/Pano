@@ -5,24 +5,31 @@
   width: 16px;
   height: 16px;
 }
-.pano-tree treechildren::-moz-tree-image(item) {
+.pano-tree treechildren::-moz-tree-image(item, primary) {
   list-style-image: url("chrome://mozapps/skin/places/defaultFavicon.png");
 }
-.pano-tree treechildren::-moz-tree-image(group) {
+.pano-tree treechildren::-moz-tree-image(group, primary) {
   list-style-image: url("chrome://browser/skin/tabview/tabview.png");
   -moz-image-region: rect(1px, 35px, 16px, 19px);
 }
-.pano-tree treechildren::-moz-tree-image(group, AppTabs) {
+.pano-tree treechildren::-moz-tree-image(group, primary, AppTabs) {
   list-style-image: url("chrome://pano/skin/application_double.png");
   -moz-image-region: auto;
 }
-.pano-tree treechildren::-moz-tree-image(group, Orphaned) {
+.pano-tree treechildren::-moz-tree-image(group, primary, Orphaned) {
   list-style-image: url("chrome://pano/skin/bullet_black.png");
   -moz-image-region: auto;
 }
 .pano-tree treechildren::-moz-tree-cell-text(currentTab),
 .pano-tree treechildren::-moz-tree-cell-text(currentGroup) {
   font-weight: bold;
+}
+.pano-tree treechildren::-moz-tree-image(item, checked) {
+  list-style-image: url("chrome://global/skin/icons/close.png");
+  -moz-image-region: rect(0, 16px, 16px, 0);
+  width: 16px;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* tooltip */

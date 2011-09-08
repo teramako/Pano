@@ -2,6 +2,7 @@ Changelog
 =========
 
 ##version 0.9
+ * LessChrome HD と「タブバーを隠す」設定の互換性を向上
 
 ##version 0.8 (2011-08-28)
 

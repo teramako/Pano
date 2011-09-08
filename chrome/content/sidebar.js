@@ -69,6 +69,19 @@ var gPanoramaTree = {
       var bool = this.checkBox.checked;
       this.pref = bool;
       this.toolbar.style.visibility = bool ? "collapse" : "visible";
+      // Compatibility for LessChrome HD
+      if (this.toolbar.toolbox.style.height) {
+        var height = Array.reduce(this.toolbar.toolbox.children, function (total, elm) {
+          var h = elm.boxObject.height;
+          if (h !== 0) {
+            var s = window.getComputedStyle(elm, "");
+            if (s.opacity === "0")
+              h = 0;
+          }
+          return total + h;
+        }, 0);
+        this.toolbar.toolbox.style.height = height + "px";
+      }
     },
   },
 };

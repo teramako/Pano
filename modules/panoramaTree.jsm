@@ -641,7 +641,7 @@ PanoramaTreeView.prototype = {
     case "title":
       return item.id;
     case "closebutton":
-      return true;
+      return !(item.type & APPTAB_GROUP_TYPE);
     }
     return "";
   },
@@ -954,10 +954,21 @@ PanoramaTreeView.prototype = {
     return false;
   },
   setCellValue: function PTV_setCellValue (aRow, aColumn, aValue) {
-    if (aColumn.element.getAttribute("anonid") === "closebutton" &&
-        aValue === "false" &&
-        (this.rows[aRow].type & TAB_ITEM_TYPE)) {
-      this.gBrowser.removeTab(this.rows[aRow].tab)
+    if (aColumn.element.getAttribute("anonid") === "closebutton" && aValue === "false") {
+      var item = this.rows[aRow];
+      if (item.type & TAB_ITEM_TYPE) {
+        this.gBrowser.removeTab(item.tab);
+      } else if (item.type & TAB_GROUP_TYPE) {
+        if (item.type & APPTAB_GROUP_TYPE)
+          return;
+
+        item.children.forEach(function (tabItem) {
+          this.removeTab(tabItem.tab, { animate: false });
+        }, this.gBrowser)
+
+        if (item.group)
+          item.group.close({ immediately: true });
+      }
     }
   },
   setCellText: function PTV_setCellText (aRow, aColumn, aValue) {

@@ -24,12 +24,17 @@
 .pano-tree treechildren::-moz-tree-cell-text(currentGroup) {
   font-weight: bold;
 }
-.pano-tree treechildren::-moz-tree-image(item, checked) {
+.pano-tree treechildren::-moz-tree-image(checked) {
   list-style-image: url("chrome://global/skin/icons/close.png");
-  -moz-image-region: rect(0, 16px, 16px, 0);
   width: 16px;
   margin: 0 !important;
   padding: 0 !important;
+}
+.pano-tree treechildren::-moz-tree-image(item, checked) {
+  -moz-image-region: rect(0, 16px, 16px, 0);
+}
+.pano-tree treechildren::-moz-tree-image(group, checked) {
+  -moz-image-region: rect(0, 48px, 16px, 32px);
 }
 
 /* tooltip */

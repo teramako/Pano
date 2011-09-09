@@ -16,6 +16,7 @@ help:
 	@echo "  make help      - display this help"
 	@echo "  make xpi       - build an XPI ($(XPI_NAME))"
 	@echo "  make clean     - remove pano-*.xpi"
+	@echo "  make install   - build and run install.sh"
 	@echo
 
 clean:
@@ -24,5 +25,10 @@ clean:
 xpi:
 	@echo "build $(XPI_NAME)"
 	$(TOP)/build.sh $(XPI_NAME)
+	@echo
+
+install: xpi;
+	@echo "Install $(XPI_NAME)"
+	$(TOP)/install.sh "$(TOP)/$(XPI_NAME)"
 
 # vim: noet:

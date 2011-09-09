@@ -45,21 +45,35 @@ function closeTab (aEvent) {
 tree.addEventListener("click", closeTab, false);
 
 const PREF_SWITCH_BY = "extensions.pano.swichTabBySingleClick";
+const PREF_SHOW_CLOSEBUTTON = "extensions.pano.showCloseButton";
 function toggleSwitchTabHandler () {
   var type = Services.prefs.getBoolPref(PREF_SWITCH_BY) ?  "click" : "dblclick";
   tree.removeEventListener("click", selectTab, false);
   tree.removeEventListener("dblclick", selectTab, false);
   tree.addEventListener(type, selectTab, false);
 }
+function toggleShowCloseButton () {
+  var show = Services.prefs.getBoolPref(PREF_SHOW_CLOSEBUTTON);
+  tree.columns.getColumnAt(1).element.hidden = !show;
+}
 toggleSwitchTabHandler();
+toggleShowCloseButton();
 
 function observe (aSubject, aTopic, aData) {
   Services.console.logStringMessage(Array.slice(arguments));
-  if (aTopic === "nsPref:changed" && aData === PREF_SWITCH_BY) {
-    toggleSwitchTabHandler();
+  if (aTopic === "nsPref:changed") {
+    switch (aData) {
+    case PREF_SWITCH_BY:
+      toggleSwitchTabHandler();
+      break;
+    case PREF_SHOW_CLOSEBUTTON:
+      toggleShowCloseButton();
+      break;
+    }
   }
 }
 Services.prefs.addObserver(PREF_SWITCH_BY, this, false);
+Services.prefs.addObserver(PREF_SHOW_CLOSEBUTTON, this, false);
 
 function newGroup () {
   view.GI.newGroup().newTab();

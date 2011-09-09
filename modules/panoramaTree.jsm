@@ -420,7 +420,9 @@ PanoramaTreeView.prototype = {
     return items;
   },
   openTabs: function PTV_openTabs (aURLs, aGroupItem, aTabPos) {
-    var group;
+    var group,
+        activeGroupItem = this.GI._activeGroupItem,
+        background = true;
     if (!aGroupItem)
       group = this.GI._activeGroupItem;
     else if ("group" in aGroupItem)
@@ -428,12 +430,31 @@ PanoramaTreeView.prototype = {
     else
       group = this.GI.newGroup();
 
-    this.GI.setActiveGroupItem(group);
-    var tab = this.gBrowser.loadOneTab(null, { inBackground: false, skipAnimation: true });
-    if (aTabPos >=  0)
-      this.gBrowser.moveTabTo(tab, aTabPos);
+    var isActive = (activeGroupItem === group);
+    if (isActive)
+      background = Services.prefs.getBoolPref("browser.tabs.loadInBackground");
 
-    this.gBrowser.loadTabs(aURLs, false, true);
+    try {
+      var tab;
+      for (let i = 0; i < aURLs.length; ++i) {
+        if (!isActive)
+          this.GI.setActiveGroupItem(group);
+
+        tab = this.gBrowser.loadOneTab(aURLs[i], {
+          inBackground: (i === 0 ? background : true),
+          ownerTab: tab,
+          skipAnimation: true
+        });
+        if (!isActive)
+          this.gBrowser.hideTab(tab);
+
+        if (aTabPos >= 0)
+          this.gBrowser.moveTabTo(tab, aTabPos++);
+      }
+    } finally {
+      if (!isActive)
+        this.tabView._window.UI.setActive(activeGroupItem);
+    }
   },
   getDropPosition: function PTV_getDropPosition (aTargetIndex, aOrientation) {
     var targetItem = this.rows[aTargetIndex],

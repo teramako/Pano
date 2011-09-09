@@ -49,6 +49,15 @@ Firefox 4のタブグループをリストする拡張機能だよん。
  * `|` が OR 検索
  * フィルタリング中はドラッグ＆ドロップできません :(
 
+##about:config
+
+ * `extensions.pano.autoHideTabbar`:
+   タブバーを隠すかどうかの設定(サイドバーが開いているときのみ有効)
+ * `extensions.pano.showCloseButton`:
+   閉じるボタンを表示するかどうかの設定
+ * `extensions.pano.switchTabBySingleClick`:
+   タブのアイテムをシングルクリックでスイッチするかどうかの設定
+
 #License
 
 Thease code are licensed under a disjunctive tri-license

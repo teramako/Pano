@@ -44,7 +44,7 @@ function closeTab (aEvent) {
 }
 tree.addEventListener("click", closeTab, false);
 
-const PREF_SWITCH_BY = "extensions.pano.swichTabBySingleClick";
+const PREF_SWITCH_BY = "extensions.pano.switchTabBySingleClick";
 const PREF_SHOW_CLOSEBUTTON = "extensions.pano.showCloseButton";
 function toggleSwitchTabHandler () {
   var type = Services.prefs.getBoolPref(PREF_SWITCH_BY) ?  "click" : "dblclick";

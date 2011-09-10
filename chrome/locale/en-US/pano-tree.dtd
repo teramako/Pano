@@ -6,4 +6,5 @@
 <!ENTITY search.label "Filter">
 <!ENTITY hidetabbar.label "Hide Tabbar">
 <!ENTITY hidetabbar.tooltip "Hide the tabbar automatically during Pano sidebar is opening.">
+<!ENTITY subFrame.label "Sub Content">
 

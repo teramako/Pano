@@ -27,6 +27,14 @@
                onpopupshowing="gPanoramaTree.contextMenu.build(event);"
                onpopuphiding="gPanoramaTree.contextMenu.onPopupHiding();">
       <menuseparator id="panoContextMenuSep"/>
+      <menu id="panoContextSubFrameMenu"
+            label="&subFrame.label;"
+            class="menu-iconic"
+            oncommand="gSubFrame.onMenuCommand(event);">
+        <menupopup id="panoContextSubFrameMenuPopup"
+                   onpopupshowing="gSubFrame.onPopupShowing(event);"/>
+      </menu>
+      <menuseparator/>
       <menuitem id="panoContextMenu_sidebarClose"
                 label="&menu.closeSidebar;" accesskey="W"
                 oncommand="gWin.toggleSidebar()"/>
@@ -42,6 +50,28 @@
     <treechildren id="panoTabGroupTreeChildren"
                   ondragstart="gPanoramaTree.onDragStart(event);"/>
   </tree>
+
+  <splitter id="subFrameSplitter"
+            collapse="after"
+            substate="after"
+            resizebefore="closest"
+            resizeafter="closest"
+            state="collapsed"
+            persist="state">
+    <grippy/>
+  </splitter>
+  <vbox id="subFrameontainer" flex="1">
+    <hbox id="subFrameHeader">
+      <label id="subFrameLabel" value="" flex="1" persist="value"/>
+      <toolbarbutton class="tabs-closebutton" oncommand="gSubFrame.close();"/>
+    </hbox>
+    <browser id="subFrameBrowser" flex="1"
+             src="about:blank"
+             disablehistory="true"
+             autoscroll="false"
+             clickthrough="never"
+             persist="src"/>
+  </vbox>
   <hbox>
     <checkbox id="hideTabbarCheck"
               label="&hidetabbar.label;"

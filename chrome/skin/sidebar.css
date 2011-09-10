@@ -7,3 +7,31 @@
   border-top: 1px solid ThreeDShadow;
 }
 
+.tabs-closebutton {
+  -moz-appearance: none;
+  list-style-image: url("chrome://global/skin/icons/close.png");
+  -moz-image-region: rect(0, 16px, 16px, 0);
+  padding: 4px 2px;
+  margin: 0;
+  border: none;
+}
+.tabs-closebutton:hover {
+  -moz-image-region: rect(0, 32px, 16px, 16px);
+}
+
+#subFrameSplitter[state="collapsed"] {
+  visibility: collapse;
+}
+
+#subFrameContainer {
+  min-height: 50px;
+}
+
+#subFrameHeader {
+  -moz-box-align: center;
+}
+
+#panoContextSubFrameMenuPopup {
+  list-style-image: url("chrome://pano/skin/application_split.png");
+}
+

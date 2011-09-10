@@ -6,4 +6,5 @@
 <!ENTITY search.label "フィルター">
 <!ENTITY hidetabbar.label "タブバーを隠す">
 <!ENTITY hidetabbar.tooltip "Panoサイドバーが開いている間、タブバーを隠す">
+<!ENTITY subFrame.label "サブ・コンテンツ">
 

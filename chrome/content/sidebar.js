@@ -94,4 +94,10 @@ var gPanoramaTree = {
  */
 XPCOMUtils.defineLazyGetter(gPanoramaTree, "tree", function () document.getElementById("panoTabGroupTree"));
 
+XPCOMUtils.defineLazyGetter(this, "gSubFrame", function () {
+  var container = {};
+  Services.scriptloader.loadSubScript("chrome://pano/content/sidebar-sub.js", container);
+  return container;
+});
+
 

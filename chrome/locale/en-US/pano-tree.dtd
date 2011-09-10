@@ -5,5 +5,5 @@
 <!ENTITY menu.closeSidebar "Close the sidebar">
 <!ENTITY search.label "Filter">
 <!ENTITY hidetabbar.label "Hide Tabbar">
-<!ENTITY hidetabbar.tooltip "Hide Tabbar at openning the Pano sidebar.">
+<!ENTITY hidetabbar.tooltip "Hide the tabbar automatically during Pano sidebar is opening.">
 

@@ -7,6 +7,7 @@ Changelog
    * about:config `extensions.pano.showCloseButton` で設定可
  * `extensions.pano.swichTabBySingleClick` のタイポ修正
    -> `extensions.pano.switchTabBySingleClick`
+ * オプションダイアログの追加
 
 ##version 0.8 (2011-08-28)
 

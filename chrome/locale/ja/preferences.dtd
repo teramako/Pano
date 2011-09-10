@@ -1,0 +1,5 @@
+<!ENTITY window.title "Pano オプション">
+<!ENTITY pref.autoHideTabbar.label "Panoサイドバーが開いている間、タブバーを自動的に隠す">
+<!ENTITY pref.showCloseButton.label "タブやグループのアイテムに閉じるボタンを表示する">
+<!ENTITY pref.switchTabBySingleClick.label "シングルクリックでタブにスイッチ">
+

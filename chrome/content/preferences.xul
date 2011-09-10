@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
+<!DOCTYPE window SYSTEM "chrome://pano/locale/preferences.dtd">
+<prefwindow id="panoPreferences"
+            windowtype="Pano:Preferences"
+            title="&window.title;"
+            xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <prefpane>
+    <preferences>
+      <preference id="pref-showCloseButton"
+                  name="extensions.pano.showCloseButton"
+                  type="bool"/>
+      <preference id="pref-switchTabBySingleClick"
+                  name="extensions.pano.switchTabBySingleClick"
+                  type="bool"/>
+      <preference id="pref-autoHideTabbar"
+                  name="extensions.pano.autoHideTabbar"
+                  type="bool"/>
+    </preferences>
+    <vbox flex="1">
+      <sperator class="thin"/>
+      <checkbox label="&pref.autoHideTabbar.label;" preference="pref-autoHideTabbar"/>
+      <sperator class="thin"/>
+      <checkbox label="&pref.showCloseButton.label;" preference="pref-showCloseButton"/>
+      <sperator class="thin"/>
+      <checkbox label="&pref.switchTabBySingleClick.label;" preference="pref-switchTabBySingleClick"/>
+    </vbox>
+  </prefpane>
+</prefwindow>

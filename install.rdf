@@ -8,6 +8,7 @@
     <em:creator>teramako</em:creator>
     <em:description>Show TabGroup list</em:description>
 
+    <em:optionsURL>chrome://pano/content/preferences.xul</em:optionsURL>
     <em:homepageURL>https://github.com/teramako/Pano</em:homepageURL>
     <em:iconURL>chrome://pano/content/pano.svg</em:iconURL>
 

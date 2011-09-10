@@ -17,7 +17,7 @@ Firefox 4のタブグループをリストする拡張機能だよん。
 ##サイドバー
 
  * タブのアイテムをダブルクリックでタブ選択
-   * about:config から `extensions.pano.swichTabBySingleClick` を `true` にすると、シングルクリックで選択可能
+   * about:config から `extensions.pano.switchTabBySingleClick` を `true` にすると、シングルクリックで選択可能
  * タブのアイテムを中ボタンクリックで閉じる
  * グループのアイテムをダブルクリックするとグループ名の編集
  * 一応ドラッグ&ドロップ可

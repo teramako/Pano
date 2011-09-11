@@ -36,6 +36,11 @@ Cu.import("resource://gre/modules/Services.jsm");
  * @name PlacesUtils
  */
 Cu.import("resource://gre/modules/PlacesUtils.jsm");
+/**
+ * @namespace
+ * @name PlacesUIUtils
+ */
+Cu.import("resource://gre/modules/PlacesUIUtils.jsm");
 
 // since 7.0a1, OrphanedTabs don't exist
 const existOrphans = Services.vc.compare("7.0a1", Services.appinfo.version) > 0;
@@ -419,7 +424,7 @@ PanoramaTreeView.prototype = {
     }
     return items;
   },
-  openTabs: function PTV_openTabs (aURLs, aGroupItem, aTabPos) {
+  openTabs: function PTV_openTabs (aPages, aGroupItem, aTabPos) {
     var group,
         activeGroupItem = this.GI._activeGroupItem,
         background = true;
@@ -436,20 +441,40 @@ PanoramaTreeView.prototype = {
 
     try {
       var tab;
-      for (let i = 0; i < aURLs.length; ++i) {
+      for (let i = 0; i < aPages.length; ++i) {
         if (!isActive)
           this.GI.setActiveGroupItem(group);
 
-        tab = this.gBrowser.loadOneTab(aURLs[i], {
-          inBackground: (i === 0 ? background : true),
-          ownerTab: tab,
-          skipAnimation: true
-        });
+        let page = aPages[i];
+        if (background) {
+          tab = this.gBrowser.loadOneTab(null, {
+            inBackground: true,
+            ownerTab: tab,
+            skipAnimation: true
+          });
+          setTabState(tab, page.url, page.title);
+        } else {
+          tab = this.gBrowser.loadOneTab(page.url, {
+            inBackground: false,
+            ownerTab: tab,
+            skipAnimation: true
+          });
+          background = true;
+        }
         if (!isActive)
           this.gBrowser.hideTab(tab);
 
         if (aTabPos >= 0)
           this.gBrowser.moveTabTo(tab, aTabPos++);
+
+        if (page.icon)
+          this.gBrowser.setIcon(tab, page.icon);
+        else {
+          try {
+            let iconURI = PlacesUtils.favicons.getFaviconForPage(Services.io.newURI(page.url, null, null));
+            this.gBrowser.setIcon(tab, iconURI.spec);
+          } catch(e) {}
+        }
       }
     } finally {
       if (!isActive)
@@ -708,26 +733,33 @@ PanoramaTreeView.prototype = {
         Cu.reportError(e);
         return false;
       }
+
       if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER)
         addUrlsFromContainer(node.children, urls);
-      else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE && !/^place:/.test(node.uri))
-        urls.push(node.uri);
+      else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE)
+        addUrlsFromPlace(node, urls);
     }
 
-    if (urls.length === 0)
+    if (urls.length === 0 || !PlacesUIUtils._confirmOpenInTabs(urls.length, this.tabView._window.gWindow))
       return;
 
     var [groupItem, tPos] = this.getDropPosition(aTargetIndex, aOrientation);
     this.openTabs(urls, groupItem, tPos);
 
+    function addUrlsFromPlace (node, urls) {
+      if (/^place:/.test(node.uri))
+        addUrlsFromContainer(placesUriToObject(node.uri).children, urls);
+      else
+        urls.push({ url: node.uri, title: (node.title || node.uri) });
+    }
+
     function addUrlsFromContainer (children, urls) {
       for (let i = 0; i < children.length; ++i) {
         let node = children[i];
-        if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER) {
-          openContainer(node.children, urls);
-        } else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE && !/^place:/.test(node.uri)) {
-          urls.push(node.uri);
-        }
+        if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER)
+          addUrlsFromContainer(node.children, urls);
+        else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE)
+          addUrlsFromPlace(node, urls);
       }
     }
   },
@@ -739,7 +771,7 @@ PanoramaTreeView.prototype = {
       let data = aDataTransfer.mozGetDataAt(PlacesUtils.TYPE_X_MOZ_URL, i);
       let [url, title]  = data.split("\n");
       if (url)
-        urls.push(url);
+        urls.push({ url: url, title: (title || url) });
     }
 
     if (urls.length === 0)
@@ -1094,5 +1126,56 @@ function getMoveTabPosition (aTargetTabPosition, aSourceTabPosition, aOrientatio
     return aTargetTabPosition + (aOrientation === Ci.nsITreeView.DROP_AFTER ? 0 : -1);
   else
     return aTargetTabPosition + (aOrientation === Ci.nsITreeView.DROP_BEFORE ? 0 : 1);
+}
+
+function placesUriToObject (uri) {
+  var query = {},
+      length = {},
+      options = {},
+      root;
+  PlacesUtils.history.queryStringToQueries(uri, query, length, options);
+  root = PlacesUtils.history.executeQueries(query.value, length.value, options.value).root;
+  if (!root.hasChildren)
+    return null;
+
+  return wrapNode(root);
+}
+
+function wrapNode (node) {
+  var res = {
+    title: node.title,
+    uri: node.uri
+  };
+  switch (node.type) {
+  case node.RESULT_TYPE_URI:
+    res.type = PlacesUtils.TYPE_X_MOZ_PLACE;
+    break;
+  case node.RESULT_TYPE_QUERY:
+  case node.RESULT_TYPE_FOLDER:
+    res.type = PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER;
+    res.children = [];
+
+    node.QueryInterface(Ci.nsINavHistoryContainerResultNode);
+    node.containerOpen = true;
+    for (let i = 0, len = node.childCount; i < len; ++i) {
+      let item = wrapNode(node.getChild(i));
+      if (item)
+        res.children.push(item);
+    }
+    node.containerOpen = false;
+  }
+  return res;
+}
+
+function setTabState (tab, url, title) {
+  var state = {
+    entries: [{
+      url: url,
+      title: title
+    }],
+    hidden: true,
+    index: 1
+  };
+  SessionStore.setTabState(tab, JSON.stringify(state));
 }
 

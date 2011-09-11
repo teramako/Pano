@@ -8,6 +8,12 @@ Changelog
  * `extensions.pano.swichTabBySingleClick` のタイポ修正
    -> `extensions.pano.switchTabBySingleClick`
  * オプションダイアログの追加
+ * [#26 ページ内リンク等をツリー上にD&Dして開く機能](https://github.com/teramako/Pano/issues/26)
+   * ブックマークやブックマークフォルダ、ページ内のリンクをツリーにドロップできるようにした
+   * アクティブなグループ内へドロップした場合、バックグランドで開かれるかどうかは`browser.tabs.loadInBackground`に依存
+   * アクティブでないグループ内へのドロップではバックグラウンドで開く
+   * 複数を開く場合、数が`browser.tabs.maxOpenBeforeWarn`以上である場合、プロンプトがポップアップするようにした
+   * バックグラウンドで開かれるタブはロードせず、アクティブになった時にロードされるようにした
  * BugFix: [#27 アクティブなアブを含む複数のタブをドロップした時、コンテンツのロードが発生する](https://github.com/teramako/Pano/issues/27)
    * アクティブなタブは他を移動し終わった後に移動するように変更
 

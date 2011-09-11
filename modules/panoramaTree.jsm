@@ -507,6 +507,208 @@ PanoramaTreeView.prototype = {
     }
     return [groupItem, tPos];
   },
+  dropPlaces: function PTV_dropPlaces (aTargetIndex, aOrientation, aDataTransfer) {
+    var itemCount = aDataTransfer.mozItemCount,
+        urls = [];
+
+    for (let i = 0; i < itemCount; ++i) {
+      let node,
+          data = aDataTransfer.mozGetDataAt(PlacesUtils.TYPE_X_MOZ_PLACE, i);
+      try {
+        node = PlacesUtils.unwrapNodes(data, PlacesUtils.TYPE_X_MOZ_PLACE)[0]
+      } catch (e) {
+        Cu.reportError(e);
+        return false;
+      }
+
+      if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER)
+        addUrlsFromContainer(node.children, urls);
+      else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE)
+        addUrlsFromPlace(node, urls);
+    }
+
+    if (urls.length === 0 || !PlacesUIUtils._confirmOpenInTabs(urls.length, this.tabView._window.gWindow))
+      return;
+
+    var [groupItem, tPos] = this.getDropPosition(aTargetIndex, aOrientation);
+    this.openTabs(urls, groupItem, tPos);
+
+    function addUrlsFromPlace (node, urls) {
+      if (/^place:/.test(node.uri))
+        addUrlsFromContainer(placesUriToObject(node.uri).children, urls);
+      else
+        urls.push({ url: node.uri, title: (node.title || node.uri) });
+    }
+
+    function addUrlsFromContainer (children, urls) {
+      for (let i = 0; i < children.length; ++i) {
+        let node = children[i];
+        if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER)
+          addUrlsFromContainer(node.children, urls);
+        else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE)
+          addUrlsFromPlace(node, urls);
+      }
+    }
+  },
+  dropURL: function PTV_dropURL (aTargetIndex, aOrientation, aDataTransfer) {
+    var itemCount = aDataTransfer.mozItemCount,
+        urls = [];
+
+    for (let i = 0; i < itemCount; ++i) {
+      let data = aDataTransfer.mozGetDataAt(PlacesUtils.TYPE_X_MOZ_URL, i);
+      let [url, title]  = data.split("\n");
+      if (url)
+        urls.push({ url: url, title: (title || url) });
+    }
+
+    if (urls.length === 0)
+      return;
+
+    var [groupItem, tPos] = this.getDropPosition(aTargetIndex, aOrientation);
+    this.openTabs(urls, groupItem, tPos);
+  },
+  dropTabs: function PTV_dropTabs (aTargetIndex, aOrientation, aDataTransfer) {
+    var targetItem = this.rows[aTargetIndex],
+        activeGroupItem = this.GI._activeGroupItem;
+
+    var itemCount = aDataTransfer.mozItemCount;
+    var selectedItem = null, nextItem = null;
+
+    function moveGroupToGroup (aItem, aSourceIndex, aTargetItem) {
+      var items = [aItem];
+      if (aItem.isOpen) {
+        let i = aSourceIndex + 1;
+        for (; i < this.rows.length; ++i) {
+          if (this.rows[i].type & TAB_ITEM_TYPE) {
+            items.push(this.rows[i]);
+          } else {
+            break;
+          }
+        }
+      }
+      this.rows.splice(aSourceIndex, items.length);
+      this.rows.splice.apply(this.rows, [this.rows.indexOf(aTargetItem), 0].concat(items));
+
+      var gi = this.GI.groupItems;
+      gi.splice(gi.indexOf(aItem.group), 1);
+      gi.splice(gi.indexOf(aTargetItem.group), 0, aItem.group);
+      var data = {};
+      for (let j = 0, len = gi.length; j < len; ++j) {
+        let g = gi[j];
+        data[g.id] = g.getStorageData();
+      }
+      this.tabView._window.Storage._sessionStore.setWindowValue(this.tabView._window.gWindow,
+        "tabview-group", JSON.stringify(data));
+
+      this.treeBox.invalidate();
+    }
+
+    function moveTabToTab (aItem, aTargetItem, aOrientation) {
+      var tab = aItem.tab,
+          sourceGroup = tab._tabViewTabItem ? tab._tabViewTabItem.parent : null,
+          targetGroup = aTargetItem.tab._tabViewTabItem ? aTargetItem.tab._tabViewTabItem.parent : null;
+      if (targetGroup) {
+        if (tab.pinned)
+          this.gBrowser.unpinTab(tab);
+
+        if (sourceGroup !== targetGroup)
+          this.tabView.moveTabTo(tab, targetGroup.id);
+      }
+      else if (aTargetItem.tab.pinned) {
+        if (!tab.pinned)
+          this.gBrowser.pinTab(tab);
+      }
+      // move to OrphanedGroup
+      else if (sourceGroup) {
+        sourceGroup.remove(tab._tabViewTabItem);
+        this.onTabMove({type: "TabToOrphaned", target: tab});
+        if (sourceGroup === activeGroupItem)
+          this.gBrowser.hideTab(tab);
+      }
+      this.gBrowser.moveTabTo(tab,
+        getMoveTabPosition(aTargetItem.tab._tPos, tab._tPos, aOrientation));
+    }
+
+    function moveTabToGroup (aItem, aTargetItem, aOrientation) {
+      // アプリタブ・グループへドロップ
+      if (aTargetItem.type & APPTAB_GROUP_TYPE) {
+        this.gBrowser.pinTab(aItem.tab);
+      }
+      // 孤立タブ・グループへドロップ
+      else if (aTargetItem.type & ORPHANED_GROUP_TYPE) {
+        if (aItem.tab.pinned)
+          this.gBrowser.unpinTab(aItem.tab);
+
+        let tabItem = aItem.tab._tabViewTabItem;
+        let itemGroup = tabItem.parent;
+        if (itemGroup)
+          itemGroup.remove(tabItem);
+
+        this.onTabMove({type: "TabToOrphaned", target: aItem.tab})
+
+        if (itemGroup && itemGroup === activeGroupItem)
+          this.gBrowser.hideTab(tabItem.tab);
+      }
+      // 移動元のタブはアプリタブ
+      else if (aItem.tab.pinned) {
+        this.gBrowser.unpinTab(aItem.tab);
+        this.tabView.moveTabTo(aItem.tab, aTargetItem.group.id);
+      }
+      // 別グループへドロップ
+      else if (aTargetItem.group !== aItem.tab._tabViewTabItem.parent) {
+        this.tabView.moveTabTo(aItem.tab, aTargetItem.group.id);
+      }
+
+      let children = aTargetItem.children;
+      if (children.length > 0) {
+        let tabIndex = children.length - 1;
+        if (aTargetItem.isOpen && aOrientation === Ci.nsITreeView.DROP_AFTER)
+          tabIndex = 0;
+
+        let targetTab = children[tabIndex].tab;
+        this.gBrowser.moveTabTo(aItem.tab,
+          getMoveTabPosition(targetTab._tPos, aItem.tab._tPos, Ci.nsITreeView.DROP_AFTER));
+      }
+    }
+
+    for (let i = 0; i < itemCount; ++i) {
+      let sourceIndex = this.getSourceIndexFromDrag(aDataTransfer, i);
+      if (sourceIndex === -1)
+        continue;
+
+      let item = this.rows[sourceIndex];
+      if (item.type === TAB_GROUP_TYPE) {
+        moveGroupToGroup.call(this, item, sourceIndex, targetItem);
+      }
+      else if (item.type & TAB_ITEM_TYPE) {
+        // アクティブなタブであり、次に移動すべきアイテムが控えているならスキップ
+        // 変数に保管しておく
+        if (item.tab.selected && i + 1 < itemCount) {
+          selectedItem = item;
+          continue;
+        }
+        // 保管されたアクティブなタブがあり、次のアイテムがまだ設定されていないならば
+        // 変数に保管しておく
+        else if (selectedItem && !nextItem) {
+          nextItem = item;
+        }
+
+        if (targetItem.type & TAB_GROUP_TYPE)
+          moveTabToGroup.call(this, item, targetItem, aOrientation);
+        else if (targetItem.type & TAB_ITEM_TYPE)
+          moveTabToTab.call(this, item, targetItem, aOrientation);
+
+        targetItem = item;
+        aOrientation = Ci.nsITreeView.DROP_AFTER;
+      }
+    }
+
+    if (selectedItem && nextItem)
+      moveTabToTab.call(this, selectedItem, nextItem, -1);
+
+    this.GI.setActiveGroupItem(activeGroupItem);
+    this.selection.clearSelection();
+  },
   // ==========================================================================
   // Handlers
   // ==========================================================================
@@ -720,66 +922,6 @@ PanoramaTreeView.prototype = {
 
     return (this.rows[sourceIndex].type & TAB_ITEM_TYPE) > 0;
   },
-  dropPlaces: function PTV_dropPlaces (aTargetIndex, aOrientation, aDataTransfer) {
-    var itemCount = aDataTransfer.mozItemCount,
-        urls = [];
-
-    for (let i = 0; i < itemCount; ++i) {
-      let node,
-          data = aDataTransfer.mozGetDataAt(PlacesUtils.TYPE_X_MOZ_PLACE, i);
-      try {
-        node = PlacesUtils.unwrapNodes(data, PlacesUtils.TYPE_X_MOZ_PLACE)[0]
-      } catch (e) {
-        Cu.reportError(e);
-        return false;
-      }
-
-      if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER)
-        addUrlsFromContainer(node.children, urls);
-      else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE)
-        addUrlsFromPlace(node, urls);
-    }
-
-    if (urls.length === 0 || !PlacesUIUtils._confirmOpenInTabs(urls.length, this.tabView._window.gWindow))
-      return;
-
-    var [groupItem, tPos] = this.getDropPosition(aTargetIndex, aOrientation);
-    this.openTabs(urls, groupItem, tPos);
-
-    function addUrlsFromPlace (node, urls) {
-      if (/^place:/.test(node.uri))
-        addUrlsFromContainer(placesUriToObject(node.uri).children, urls);
-      else
-        urls.push({ url: node.uri, title: (node.title || node.uri) });
-    }
-
-    function addUrlsFromContainer (children, urls) {
-      for (let i = 0; i < children.length; ++i) {
-        let node = children[i];
-        if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER)
-          addUrlsFromContainer(node.children, urls);
-        else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE)
-          addUrlsFromPlace(node, urls);
-      }
-    }
-  },
-  dropURL: function PTV_dropURL (aTargetIndex, aOrientation, aDataTransfer) {
-    var itemCount = aDataTransfer.mozItemCount,
-        urls = [];
-
-    for (let i = 0; i < itemCount; ++i) {
-      let data = aDataTransfer.mozGetDataAt(PlacesUtils.TYPE_X_MOZ_URL, i);
-      let [url, title]  = data.split("\n");
-      if (url)
-        urls.push({ url: url, title: (title || url) });
-    }
-
-    if (urls.length === 0)
-      return;
-
-    var [groupItem, tPos] = this.getDropPosition(aTargetIndex, aOrientation);
-    this.openTabs(urls, groupItem, tPos);
-  },
   drop: function PTV_drop (aTargetIndex, aOrientation, aDataTransfer) {
     if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation === Ci.nsITreeView.DROP_BEFORE) {
       aTargetIndex--;
@@ -787,128 +929,13 @@ PanoramaTreeView.prototype = {
     }
 
     var types = aDataTransfer.mozTypesAt(0);
-    if (types.contains(PlacesUtils.TYPE_X_MOZ_PLACE)) {
+    if (types.contains(PlacesUtils.TYPE_X_MOZ_PLACE))
       this.dropPlaces(aTargetIndex, aOrientation, aDataTransfer);
-      return;
-    } else if (types.contains(PlacesUtils.TYPE_X_MOZ_URL)) {
+    else if (types.contains(PlacesUtils.TYPE_X_MOZ_URL))
       this.dropURL(aTargetIndex, aOrientation, aDataTransfer);
-      return;
-    }
+    else
+      this.dropTabs(aTargetIndex, aOrientation, aDataTransfer)
 
-    var targetItem = this.rows[aTargetIndex],
-        activeGroupItem = this.GI._activeGroupItem;
-
-    var itemCount = aDataTransfer.mozItemCount;
-    for (let i = 0; i < itemCount; ++i) {
-      let sourceIndex = this.getSourceIndexFromDrag(aDataTransfer, i);
-      if (sourceIndex === -1)
-        continue;
-
-      let item = this.rows[sourceIndex];
-      if (item.type === TAB_GROUP_TYPE) {
-        let items = [item];
-        if (item.isOpen) {
-          let i = sourceIndex + 1;
-          for (; i < this.rows.length; ++i) {
-            if (this.rows[i].type & TAB_ITEM_TYPE) {
-              items.push(this.rows[i]);
-            } else {
-              break;
-            }
-          }
-        }
-        this.rows.splice(sourceIndex, items.length);
-        this.rows.splice.apply(this.rows, [this.rows.indexOf(targetItem), 0].concat(items));
-
-        let gi = this.GI.groupItems;
-        gi.splice(gi.indexOf(item.group), 1);
-        gi.splice(gi.indexOf(targetItem.group), 0, item.group);
-        let data = {};
-        for (let j = 0, len = gi.length; j < len; ++j) {
-          let g = gi[j];
-          data[g.id] = g.getStorageData();
-        }
-        this.tabView._window.Storage._sessionStore.setWindowValue(this.tabView._window.gWindow,
-          "tabview-group", JSON.stringify(data));
-
-        this.treeBox.invalidate();
-      }
-      else if (item.type & TAB_ITEM_TYPE) {
-        if (targetItem.type & TAB_GROUP_TYPE) {
-          let indexOfGroup = 0;
-          // アプリタブ・グループへドロップ
-          if (targetItem.type & APPTAB_GROUP_TYPE) {
-            this.gBrowser.pinTab(item.tab);
-          }
-          // 孤立タブ・グループへドロップ
-          else if (targetItem.type & ORPHANED_GROUP_TYPE) {
-            if (item.tab.pinned)
-              this.gBrowser.unpinTab(item.tab);
-
-            let tabItem = item.tab._tabViewTabItem;
-            let itemGroup = tabItem.parent;
-            if (itemGroup)
-              itemGroup.remove(tabItem);
-
-            this.onTabMove({type: "TabToOrphaned", target: item.tab})
-
-            if (itemGroup && itemGroup === activeGroupItem)
-              this.gBrowser.hideTab(tabItem.tab);
-          }
-          // 移動元のタブはアプリタブ
-          else if (item.tab.pinned) {
-            this.gBrowser.unpinTab(item.tab);
-            this.tabView.moveTabTo(item.tab, targetItem.group.id);
-          }
-          // 別グループへドロップ
-          else if (targetItem.group !== item.tab._tabViewTabItem.parent) {
-            this.tabView.moveTabTo(item.tab, targetItem.group.id);
-          }
-
-          let children = targetItem.children;
-          if (children.length > 0) {
-            let tabIndex = children.length - 1;
-            if (targetItem.isOpen && aOrientation === Ci.nsITreeView.DROP_AFTER)
-              tabIndex = 0;
-
-            let targetTab = children[tabIndex].tab;
-            this.gBrowser.moveTabTo(item.tab,
-              getMoveTabPosition(targetTab._tPos, item.tab._tPos, Ci.nsITreeView.DROP_AFTER));
-          }
-
-        }
-        else if (targetItem.type & TAB_ITEM_TYPE) {
-          let tab = item.tab;
-          let sourceGroup = tab._tabViewTabItem ? tab._tabViewTabItem.parent : null;
-          let targetGroup = targetItem.tab._tabViewTabItem ? targetItem.tab._tabViewTabItem.parent : null;
-          if (targetGroup) {
-            if (tab.pinned)
-              this.gBrowser.unpinTab(tab);
-
-            if (sourceGroup !== targetGroup)
-              this.tabView.moveTabTo(tab, targetGroup.id);
-          }
-          else if (targetItem.tab.pinned) {
-            if (!tab.pinned)
-              this.gBrowser.pinTab(tab);
-          }
-          // move to OrphanedGroup
-          else if (sourceGroup) {
-            sourceGroup.remove(tab._tabViewTabItem);
-            this.onTabMove({type: "TabToOrphaned", target: tab});
-            if (sourceGroup === activeGroupItem)
-              this.gBrowser.hideTab(tab);
-          }
-
-          this.gBrowser.moveTabTo(tab,
-            getMoveTabPosition(targetItem.tab._tPos, tab._tPos, aOrientation));
-        }
-        targetItem = item;
-        aOrientation = Ci.nsITreeView.DROP_AFTER;
-      }
-    }
-    this.GI.setActiveGroupItem(activeGroupItem);
-    this.selection.clearSelection();
   },
   selection: null,
   getRowProperties: function PTV_getRowProperties (aRow, aProperties) {

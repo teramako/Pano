@@ -8,6 +8,8 @@ Changelog
  * `extensions.pano.swichTabBySingleClick` のタイポ修正
    -> `extensions.pano.switchTabBySingleClick`
  * オプションダイアログの追加
+ * BugFix: [#27 アクティブなアブを含む複数のタブをドロップした時、コンテンツのロードが発生する](https://github.com/teramako/Pano/issues/27)
+   * アクティブなタブは他を移動し終わった後に移動するように変更
 
 ##version 0.8 (2011-08-28)
 

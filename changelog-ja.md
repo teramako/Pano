@@ -5,6 +5,12 @@ Changelog
  * LessChrome HD と「タブバーを隠す」設定の互換性を向上
  * ツリーに閉じるボタンを追加
    * about:config `extensions.pano.showCloseButton` で設定可
+ * [#26 ページ内リンク等をツリー上にD&Dして開く機能](https://github.com/teramako/Pano/issues/26)
+   * ブックマークやブックマークフォルダ、ページ内のリンクをツリーにドロップできるようにした
+   * アクティブなグループ内へドロップした場合、バックグランドで開かれるかどうかは`browser.tabs.loadInBackground`に依存
+   * アクティブでないグループ内へのドロップではバックグラウンドで開く
+   * 複数を開く場合、数が`browser.tabs.maxOpenBeforeWarn`以上である場合、プロンプトがポップアップするようにした
+   * バックグラウンドで開かれるタブはロードせず、アクティブになった時にロードされるようにした
 
 ##version 0.8 (2011-08-28)
 

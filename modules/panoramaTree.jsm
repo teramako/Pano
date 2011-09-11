@@ -36,6 +36,11 @@ Cu.import("resource://gre/modules/Services.jsm");
  * @name PlacesUtils
  */
 Cu.import("resource://gre/modules/PlacesUtils.jsm");
+/**
+ * @namespace
+ * @name PlacesUIUtils
+ */
+Cu.import("resource://gre/modules/PlacesUIUtils.jsm");
 
 // since 7.0a1, OrphanedTabs don't exist
 const existOrphans = Services.vc.compare("7.0a1", Services.appinfo.version) > 0;
@@ -708,26 +713,33 @@ PanoramaTreeView.prototype = {
         Cu.reportError(e);
         return false;
       }
+
       if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER)
         addUrlsFromContainer(node.children, urls);
-      else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE && !/^place:/.test(node.uri))
-        urls.push(node.uri);
+      else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE)
+        addUrlsFromPlace(node, urls);
     }
 
-    if (urls.length === 0)
+    if (urls.length === 0 || !PlacesUIUtils._confirmOpenInTabs(urls.length, this.tabView._window.gWindow))
       return;
 
     var [groupItem, tPos] = this.getDropPosition(aTargetIndex, aOrientation);
     this.openTabs(urls, groupItem, tPos);
 
+    function addUrlsFromPlace (node, urls) {
+      if (/^place:/.test(node.uri))
+        addUrlsFromContainer(placesUriToObject(node.uri).children, urls);
+      else
+        urls.push(node.uri);
+    }
+
     function addUrlsFromContainer (children, urls) {
       for (let i = 0; i < children.length; ++i) {
         let node = children[i];
-        if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER) {
-          openContainer(node.children, urls);
-        } else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE && !/^place:/.test(node.uri)) {
-          urls.push(node.uri);
-        }
+        if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER)
+          addUrlsFromContainer(node.children, urls);
+        else if (node.type === PlacesUtils.TYPE_X_MOZ_PLACE)
+          addUrlsFromPlace(node, urls);
       }
     }
   },
@@ -1096,3 +1108,41 @@ function getMoveTabPosition (aTargetTabPosition, aSourceTabPosition, aOrientatio
     return aTargetTabPosition + (aOrientation === Ci.nsITreeView.DROP_BEFORE ? 0 : 1);
 }
 
+function placesUriToObject (uri) {
+  var query = {},
+      length = {},
+      options = {},
+      root;
+  PlacesUtils.history.queryStringToQueries(uri, query, length, options);
+  root = PlacesUtils.history.executeQueries(query.value, length.value, options.value).root;
+  if (!root.hasChildren)
+    return null;
+
+  return wrapNode(root);
+}
+
+function wrapNode (node) {
+  var res = {
+    title: node.title,
+    uri: node.uri
+  };
+  switch (node.type) {
+  case node.RESULT_TYPE_URI:
+    res.type = PlacesUtils.TYPE_X_MOZ_PLACE;
+    break;
+  case node.RESULT_TYPE_QUERY:
+  case node.RESULT_TYPE_FOLDER:
+    res.type = PlacesUtils.TYPE_X_MOZ_PLACE_CONTAINER;
+    res.children = [];
+
+    node.QueryInterface(Ci.nsINavHistoryContainerResultNode);
+    node.containerOpen = true;
+    for (let i = 0, len = node.childCount; i < len; ++i) {
+      let item = wrapNode(node.getChild(i));
+      if (item)
+        res.children.push(item);
+    }
+    node.containerOpen = false;
+  }
+  return res;
+}

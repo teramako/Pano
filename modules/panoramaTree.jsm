@@ -424,7 +424,7 @@ PanoramaTreeView.prototype = {
     }
     return items;
   },
-  openTabs: function PTV_openTabs (aURLs, aGroupItem, aTabPos) {
+  openTabs: function PTV_openTabs (aPages, aGroupItem, aTabPos) {
     var group,
         activeGroupItem = this.GI._activeGroupItem,
         background = true;
@@ -441,20 +441,40 @@ PanoramaTreeView.prototype = {
 
     try {
       var tab;
-      for (let i = 0; i < aURLs.length; ++i) {
+      for (let i = 0; i < aPages.length; ++i) {
         if (!isActive)
           this.GI.setActiveGroupItem(group);
 
-        tab = this.gBrowser.loadOneTab(aURLs[i], {
-          inBackground: (i === 0 ? background : true),
-          ownerTab: tab,
-          skipAnimation: true
-        });
+        let page = aPages[i];
+        if (background) {
+          tab = this.gBrowser.loadOneTab(null, {
+            inBackground: true,
+            ownerTab: tab,
+            skipAnimation: true
+          });
+          setTabState(tab, page.url, page.title);
+        } else {
+          tab = this.gBrowser.loadOneTab(page.url, {
+            inBackground: false,
+            ownerTab: tab,
+            skipAnimation: true
+          });
+          background = true;
+        }
         if (!isActive)
           this.gBrowser.hideTab(tab);
 
         if (aTabPos >= 0)
           this.gBrowser.moveTabTo(tab, aTabPos++);
+
+        if (page.icon)
+          this.gBrowser.setIcon(tab, page.icon);
+        else {
+          try {
+            let iconURI = PlacesUtils.favicons.getFaviconForPage(Services.io.newURI(page.url, null, null));
+            this.gBrowser.setIcon(tab, iconURI.spec);
+          } catch(e) {}
+        }
       }
     } finally {
       if (!isActive)
@@ -730,7 +750,7 @@ PanoramaTreeView.prototype = {
       if (/^place:/.test(node.uri))
         addUrlsFromContainer(placesUriToObject(node.uri).children, urls);
       else
-        urls.push(node.uri);
+        urls.push({ url: node.uri, title: (node.title || node.uri) });
     }
 
     function addUrlsFromContainer (children, urls) {
@@ -751,7 +771,7 @@ PanoramaTreeView.prototype = {
       let data = aDataTransfer.mozGetDataAt(PlacesUtils.TYPE_X_MOZ_URL, i);
       let [url, title]  = data.split("\n");
       if (url)
-        urls.push(url);
+        urls.push({ url: url, title: (title || url) });
     }
 
     if (urls.length === 0)
@@ -1146,3 +1166,16 @@ function wrapNode (node) {
   }
   return res;
 }
+
+function setTabState (tab, url, title) {
+  var state = {
+    entries: [{
+      url: url,
+      title: title
+    }],
+    hidden: true,
+    index: 1
+  };
+  SessionStore.setTabState(tab, JSON.stringify(state));
+}
+

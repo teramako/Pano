@@ -961,6 +961,9 @@ PanoramaTreeView.prototype = {
         aProperties.AppendElement(this.getAtom("apptab"));
       else if (!item.tab._tabViewTabItem.parent)
         aProperties.AppendElement(this.getAtom("orphaned"));
+
+      if (item.tab.linkedBrowser.__SS_restoreState)
+        aProperties.AppendElement(this.getAtom("TabNeedRestore"));
     }
   },
   getCellProperties: function PTV_getCellProperties (aRow, aColumn, aProperties) {

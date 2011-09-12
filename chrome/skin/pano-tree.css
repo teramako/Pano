@@ -36,6 +36,9 @@
 .pano-tree treechildren::-moz-tree-image(group, checked) {
   -moz-image-region: rect(0, 48px, 16px, 32px);
 }
+.pano-tree treechildren::-moz-tree-cell-text(TabNeedRestore) {
+  color: GrayText;
+}
 
 /* tooltip */
 #panoTreeTooltipImage {

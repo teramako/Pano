@@ -25,15 +25,16 @@ function onPopupShown () {
     keyset.removeAttribute("disabled");
 
   window.addEventListener("tabviewshown", onTabViewShown, false);
+  window.addEventListener("click", onClick, true);
 }
 
 function onPopupHiding () {
   keyset.setAttribute("disabled", "true");
   window.removeEventListener("tabviewshown", onTabViewShown, false);
+  window.removeEventListener("click", onClick, true);
 }
 
 function toggleOpen () {
-  panel.popupBoxObject.setConsumeRollupEvent(Ci.nsIPopupBoxObject.ROLLUP_CONSUME);
   switch (panel.state) {
   case "open":
     panel.hidePopup();
@@ -51,6 +52,30 @@ function toggleOpen () {
 function onTabViewShown () {
   if (panel.state === "open")
     panel.hidePopup();
+}
+
+function onClick (aEvent) {
+  var position = panel.compareDocumentPosition(aEvent.target);
+  if (position === 0 ||
+      position === (Node.DOCUMENT_POSITION_FOLLOWING | Node.DOCUMENT_POSITION_CONTAINED_BY) ||
+      aEvent.target === panel.anchorNode) {
+    return;
+  } else if (aEvent.target instanceof XULElement) {
+    switch (aEvent.target.localName) {
+    case "splitmenu":
+      if (aEvent.originalTarget.localName === "menu")
+        return;
+
+      break;
+    case "button":
+    case "toolbarbutton":
+      if (aEvent.target.type !== "menu")
+        break;
+    case "menu":
+      return;
+    }
+  }
+  panel.hidePopup();
 }
 
 window.addEventListener("unload", function () {

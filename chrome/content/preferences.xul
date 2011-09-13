@@ -16,6 +16,9 @@
       <preference id="pref-autoHideTabbar"
                   name="extensions.pano.autoHideTabbar"
                   type="bool"/>
+      <preference id="pref-panel-autoCloseByTabSelect"
+                  name="extensions.pano.panel.autoCloseByTabSelect"
+                  type="bool"/>
     </preferences>
     <vbox flex="1">
       <sperator class="thin"/>
@@ -24,6 +27,8 @@
       <checkbox label="&pref.showCloseButton.label;" preference="pref-showCloseButton"/>
       <sperator class="thin"/>
       <checkbox label="&pref.switchTabBySingleClick.label;" preference="pref-switchTabBySingleClick"/>
+      <sperator class="thin"/>
+      <checkbox label="&pref.panel.autoCloseByTabSelect.label;" preference="pref-panel-autoCloseByTabSelect"/>
     </vbox>
   </prefpane>
 </prefwindow>

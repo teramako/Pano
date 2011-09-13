@@ -2,4 +2,5 @@
 <!ENTITY pref.autoHideTabbar.label "Hide the tabbar automatically during Pano sidebar is opening.">
 <!ENTITY pref.showCloseButton.label "Show close buttons each tab and group items.">
 <!ENTITY pref.switchTabBySingleClick.label "Switch the tab by SINGLE click.">
+<!ENTITY pref.panel.autoCloseByTabSelect.label "Close automatically at switching a tab">
 

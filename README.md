@@ -57,6 +57,8 @@ Firefox 4のタブグループをリストする拡張機能だよん。
    閉じるボタンを表示するかどうかの設定
  * `extensions.pano.switchTabBySingleClick`:
    タブのアイテムをシングルクリックでスイッチするかどうかの設定
+ * `extensions.pano.panel.autoCloseByTabSelect`:
+   パネルからタブを切り替えた時、自動的にパネルを閉じるかどうかの設定
 
 ##ドラッグ＆ドロップ
 

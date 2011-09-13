@@ -15,6 +15,8 @@ Changelog
    * 複数を開く場合、数が`browser.tabs.maxOpenBeforeWarn`以上である場合、プロンプトがポップアップするようにした
    * バックグラウンドで開かれるタブはロードせず、アクティブになった時にロードされるようにした
    * パネルの挙動を変更し、メニューが開かれるときは閉じないようにした
+ * [#29 Panoパネルからタブを切り替えた時にパネルを自動的に閉じる機能](https://github.com/teramako/Pano/issues/29)
+   * about:config の値 `extensions.pano.panel.autoCloseByTabSelect` を追加した
  * BugFix: [#27 アクティブなアブを含む複数のタブをドロップした時、コンテンツのロードが発生する](https://github.com/teramako/Pano/issues/27)
    * アクティブなタブは他を移動し終わった後に移動するように変更
 

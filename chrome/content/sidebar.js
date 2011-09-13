@@ -42,6 +42,7 @@ var gPanoramaTree = {
     this.view = new this.PanoramaTreeView(gWin);
     this.tree.view = this.view;
   },
+  isPanel: false,
   tabbar: {
     init: function () {
       this.checkBox.checked = this.pref;

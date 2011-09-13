@@ -28,7 +28,11 @@ function selectTab (aEvent) {
         UI.setActive(tabItem);
       }
     }
-    gBrowser.mTabContainer.selectedIndex = item.tab._tPos;
+    if (gBrowser.selectedTab !== item.tab) {
+      gBrowser.mTabContainer.selectedIndex = item.tab._tPos;
+      if (isPanel && Services.prefs.getBoolPref("extensions.pano.panel.autoCloseByTabSelect"))
+        panel.hidePopup();
+    }
   }
 }
 

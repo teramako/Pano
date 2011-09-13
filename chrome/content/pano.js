@@ -28,6 +28,7 @@ const gPano = {
       this.toggleOpen();
       Services.scriptloader.loadSubScript("chrome://pano/content/pano-tree.sub.js", this);
     },
+    isPanel: true,
   },
 };
 

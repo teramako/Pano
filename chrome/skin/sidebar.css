@@ -31,7 +31,7 @@
   -moz-box-align: center;
 }
 
-#panoContextSubFrameMenuPopup {
+#panoContextSubFrameMenu {
   list-style-image: url("chrome://pano/skin/application_split.png");
 }
 

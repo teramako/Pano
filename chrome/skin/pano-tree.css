@@ -39,6 +39,12 @@
 .pano-tree treechildren::-moz-tree-cell-text(TabNeedRestore) {
   color: GrayText;
 }
+.pano-tree treecol[anonid="closebutton"] {
+  width: 33px;
+}
+.pano-tree[hidevscroll] treecol[anonid="closebutton"] {
+  width: 18px;
+}
 
 /* tooltip */
 #panoTreeTooltipImage {

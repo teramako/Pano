@@ -19,6 +19,7 @@ Changelog
    * about:config の値 `extensions.pano.panel.autoCloseByTabSelect` を追加した
  * BugFix: [#27 アクティブなアブを含む複数のタブをドロップした時、コンテンツのロードが発生する](https://github.com/teramako/Pano/issues/27)
    * アクティブなタブは他を移動し終わった後に移動するように変更
+ * BugFix: [#31 閉じるボタンがスクロールバーに隠れる](https://github.com/teramako/Pano/issues/31)
 
 ##version 0.8 (2011-08-28)
 

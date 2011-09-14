@@ -25,7 +25,7 @@
     </tooltip>
     <menupopup id="panoContextMenu"
                onpopupshowing="gPanoramaTree.contextMenu.build(event);"
-               onpopuphiding="gPanoramaTree.contextMenu.onPopupHiding();">
+               onpopuphiding="gPanoramaTree.contextMenu.onPopupHiding(event);">
       <menuseparator id="panoContextMenuSep"/>
       <menu id="panoContextSubFrameMenu"
             label="&subFrame.label;"

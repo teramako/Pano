@@ -144,6 +144,9 @@ var contextMenu = {
   },
   currentItem: null,
   build: function buildContextMenu (aEvent) {
+    if (aEvent.target.id !== "panoContextMenu")
+      return;
+
     var item = this.currentItem = view.getItemFromEvent(aEvent);
     if (item) {
       let isTabItem = (item.type & TAB_ITEM_TYPE) > 0;
@@ -159,8 +162,9 @@ var contextMenu = {
   showItem: function showMenuItem (aID, aShow) {
     this[aID].hidden = !aShow;
   },
-  onPopupHiding: function onContextMenuHidden () {
-    this.currentItem = null;
+  onPopupHiding: function onContextMenuHidden (event) {
+    if (event.target.id === "panoContextMenu")
+      this.currentItem = null;
   },
   newTab: function newTabFromContextMenu () {
     var item = this.currentItem;

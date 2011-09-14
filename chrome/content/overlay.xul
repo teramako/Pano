@@ -53,7 +53,7 @@
            onpopupshowing="gPano.pane.tooltip.build(event);"/>
   <menupopup id="panoContextMenu"
              onpopupshowing="gPano.pane.contextMenu.build(event);"
-             onpopuphiding="gPano.pane.contextMenu.onPopupHiding();"/>
+             onpopuphiding="gPano.pane.contextMenu.onPopupHiding(event);"/>
 </popupset>
 
 <menupopup id="viewSidebarMenu">

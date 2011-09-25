@@ -439,42 +439,44 @@ PanoramaTreeView.prototype = {
     if (isActive)
       background = Services.prefs.getBoolPref("browser.tabs.loadInBackground");
 
-    try {
-      var tab;
-      for (let i = 0; i < aPages.length; ++i) {
-        if (!isActive)
-          this.GI.setActiveGroupItem(group);
+    function delayedSetup (tab, group, page, self) {
+      var tabItem = tab._tabViewTabItem;
+      if (tabItem && tabItem.parent) {
+        if (tabItem.parent !== group) {
+          self.GI.moveTabToGroupItem(tab, group.id);
+        }
 
+        if (aTabPos >= 0)
+          self.gBrowser.moveTabTo(tab, aTabPos++);
+
+        if (page.icon)
+          self.gBrowser.setIcon(tab, page.icon);
+        else {
+          try {
+            let iconURI = PlacesUtils.favicons.getFaviconForPage(Services.io.newURI(page.url, null, null));
+            self.gBrowser.setIcon(tab, iconURI.spec);
+          } catch(e) {}
+        }
+      } else {
+        self.gWindow.setTimeout(delayedSetup, 50, tab, group, page, self);
+      }
+    }
+    try {
+      for (let i = 0; i < aPages.length; ++i) {
         let page = aPages[i];
+
+        let tab = null;
         if (background) {
-          tab = this.gBrowser.loadOneTab(null, {
-            inBackground: true,
-            ownerTab: tab,
-            skipAnimation: true
-          });
+          tab = this.gBrowser.addTab(null, { skipAnimation: true });
           setTabState(tab, page.url, page.title);
         } else {
           tab = this.gBrowser.loadOneTab(page.url, {
             inBackground: false,
-            ownerTab: tab,
             skipAnimation: true
           });
           background = true;
         }
-        if (!isActive)
-          this.gBrowser.hideTab(tab);
-
-        if (aTabPos >= 0)
-          this.gBrowser.moveTabTo(tab, aTabPos++);
-
-        if (page.icon)
-          this.gBrowser.setIcon(tab, page.icon);
-        else {
-          try {
-            let iconURI = PlacesUtils.favicons.getFaviconForPage(Services.io.newURI(page.url, null, null));
-            this.gBrowser.setIcon(tab, iconURI.spec);
-          } catch(e) {}
-        }
+        delayedSetup(tab, group, page, this);
       }
     } finally {
       if (!isActive)

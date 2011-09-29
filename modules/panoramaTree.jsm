@@ -153,6 +153,7 @@ const HANDLE_EVENT_TYPES = [
   "TabUnpinned",
   "TabAttrModified",
   "TabGroupMove",
+  "TabGroupAdded",
   "TabGroupClose",
   "tabviewshown",
   "tabviewhidden",
@@ -163,6 +164,14 @@ function Pano_moveTabToGroupItem (tab, groupItemId) {
   var event = tab.ownerDocument.createEvent("Events");
   event.initEvent("TabGroupMove", true, false);
   tab.dispatchEvent(event);
+}
+
+function Pano_registerGroup (groupItem) {
+  this.originalRegister(groupItem);
+  var win = Components.utils.getGlobalForObject(groupItem),
+      event = win.gWindow.document.createEvent("Events");
+  event.initEvent("TabGroupAdded", true, false);
+  win.gBrowser.dispatchEvent(event);
 }
 
 /**
@@ -205,6 +214,11 @@ PanoramaTreeView.prototype = {
     if (originalMoveTabToGroupItem.name !== "Pano_moveTabToGroupItem") {
       this.GI.originalMoveTabToGroupItem = originalMoveTabToGroupItem;
       this.GI.moveTabToGroupItem = Pano_moveTabToGroupItem;
+    }
+    var originalRegister = this.GI.register;
+    if (originalRegister.name != "Pano_registerGroup") {
+      this.GI.originalRegister = originalRegister;
+      this.GI.register = Pano_registerGroup;
     }
     this.inited = true;
   },
@@ -736,6 +750,9 @@ PanoramaTreeView.prototype = {
     case "TabGroupMove":
       this.onTabMove(aEvent);
       break;
+    case "TabGroupAdded":
+      this.onTabGroupAdded(aEvent);
+      break;
     case "TabGroupClose":
       this.onTabGroupClose(aEvent);
       break;
@@ -853,6 +870,16 @@ PanoramaTreeView.prototype = {
         this.treeBox.rowCountChanged(i ,1);
       }
     }
+  },
+  onTabGroupAdded: function PTV_onTabGroupAdded (aEvent) {
+    var group = this.GI.groupItems[this.GI.groupItems.length - 1];
+    var item = new GroupItem(group);
+    if (existOrphans)
+      this.rows.splice(this.lastGroupRow, 0, item);
+    else
+      row = this.rows.push(item) - 1;
+
+    this.treeBox.rowCountChanged(row, 1);
   },
   onTabGroupClose: function PTV_onTabGroupClose (aEvent) {
     // グループが削除される時、既にタブは削除されているので考慮の必要なし

@@ -48,15 +48,20 @@
 }
 
 /* tooltip */
+#panoTreeTooltipBox {
+  max-width: 280px;
+}
 #panoTreeTooltipImage {
-  min-width: 250px;
-  height: 250px;
-  background-size: cover;
+  width: 250px;
+  background-size: contain;
   background-repeat: no-repeat;
   background-image: -moz-element(#panoTabCapture);
 }
 #panoTreeTooltipImage.hide {
   height: 0;
   overflow: hidden;
+}
+#panoTreeTooltipImageContainer {
+  -moz-box-pack: center;
 }
 

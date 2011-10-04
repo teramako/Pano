@@ -4,9 +4,11 @@
 
 <tooltip id="panoTreeTabTooltip" noautohide="true">
   <vbox id="panoTreeTooltipBox">
-    <label id="panoTreeTooltipTitle" flex="1"/>
-    <label id="panoTreeTooltipURL" flex="1"/>
-    <box id="panoTreeTooltipImage" flex="1"/>
+    <label id="panoTreeTooltipTitle" flex="1" crop="center"/>
+    <label id="panoTreeTooltipURL" flex="1" crop="center"/>
+    <hbox id="panoTreeTooltipImageContainer" flex="1">
+      <box id="panoTreeTooltipImage"/>
+    </hbox>
   </vbox>
 </tooltip>
 

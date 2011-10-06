@@ -19,7 +19,7 @@
             command="panoCmdNewTab"
             insertbefore="panoContextMenuSep"/>
   <menuitem id="panoContextMenu_hibernate"
-            label="Hibernate Group"
+            label="&menu.hibernate;"
             accesskey="H"
             command="panoCmdHibernate"
             insertbefore="panoContextMenuSep"/>

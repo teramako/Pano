@@ -3,6 +3,7 @@
 <!ENTITY menu.closeGroup "Close the selected tabgroup(s)">
 <!ENTITY menu.closeTab "Close the selected tab(s)">
 <!ENTITY menu.closeSidebar "Close the sidebar">
+<!ENTITY menu.hibernate "Hibernate">
 <!ENTITY search.label "Filter">
 <!ENTITY hidetabbar.label "Hide Tabbar">
 <!ENTITY hidetabbar.tooltip "Hide the tabbar automatically during Pano sidebar is opening.">

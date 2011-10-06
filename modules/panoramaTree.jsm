@@ -438,6 +438,39 @@ PanoramaTreeView.prototype = {
     }
     return items;
   },
+  hibernateItems: function PTV_hibernateItems (aItems) {
+    var tabs = [];
+    for (let i = 0, len = aItems.length; i < len; ++i) {
+      let item = aItems[i];
+      if (item.type & TAB_ITEM_TYPE) {
+        if (!item.tab.selected && tabs.indexOf(item.tab) === -1)
+          tabs.push(item.tab);
+      } else
+        item.children.forEach(function(child){ if (!child.tab.selected){ tabs.push(child.tab); } });
+    }
+    if (tabs.lnegth === 0)
+      return;
+
+    var activeGroupItem = this.GI._activeGroupItem;
+    for (let i = 0, len = tabs.length; i < len; ++i) {
+      let tab = tabs[i];
+      let group = null;
+      if (!tab.pinned) {
+        group = tab._tabViewTabItem.parent;
+      }
+      let state = SessionStore.getTabState(tab);
+      let newTab = this.gBrowser.addTab(null, { skipAnimation: true });
+      SessionStore.setTabState(newTab, state);
+      if (tab.pinned) {
+        this.gBrowser.pinTab(newTab);
+        this.gBrowser.moveTabTo(newTab, tab._tPos + 1);
+      } else {
+        this.gBrowser.moveTabTo(newTab, tab._tPos + 1);
+        this.GI.moveTabToGroupItem(newTab, group ? group.id : null);
+      }
+      this.gBrowser.removeTab(tab);
+    }
+  },
   openTabs: function PTV_openTabs (aPages, aGroupItem, aTabPos) {
     var group,
         activeGroupItem = this.GI._activeGroupItem,

@@ -146,6 +146,11 @@ var contextMenu = {
     delete this.tabCloseElm;
     return this.tabCloseElm= elm;
   },
+  get hibernateElm () {
+    var elm = document.getElementById("panoContextMenu_hibernate");
+    delete this.hibernateElm;
+    return this.hibernateElm = elm;
+  },
   currentItem: null,
   build: function buildContextMenu (aEvent) {
     if (aEvent.target.id !== "panoContextMenu")
@@ -158,7 +163,9 @@ var contextMenu = {
       this.showItem("groupCloseElm",isNormalGroup);
       this.showItem("tabCloseElm", isTabItem);
       this.showItem("newTabElm", isNormalGroup);
+      this.showItem("hibernateElm", true);
     } else {
+      this.showItem("hibernateElm", false);
       this.showItem("groupCloseElm", false);
       this.showItem("tabCloseElm", false);
     }
@@ -197,6 +204,11 @@ var contextMenu = {
         }
       });
     }
+  },
+  hibernate: function PT_hibernate () {
+    var items = view.getSelectedItems();
+    if (items.length > 0)
+      view.hibernateItems(items);
   },
 };
 

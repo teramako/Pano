@@ -33,6 +33,7 @@
       <command id="panoCmdNewTab" oncommand="gPano.pane.contextMenu.newTab();"/>
       <command id="panoCmdNewGroup" oncommand="gPano.pane.newGroup();"/>
       <command id="panoCmdClose" oncommand="gPano.pane.contextMenu.closeItem();"/>
+      <command id="panoCmdHibernate" oncommand="gPano.pane.contextMenu.hibernate();"/>
     </commandset>
     <keyset id="panoKeySet" disabled="true">
       <key keycode="VK_RETURN" oncommand="gPano.pane.selectTab()"/>

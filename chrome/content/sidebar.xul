@@ -14,6 +14,7 @@
     <command id="panoCmdNewTab" oncommand="gPanoramaTree.contextMenu.newTab();"/>
     <command id="panoCmdNewGroup" oncommand="gPanoramaTree.newGroup();"/>
     <command id="panoCmdClose" oncommand="gPanoramaTree.contextMenu.closeItem();"/>
+    <command id="panoCmdHibernate" oncommand="gPanoramaTree.contextMenu.hibernate();"/>
   </commandset>
   <keyset id="panoKeySet">
     <key keycode="VK_RETURN" oncommand="gPanoramaTree.selectTab()"/>

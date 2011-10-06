@@ -454,6 +454,9 @@ PanoramaTreeView.prototype = {
     var activeGroupItem = this.GI._activeGroupItem;
     for (let i = 0, len = tabs.length; i < len; ++i) {
       let tab = tabs[i];
+      if (tab.linkedBrowser.__SS_restoreState)
+        continue;
+
       let group = null;
       if (!tab.pinned) {
         group = tab._tabViewTabItem.parent;

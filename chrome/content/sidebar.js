@@ -45,7 +45,12 @@ var gPanoramaTree = {
   isPanel: false,
   tabbar: {
     init: function () {
-      this.checkBox.checked = this.pref;
+      var checkBox = this.checkBox;
+      if (this.pref)
+        checkBox.setAttribute("checked", "true");
+      else
+        checkBox.removeAttribute("checked");
+
       this.toggleHide();
     },
     get toolbar () {
@@ -63,11 +68,13 @@ var gPanoramaTree = {
     },
     get checkBox () {
       var elm = document.getElementById("hideTabbarCheck");
-      delete this.checkBox;
-      return this.checkBox = elm;
+      if (!elm)
+        elm = document.getElementById("panoToolBox").palette.querySelector("#hideTabbarCheck");
+
+      return elm;
     },
     toggleHide: function () {
-      var bool = this.checkBox.checked;
+      var bool = this.checkBox.hasAttribute("checked");
       this.pref = bool;
       this.toolbar.style.visibility = bool ? "collapse" : "visible";
       // Compatibility for LessChrome HD

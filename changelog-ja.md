@@ -1,6 +1,12 @@
 Changelog
 =========
 
+##version 0.10
+ * [#44 各ボックスのツールバー化](https://github.com/teramako/Pano/issues/44)
+   * 「フィルター」や「タブバーを隠す」ボックスをツールバー化して表示/非表示を切り替えられるようにした
+ * [#35 miscs](https://github.com/teramako/Pano/issues/35)
+   * 「タブバーを隠す」チェックボックスをボタンにしてアイコンを追加
+
 ##version 0.9 (2011-09-29)
  * LessChrome HD と「タブバーを隠す」設定の互換性を向上
  * ツリーに閉じるボタンを追加

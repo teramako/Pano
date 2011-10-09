@@ -58,12 +58,10 @@
         <label id="panoSearchLabel"/>
         <textbox id="panoSearchBox" oncommand="gPanoramaTree.setFilter(this.value);"/>
       </toolbaritem>
-      <toolbaritem id="hideTabbarCheckItem">
-        <toolbarbutton id="hideTabbarCheck" type="checkbox"
-                       label="&hidetabbar.label;"
-                       tooltiptext="&hidetabbar.tooltip;"
-                       oncommand="gPanoramaTree.tabbar.toggleHide();"/>
-      </toolbaritem>
+      <toolbarbutton id="hideTabbarCheck" type="checkbox"
+                     label="&hidetabbar.label;"
+                     tooltiptext="&hidetabbar.tooltip;"
+                     oncommand="gPanoramaTree.tabbar.toggleHide();"/>
     </toolbarpalette>
   </toolbox>
 
@@ -98,7 +96,7 @@
              toolbarname="&toolbar.bottomToolbar;"
              toolboxid="panoToolBox"
              customizable="true"
-             defaultset="hideTabbarCheckItem"
+             defaultset="hideTabbarCheck"
              context="panoToolbarContextMenu"/>
   </vbox>
 </window>

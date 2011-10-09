@@ -43,8 +43,7 @@
                  onpopupshowing="gPano.pane.contextMenu.build(event);"
                  onpopuphiding="gPano.pane.contextMenu.onPopupHiding(event);">
         <menuseparator id="panoContextMenuSep"/>
-        <menu id="panoContextMenu_toolbar"
-              label="Toolbar">
+        <menu id="panoContextMenu_toolbar">
           <menupopup id="panoContextMenu_toolbarPopup"
                      onpopupshowing="gPano.pane.toolbarContextMenu.onPopupShowing(event);"
                      oncommand="gPano.pane.toolbarContextMenu.onCommand(event);"/>

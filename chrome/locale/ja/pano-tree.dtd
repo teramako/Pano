@@ -4,8 +4,12 @@
 <!ENTITY menu.closeTab "選択したタブを閉じる">
 <!ENTITY menu.closeSidebar "サイドバーを閉じる">
 <!ENTITY menu.hibernate "休止させる">
+<!ENTITY menu.toolbar "ツールバー">
+<!ENTITY menu.customizeToolbar "カスタマイズ...">
 <!ENTITY search.label "フィルター">
 <!ENTITY hidetabbar.label "タブバーを隠す">
 <!ENTITY hidetabbar.tooltip "Panoサイドバーが開いている間、タブバーを隠す">
 <!ENTITY subFrame.label "サブ・コンテンツ">
+<!ENTITY toolbar.topToolbar "ツールバー(上部)">
+<!ENTITY toolbar.bottomToolbar "ツールバー(下部)">
 

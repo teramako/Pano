@@ -36,8 +36,7 @@
         <menupopup id="panoContextSubFrameMenuPopup"
                    onpopupshowing="gSubFrame.onPopupShowing(event);"/>
       </menu>
-      <menu id="panoContextMenu_toolbar"
-            label="Toolbar">
+      <menu id="panoContextMenu_toolbar">
         <menupopup id="panoContextMenu_toolbarPopup"
                    onpopupshowing="gToolbarContextMenu.onPopupShowing(event);"
                    oncommand="gToolbarContextMenu.onCommand(event);"/>
@@ -96,7 +95,7 @@
   </vbox>
   <vbox>
     <toolbar id="panoBottomBar"
-             toolbarname="Bottom bar"
+             toolbarname="&toolbar.bottomToolbar;"
              toolboxid="panoToolBox"
              customizable="true"
              defaultset="hideTabbarCheckItem"

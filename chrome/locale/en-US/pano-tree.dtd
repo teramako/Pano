@@ -4,8 +4,12 @@
 <!ENTITY menu.closeTab "Close the selected tab(s)">
 <!ENTITY menu.closeSidebar "Close the sidebar">
 <!ENTITY menu.hibernate "Hibernate">
+<!ENTITY menu.toolbar "Toolbar">
+<!ENTITY menu.customizeToolbar "Customize…">
 <!ENTITY search.label "Filter">
 <!ENTITY hidetabbar.label "Hide Tabbar">
 <!ENTITY hidetabbar.tooltip "Hide the tabbar automatically during Pano sidebar is opening.">
 <!ENTITY subFrame.label "Sub Content">
+<!ENTITY toolbar.topToolbar "Top Toolbar">
+<!ENTITY toolbar.bottomToolbar "Bottom Toolbar">
 

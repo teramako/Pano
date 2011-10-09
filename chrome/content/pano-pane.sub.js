@@ -12,6 +12,9 @@ XPCOMUtils.defineLazyGetter(this, "toolbarContextMenu", function () {
 });
 
 function onPopupShowing (aEvent) {
+  if (aEvent.target !== aEvent.currentTarget)
+    return;
+
   if (view)
     return;
 
@@ -20,7 +23,10 @@ function onPopupShowing (aEvent) {
     onPopupShown();
   });
 }
-function onPopupShown () {
+function onPopupShown (aEvent) {
+  if (aEvent.target !== aEvent.currentTarget)
+    return;
+
   var count = tree.view.rowCount;
   if (count > 0) {
     let y = {}, h = {};
@@ -34,7 +40,10 @@ function onPopupShown () {
   window.addEventListener("click", onClick, true);
 }
 
-function onPopupHiding () {
+function onPopupHiding (aEvent) {
+  if (aEvent.target !== aEvent.currentTarget)
+    return;
+
   keyset.setAttribute("disabled", "true");
   window.removeEventListener("tabviewshown", onTabViewShown, false);
   window.removeEventListener("click", onClick, true);

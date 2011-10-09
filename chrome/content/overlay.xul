@@ -26,9 +26,9 @@
   <panel id="pano-pane" type="arrow" position="bottomcenter topright" orient="vertical" side="top"
          backdrag="true"
          noautohide="true"
-         onpopupshowing="gPano.pane.onPopupShowing();"
-         onpopupshown="gPano.pane.onPopupShown();"
-         onpopuphiding="gPano.pane.onPopupHiding();">
+         onpopupshowing="gPano.pane.onPopupShowing(event);"
+         onpopupshown="gPano.pane.onPopupShown(event);"
+         onpopuphiding="gPano.pane.onPopupHiding(event);">
     <commandset id="panoCommandSet">
       <command id="panoCmdNewTab" oncommand="gPano.pane.contextMenu.newTab();"/>
       <command id="panoCmdNewGroup" oncommand="gPano.pane.newGroup();"/>
@@ -36,6 +36,24 @@
       <command id="panoCmdHibernate" oncommand="gPano.pane.contextMenu.hibernate();"/>
       <command id="panoCmdCustomizeToolbars" oncommand="gPano.pane.toolbarContextMenu.customizeToolbar(event);"/>
     </commandset>
+    <popupset id="panoPopupSet">
+      <tooltip id="panoTreeTabTooltip"
+               onpopupshowing="gPano.pane.tooltip.build(event);"/>
+      <menupopup id="panoContextMenu"
+                 onpopupshowing="gPano.pane.contextMenu.build(event);"
+                 onpopuphiding="gPano.pane.contextMenu.onPopupHiding(event);">
+        <menuseparator id="panoContextMenuSep"/>
+        <menu id="panoContextMenu_toolbar"
+              label="Toolbar">
+          <menupopup id="panoContextMenu_toolbarPopup"
+                     onpopupshowing="gPano.pane.toolbarContextMenu.onPopupShowing(event);"
+                     oncommand="gPano.pane.toolbarContextMenu.onCommand(event);"/>
+        </menu>
+      </menupopup>
+      <menupopup id="panoToolbarContextMenu"
+                 onpopupshowing="gPano.pane.toolbarContextMenu.onPopupShowing(event);"
+                 oncommand="gPano.pane.toolbarContextMenu.onCommand(event);"/>
+    </popupset>
     <keyset id="panoKeySet" disabled="true">
       <key keycode="VK_RETURN" oncommand="gPano.pane.selectTab()"/>
       <key keycode="VK_F2" oncommand="gPano.pane.view.editGroupName()"/>
@@ -55,23 +73,6 @@
                     ondragstart="gPano.pane.onDragStart(event);"/>
     </tree>
   </panel>
-
-  <tooltip id="panoTreeTabTooltip"
-           onpopupshowing="gPano.pane.tooltip.build(event);"/>
-  <menupopup id="panoContextMenu"
-             onpopupshowing="gPano.pane.contextMenu.build(event);"
-             onpopuphiding="gPano.pane.contextMenu.onPopupHiding(event);">
-    <menuseparator id="panoContextMenuSep"/>
-    <menu id="panoContextMenu_toolbar"
-          label="Toolbar">
-      <menupopup id="panoContextMenu_toolbarPopup"
-                 onpopupshowing="gPano.pane.toolbarContextMenu.onPopupShowing(event);"
-                 oncommand="gPano.pane.toolbarContextMenu.onCommand(event);"/>
-    </menu>
-  </menupopup>
-  <menupopup id="panoToolbarContextMenu"
-             onpopupshowing="gPano.pane.toolbarContextMenu.onPopupShowing(event);"
-             oncommand="gPano.pane.toolbarContextMenu.onCommand(event);"/>
 </popupset>
 
 <menupopup id="viewSidebarMenu">

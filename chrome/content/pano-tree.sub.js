@@ -131,11 +131,6 @@ var tooltip = {
 };
 
 var contextMenu = {
-  get rootElm () {
-    var elm = document.getElementById("panoContextMenu");
-    delete this.rootElm;
-    return this.rootElm = elm;
-  },
   get newTabElm () {
     var elm = document.getElementById("panoContextMenu_newTab");
     delete this.newTabElm

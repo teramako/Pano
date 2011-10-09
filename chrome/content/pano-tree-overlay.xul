@@ -59,7 +59,10 @@
             accesskey="C"/>
 </menupopup>
 
-<toolbox id="panoToolBox">
+<toolbox id="panoToolBox"
+         defaultmode="icons"
+         mode="icons"
+         iconsize="small">
   <toolbar id="panoToolbar1"
            toolbarname="&toolbar.topToolbar;"
            mode="icons"
@@ -67,6 +70,7 @@
            iconsize="small"
            defaultset="panoSearchbar"
            context="panoToolbarContextMenu"/>
+  <toolbarset id="panoCustomToolbars" context="panoToolbarContextMenu"/>
 </toolbox>
 
 <toolbarpalette id="panoToolbarPalette">

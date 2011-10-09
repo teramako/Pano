@@ -60,7 +60,15 @@ function onClick (aEvent) {
       position === (Node.DOCUMENT_POSITION_FOLLOWING | Node.DOCUMENT_POSITION_CONTAINED_BY) ||
       aEvent.target === panel.anchorNode) {
     return;
-  } else if (aEvent.target instanceof XULElement) {
+  }
+
+  position = contextMenu.rootElm.compareDocumentPosition(aEvent.target);
+  if (position === 0 ||
+      position === (Node.DOCUMENT_POSITION_FOLLOWING | Node.DOCUMENT_POSITION_CONTAINED_BY)) {
+    return;
+  }
+
+  if (aEvent.target instanceof XULElement) {
     switch (aEvent.target.localName) {
     case "splitmenu":
       if (aEvent.originalTarget.localName === "menu")

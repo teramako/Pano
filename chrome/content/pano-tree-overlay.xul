@@ -74,7 +74,8 @@
 </toolbox>
 
 <toolbarpalette id="panoToolbarPalette">
-  <toolbaritem id="panoSearchbar" align="center" flex="1" removable="true">
+  <toolbaritem id="panoSearchbar" align="center" flex="1" removable="true"
+               title="&search.label;">
     <label id="panoSearchLabel" value="&search.label;" accesskey="F" control="panoSearchBox"/>
     <textbox id="panoSearchBox" flex="1" type="search" class="compact"/>
   </toolbaritem>

@@ -1,6 +1,12 @@
 
 var toolbox = document.getElementById("panoToolBox");
 
+XPCOMUtils.defineLazyGetter(this, "customizeCommand", function () {
+  return document.getElementById("panoCmdCustomizeToolbars");
+});
+
+toolbox.customizeDone = toolbarCustomizeDone;
+
 function onPopupShowing (aEvent) {
   var popup = aEvent.target;
   if (popup !== aEvent.currentTarget)
@@ -47,5 +53,16 @@ function onCommand (aEvent) {
 
 function customizeToolbar (aEvent) {
   aEvent.stopPropagation();
+
+  customizeCommand.setAttribute("disabled", "true");
+
+  return window.openDialog("chrome://global/content/customizeToolbar.xul",
+                           "CustomizeToolbar",
+                           "chrome,titlebar,location,resizable,dependent",
+                           toolbox);
+}
+
+function toolbarCustomizeDone (aToolboxChanged) {
+  customizeCommand.removeAttribute("disabled");
 }
 

@@ -77,3 +77,8 @@ toolbar:not(:-moz-lwtheme) {
   background-color: -moz-Dialog;
 }
 
+/* toolbar items */
+#hideTabbarCheck {
+  list-style-image: url("chrome://pano/skin/tab_delete.png");
+}
+

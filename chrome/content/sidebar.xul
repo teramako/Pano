@@ -15,6 +15,7 @@
     <command id="panoCmdNewGroup" oncommand="gPanoramaTree.newGroup();"/>
     <command id="panoCmdClose" oncommand="gPanoramaTree.contextMenu.closeItem();"/>
     <command id="panoCmdHibernate" oncommand="gPanoramaTree.contextMenu.hibernate();"/>
+    <command id="panoCmdCustomizeToolbars" oncommand="gToolbarContextMenu.customizeToolbar(event);"/>
   </commandset>
   <keyset id="panoKeySet">
     <key keycode="VK_RETURN" oncommand="gPanoramaTree.selectTab()"/>
@@ -35,11 +36,20 @@
         <menupopup id="panoContextSubFrameMenuPopup"
                    onpopupshowing="gSubFrame.onPopupShowing(event);"/>
       </menu>
+      <menu id="panoContextMenu_toolbar"
+            label="Toolbar">
+        <menupopup id="panoContextMenu_toolbarPopup"
+                   onpopupshowing="gToolbarContextMenu.onPopupShowing(event);"
+                   oncommand="gToolbarContextMenu.onCommand(event);"/>
+      </menu>
       <menuseparator/>
       <menuitem id="panoContextMenu_sidebarClose"
                 label="&menu.closeSidebar;" accesskey="W"
                 oncommand="gWin.toggleSidebar()"/>
     </menupopup>
+    <menupopup id="panoToolbarContextMenu"
+               onpopupshowing="gToolbarContextMenu.onPopupShowing(event);"
+               oncommand="gToolbarContextMenu.onCommand(event);"/>
   </popupset>
 
   <toolbox id="panoToolBox">
@@ -89,6 +99,7 @@
              toolbarname="Bottom bar"
              toolboxid="panoToolBox"
              customizable="true"
-             defaultset="hideTabbarCheckItem"/>
+             defaultset="hideTabbarCheckItem"
+             context="panoToolbarContextMenu"/>
   </vbox>
 </window>

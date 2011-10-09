@@ -40,13 +40,30 @@
             insertbefore="panoContextMenuSep"/>
 </menupopup>
 
+<menupopup id="panoContextMenu_toolbarPopup">
+  <menuseparator/>
+  <menuitem id="panoContextMenu_customizeToolbar"
+            command="panoCmdCustomizeToolbars"
+            label="Customize Toolbars"
+            accesskey="C"/>
+</menupopup>
+
+<menupopup id="panoToolbarContextMenu">
+  <menuseparator/>
+  <menuitem id="panoCustomizeToolbar"
+            command="panoCmdCustomizeToolbars"
+            label="Customize Toolbars"
+            accesskey="C"/>
+</menupopup>
+
 <toolbox id="panoToolBox">
   <toolbar id="panoToolbar1"
            toolbarname="Toolbar 1"
            mode="icons"
            customizable="true"
            iconsize="small"
-           defaultset="panoSearchbar"/>
+           defaultset="panoSearchbar"
+           context="panoToolbarContextMenu"/>
 </toolbox>
 
 <toolbarpalette id="panoToolbarPalette">

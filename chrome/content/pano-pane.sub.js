@@ -5,6 +5,12 @@ var panel = document.getElementById("pano-pane"),
     keyset = document.getElementById("panoKeySet"),
     view;
 
+XPCOMUtils.defineLazyGetter(this, "toolbarContextMenu", function () {
+  var container = {};
+  Services.scriptloader.loadSubScript("chrome://pano/content/toolbarmenu.sub.js", container);
+  return container;
+});
+
 function onPopupShowing (aEvent) {
   if (view)
     return;

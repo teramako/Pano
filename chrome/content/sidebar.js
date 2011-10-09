@@ -100,4 +100,9 @@ XPCOMUtils.defineLazyGetter(this, "gSubFrame", function () {
   return container;
 });
 
+XPCOMUtils.defineLazyGetter(this, "gToolbarContextMenu", function () {
+  var container = {};
+  Services.scriptloader.loadSubScript("chrome://pano/content/toolbarmenu.sub.js", container);
+  return container;
+});
 

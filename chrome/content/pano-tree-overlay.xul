@@ -40,11 +40,22 @@
             insertbefore="panoContextMenuSep"/>
 </menupopup>
 
+<toolbox id="panoToolBox">
+  <toolbar id="panoToolbar1"
+           toolbarname="Toolbar 1"
+           mode="icons"
+           customizable="true"
+           iconsize="small"
+           defaultset="panoSearchbar"/>
+</toolbox>
 
-<hbox id="panoSearchbar" align="center">
-  <label id="panoSearchLabel" value="&search.label;" accesskey="F" control="panoSearchBox"/>
-  <textbox id="panoSearchBox" flex="1" type="search" class="compact"/>
-</hbox>
+<toolbarpalette id="panoToolbarPalette">
+  <toolbaritem id="panoSearchbar" align="center" flex="1" removable="true">
+    <label id="panoSearchLabel" value="&search.label;" accesskey="F" control="panoSearchBox"/>
+    <textbox id="panoSearchBox" flex="1" type="search" class="compact"/>
+  </toolbaritem>
+</toolbarpalette>
+
 <tree id="panoTabGroupTree" class="pano-tree" flex="1" hidecolumnpicker="true" editable="true">
   <treecols>
     <treecol anonid="title" flex="1"

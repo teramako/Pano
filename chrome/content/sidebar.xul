@@ -42,10 +42,21 @@
     </menupopup>
   </popupset>
 
-  <hbox id="panoSearchbar">
-    <label id="panoSearchLabel"/>
-    <textbox id="panoSearchBox" oncommand="gPanoramaTree.setFilter(this.value);"/>
-  </hbox>
+  <toolbox id="panoToolBox">
+    <toolbar id="panoToolbar1"/>
+    <toolbarpalette id="panoToolbarPalette">
+      <toolbaritem id="panoSearchbar">
+        <label id="panoSearchLabel"/>
+        <textbox id="panoSearchBox" oncommand="gPanoramaTree.setFilter(this.value);"/>
+      </toolbaritem>
+      <toolbaritem id="hideTabbarCheckItem">
+        <toolbarbutton id="hideTabbarCheck" type="checkbox"
+                       label="&hidetabbar.label;"
+                       tooltiptext="&hidetabbar.tooltip;"
+                       oncommand="gPanoramaTree.tabbar.toggleHide();"/>
+      </toolbaritem>
+    </toolbarpalette>
+  </toolbox>
 
   <tree id="panoTabGroupTree">
     <treechildren id="panoTabGroupTreeChildren"
@@ -73,10 +84,11 @@
              clickthrough="never"
              persist="src"/>
   </vbox>
-  <hbox>
-    <checkbox id="hideTabbarCheck"
-              label="&hidetabbar.label;"
-              tooltiptext="&hidetabbar.tooltip;"
-              oncommand="gPanoramaTree.tabbar.toggleHide();"/>
-  </hbox>
+  <vbox>
+    <toolbar id="panoBottomBar"
+             toolbarname="Bottom bar"
+             toolboxid="panoToolBox"
+             customizable="true"
+             defaultset="hideTabbarCheckItem"/>
+  </vbox>
 </window>

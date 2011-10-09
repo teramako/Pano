@@ -39,10 +39,15 @@
       <key keycode="VK_RETURN" oncommand="gPano.pane.selectTab()"/>
       <key keycode="VK_F2" oncommand="gPano.pane.view.editGroupName()"/>
     </keyset>
-    <hbox id="panoSearchbar">
-      <label id="panoSearchLabel"/>
-      <textbox id="panoSearchBox" oncommand="gPano.pane.setFilter(this.value);"/>
-    </hbox>
+    <toolbox id="panoToolBox">
+      <toolbar id="panoToolbar1"/>
+      <toolbarpalette id="panoToolbarPalette">
+        <toolbaritem id="panoSearchbar">
+          <label id="panoSearchLabel"/>
+          <textbox id="panoSearchBox" oncommand="gPano.pane.setFilter(this.value);"/>
+        </toolbaritem>
+      </toolbarpalette>
+    </toolbox>
     <tree id="panoTabGroupTree">
       <treechildren id="panoTabGroupTreeChildren"
                     ondblclick="gPano.pane.selectTab(event);"

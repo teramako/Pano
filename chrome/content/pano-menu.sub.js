@@ -66,9 +66,11 @@ function onPopupShowing (aEvent) {
         if (group !== currentGroup)
           popup.appendChild(createMenu(group));
       }
-      for (let [, tabItem] in Iterator(GI.getOrphanedTabs())) {
-        if (!tabItem.tab.selected)
-          popup.appendChild(createMenuItem(tabItem));
+      if (GI.getOrphanedTabs) {
+        for (let [, tabItem] in Iterator(GI.getOrphanedTabs())) {
+          if (!tabItem.tab.selected)
+            popup.appendChild(createMenuItem(tabItem));
+        }
       }
     });
   }

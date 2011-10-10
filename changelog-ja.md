@@ -6,6 +6,10 @@ Changelog
    * 「フィルター」や「タブバーを隠す」ボックスをツールバー化して表示/非表示を切り替えられるようにした
  * [#35 miscs](https://github.com/teramako/Pano/issues/35)
    * 「タブバーを隠す」チェックボックスをボタンにしてアイコンを追加
+ * FixBug
+   * [#42 url や title が 非常に長いときに tooltip の サムネイル画像の 拡大について](https://github.com/teramako/Pano/issues/42)
+     * ツールチップの幅を固定にした
+   * [#45 GI.getOrphanedTabs is not a function](https://github.com/teramako/Pano/issues/45)
 
 ##version 0.9 (2011-09-29)
  * LessChrome HD と「タブバーを隠す」設定の互換性を向上

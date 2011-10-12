@@ -24,7 +24,7 @@ function onPopupShowing (aEvent) {
   });
 }
 function onPopupShown (aEvent) {
-  if (aEvent.target !== aEvent.currentTarget)
+  if (aEvent && aEvent.target !== aEvent.currentTarget)
     return;
 
   var count = tree.view.rowCount;
@@ -36,8 +36,10 @@ function onPopupShown (aEvent) {
   if (keyset.hasAttribute("disabled"))
     keyset.removeAttribute("disabled");
 
-  window.addEventListener("tabviewshown", onTabViewShown, false);
-  window.addEventListener("click", onClick, true);
+  if (aEvent) {
+    window.addEventListener("tabviewshown", onTabViewShown, false);
+    window.addEventListener("click", onClick, true);
+  }
 }
 
 function onPopupHiding (aEvent) {

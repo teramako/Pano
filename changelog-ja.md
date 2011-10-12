@@ -4,6 +4,7 @@ Changelog
 ##version 0.10
  * [#44 各ボックスのツールバー化](https://github.com/teramako/Pano/issues/44)
    * 「フィルター」や「タブバーを隠す」ボックスをツールバー化して表示/非表示を切り替えられるようにした
+   * 「フィルター」アイテムのラベルを廃止し、プレイスホルダーに変更した
  * [#35 miscs](https://github.com/teramako/Pano/issues/35)
    * 「タブバーを隠す」チェックボックスをボタンにしてアイコンを追加
  * FixBug

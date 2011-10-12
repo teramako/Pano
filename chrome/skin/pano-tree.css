@@ -81,4 +81,20 @@ toolbar:not(:-moz-lwtheme) {
 #hideTabbarCheck {
   list-style-image: url("chrome://pano/skin/tab_delete.png");
 }
+#panoSelectTabBack,
+#panoSelectTabForward {
+  list-style-image: url("chrome://pano/skin/resultset.png");
+}
+#panoSelectTabBack {
+  -moz-image-region: rect(0, 16px, 16px, 0);
+}
+#panoSelectTabBack[disabled="true"] {
+  -moz-image-region: rect(0, 32px, 16px, 16px);
+}
+#panoSelectTabForward {
+  -moz-image-region: rect(16px, 16px, 32px, 0);
+}
+#panoSelectTabForward[disabled="true"]  {
+  -moz-image-region: rect(16px, 32px, 32px, 16px);
+}
 

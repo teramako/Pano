@@ -79,6 +79,8 @@
     <label id="panoSearchLabel" value="&search.label;" accesskey="F" control="panoSearchBox"/>
     <textbox id="panoSearchBox" flex="1" type="search" class="compact"/>
   </toolbaritem>
+  <toolbarbutton id="panoSelectTabBack" label="Back" command="panoCmdTabHistoryBack"/>
+  <toolbarbutton id="panoSelectTabForward" label="Forward" command="panoCmdTabHistoryForward"/>
 </toolbarpalette>
 
 <tree id="panoTabGroupTree" class="pano-tree" flex="1" hidecolumnpicker="true" editable="true">

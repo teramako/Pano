@@ -7,6 +7,8 @@ Changelog
    * 「フィルター」アイテムのラベルを廃止し、プレイスホルダーに変更した
  * [#35 miscs](https://github.com/teramako/Pano/issues/35)
    * 「タブバーを隠す」チェックボックスをボタンにしてアイコンを追加
+   * タブの選択履歴を戻る/進むボタンの実装
+   * ツリーのグループ全てを展開/折り畳むボタンの実装
  * FixBug
    * [#42 url や title が 非常に長いときに tooltip の サムネイル画像の 拡大について](https://github.com/teramako/Pano/issues/42)
      * ツールチップの幅を固定にした

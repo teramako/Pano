@@ -78,23 +78,33 @@ toolbar:not(:-moz-lwtheme) {
 }
 
 /* toolbar items */
-#hideTabbarCheck {
-  list-style-image: url("chrome://pano/skin/tab_delete.png");
-}
+#hideTabbarCheck,
 #panoSelectTabBack,
-#panoSelectTabForward {
-  list-style-image: url("chrome://pano/skin/resultset.png");
+#panoSelectTabForward,
+#panoExpandAll,
+#panoCollapseAll {
+  list-style-image: url("chrome://pano/skin/buttons.png");
+}
+
+#hideTabbarCheck {
+  -moz-image-region: rect(0, 48px, 16px, 32px);
 }
 #panoSelectTabBack {
-  -moz-image-region: rect(0, 16px, 16px, 0);
+  -moz-image-region: rect(16px, 16px, 32px, 0px);
 }
 #panoSelectTabBack[disabled="true"] {
-  -moz-image-region: rect(0, 32px, 16px, 16px);
+  -moz-image-region: rect(16px, 32px, 32px, 16px);
 }
 #panoSelectTabForward {
-  -moz-image-region: rect(16px, 16px, 32px, 0);
+  -moz-image-region: rect(16px, 48px, 32px, 32px);
 }
 #panoSelectTabForward[disabled="true"]  {
-  -moz-image-region: rect(16px, 32px, 32px, 16px);
+  -moz-image-region: rect(16px, 62px, 32px, 48px);
+}
+#panoExpandAll {
+  -moz-image-region: rect(0, 32px, 16px, 16px);
+}
+#panoCollapseAll {
+  -moz-image-region: rect(0, 16px, 16px, 0);
 }
 

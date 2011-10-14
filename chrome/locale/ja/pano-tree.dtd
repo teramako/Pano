@@ -13,6 +13,10 @@
 <!ENTITY tabHistory.forward.tooltip "タブ選択履歴を進む">
 <!ENTITY tabHistory.back.label "戻る">
 <!ENTITY tabHistory.back.tooltip "タブ選択履歴を戻る">
+<!ENTITY expandAll.label "全て展開">
+<!ENTITY expandAll.tooltip "全てのグループを展開">
+<!ENTITY collapseAll.label "全て折り畳む">
+<!ENTITY collapseAll.tooltip "全てのグループを折り畳む">
 <!ENTITY subFrame.label "サブ・コンテンツ">
 <!ENTITY toolbar.topToolbar "ツールバー(上部)">
 <!ENTITY toolbar.bottomToolbar "ツールバー(下部)">

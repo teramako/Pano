@@ -18,6 +18,8 @@
     <command id="panoCmdCustomizeToolbars" oncommand="gToolbarContextMenu.customizeToolbar(event);"/>
     <command id="panoCmdTabHistoryBack" oncommand="gWin.gPano.tabHistory.goBack();"/>
     <command id="panoCmdTabHistoryForward" oncommand="gWin.gPano.tabHistory.goForward();"/>
+    <command id="panoCmdExpandAll" oncommand="gPanoramaTree.expandAll();"/>
+    <command id="panoCmdCollapseAll" oncommand="gPanoramaTree.collapseAll();"/>
   </commandset>
   <keyset id="panoKeySet">
     <key keycode="VK_RETURN" oncommand="gPanoramaTree.selectTab()"/>

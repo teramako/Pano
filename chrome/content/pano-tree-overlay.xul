@@ -87,6 +87,14 @@
                  label="&tabHistory.forward.label;"
                  tooltiptext="&tabHistory.forward.tooltip;"
                  command="panoCmdTabHistoryForward"/>
+  <toolbarbutton id="panoExpandAll"
+                 label="&expandAll.label;"
+                 tooltiptext="&expandAll.tooltip;"
+                 command="panoCmdExpandAll"/>
+  <toolbarbutton id="panoCollapseAll"
+                 label="&collapseAll.label;"
+                 tooltiptext="&collapseAll.tooltip;"
+                 command="panoCmdCollapseAll"/>
 </toolbarpalette>
 
 <tree id="panoTabGroupTree" class="pano-tree" flex="1" hidecolumnpicker="true" editable="true">

@@ -64,7 +64,6 @@ toggleSwitchTabHandler();
 toggleShowCloseButton();
 
 function observe (aSubject, aTopic, aData) {
-  Services.console.logStringMessage(Array.slice(arguments));
   if (aTopic === "nsPref:changed") {
     switch (aData) {
     case PREF_SWITCH_BY:

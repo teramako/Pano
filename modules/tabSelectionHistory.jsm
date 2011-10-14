@@ -25,7 +25,6 @@ function TabSelectionHistory (aWindow) {
 TabSelectionHistory.prototype = {
   maxItems: -1,
   do: function TSH_do (aTab) {
-    Services.console.logStringMessage("register: " + aTab.label);
     if (aTab.parentNode !== this.mTabContainer)
       throw TypeError("arguments 0 is not a child of the tabContainer");
 
@@ -36,7 +35,6 @@ TabSelectionHistory.prototype = {
         max = this.maxItems;
 
     this.tabs.splice(i, this.tabs.length - i, aTab);
-    Services.console.logStringMessage("register: " + this.tabs);
     if (max > 0 && this.tabs.length > max)
       this.tabs.splice(max, this.tabs.length - max);
 
@@ -70,7 +68,6 @@ TabSelectionHistory.prototype = {
   get canGoForward () this.index < this.tabs.length - 1,
   handleEvent: function TSH_handleEvent (aEvent) {
     var tab = aEvent.target;
-    Services.console.logStringMessage(aEvent.type + ": "+ tab.label);
     switch (aEvent.type) {
     case "TabSelect":
       if (this.mTabContainer.__panoTransactioning__)

@@ -212,4 +212,20 @@ var contextMenu = {
   },
 };
 
+function expandAll () {
+  for (let i = 0; i < view.rows.length; ++i) {
+    let row = view.rows[i];
+    if ((row.type & TAB_GROUP_TYPE) && !row.isOpen)
+      view.toggleOpenState(i);
+  }
+}
+
+function collapseAll () {
+  for (let i = 0; i < view.rows.length; ++i) {
+    let row = view.rows[i];
+    if ((row.type & TAB_GROUP_TYPE) && row.isOpen)
+      view.toggleOpenState(i);
+  }
+}
+
 // vim: sw=2 ts=2 et:

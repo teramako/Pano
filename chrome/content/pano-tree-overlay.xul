@@ -78,6 +78,22 @@
                title="&search.label;">
     <textbox id="panoSearchBox" flex="1" type="search" placeholder="&search.label;" class="compact"/>
   </toolbaritem>
+  <toolbarbutton id="panoSelectTabBack"
+                 label="&tabHistory.back.label;"
+                 tooltiptext="&tabHistory.back.tooltip;"
+                 command="panoCmdTabHistoryBack"/>
+  <toolbarbutton id="panoSelectTabForward"
+                 label="&tabHistory.forward.label;"
+                 tooltiptext="&tabHistory.forward.tooltip;"
+                 command="panoCmdTabHistoryForward"/>
+  <toolbarbutton id="panoExpandAll"
+                 label="&expandAll.label;"
+                 tooltiptext="&expandAll.tooltip;"
+                 command="panoCmdExpandAll"/>
+  <toolbarbutton id="panoCollapseAll"
+                 label="&collapseAll.label;"
+                 tooltiptext="&collapseAll.tooltip;"
+                 command="panoCmdCollapseAll"/>
 </toolbarpalette>
 
 <tree id="panoTabGroupTree" class="pano-tree" flex="1" hidecolumnpicker="true" editable="true">

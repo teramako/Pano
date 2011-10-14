@@ -9,6 +9,10 @@
 <!ENTITY search.label "Filter">
 <!ENTITY hidetabbar.label "Hide Tabbar">
 <!ENTITY hidetabbar.tooltip "Hide the tabbar automatically during Pano sidebar is opening.">
+<!ENTITY tabHistory.forward.label "Forward">
+<!ENTITY tabHistory.forward.tooltip "Forward Tab History">
+<!ENTITY tabHistory.back.label "Back">
+<!ENTITY tabHistory.back.tooltip "Back Tab History">
 <!ENTITY subFrame.label "Sub Content">
 <!ENTITY toolbar.topToolbar "Top Toolbar">
 <!ENTITY toolbar.bottomToolbar "Bottom Toolbar">

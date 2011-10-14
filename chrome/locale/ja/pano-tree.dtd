@@ -9,6 +9,10 @@
 <!ENTITY search.label "フィルター">
 <!ENTITY hidetabbar.label "タブバーを隠す">
 <!ENTITY hidetabbar.tooltip "Panoサイドバーが開いている間、タブバーを隠す">
+<!ENTITY tabHistory.forward.label "進む">
+<!ENTITY tabHistory.forward.tooltip "タブ選択履歴を進む">
+<!ENTITY tabHistory.back.label "戻る">
+<!ENTITY tabHistory.back.tooltip "タブ選択履歴を戻る">
 <!ENTITY subFrame.label "サブ・コンテンツ">
 <!ENTITY toolbar.topToolbar "ツールバー(上部)">
 <!ENTITY toolbar.bottomToolbar "ツールバー(下部)">

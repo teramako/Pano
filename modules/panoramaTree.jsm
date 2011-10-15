@@ -19,6 +19,8 @@ const TAB_DROP_TYPE = "application/x-moz-tabbrowser-tab",
 
 const PANO_SESSION_ID = "pano-tabview-group";
 
+const PREF_SHOW_NUMBER = "extensions.pano.showTabNumber";
+
 /**
  * @namespace
  * @name XPCOMUtils
@@ -45,6 +47,21 @@ XPCOMUtils.defineLazyServiceGetter(this, "SessionStore", "@mozilla.org/browser/s
 XPCOMUtils.defineLazyGetter(this, "bundle", function () {
   return Services.strings.createBundle("chrome://pano/locale/pano-tree.properties");
 });
+
+var showTabNumber = Services.prefs.getBoolPref(PREF_SHOW_NUMBER);
+var observer = {
+  observe: function (aSubject, aTopic, aData) {
+    if (aTopic === "nsPref:changed") {
+      switch (aData) {
+      case PREF_SHOW_NUMBER:
+        showTabNumber = Services.prefs.getBoolPref(PREF_SHOW_NUMBER);
+        break;
+      }
+    }
+  },
+  QueryInterface: XPCOMUtils.generateQI(["nsIObserver", "nsISupportsWeakReference"]),
+}
+Services.prefs.addObserver(PREF_SHOW_NUMBER, observer, true);
 
 var atomCache = {};
 
@@ -873,11 +890,22 @@ PanoramaTreeView.prototype = {
     this.init();
   },
   getCellText: function PTV_getCellText (aRow, aColumn) {
+    var item = this.rows[aRow];
     switch(aColumn.element.getAttribute("anonid")) {
     case "title":
-      return this.rows[aRow].title;
+      if (showTabNumber && (item.type & TAB_ITEM_TYPE)) {
+        let num = 1;
+        if (item.tab.pinned)
+          num = item.tab._tPos + 1;
+        else {
+          let tabItem = item.tab._tabViewTabItem;
+          num = tabItem.parent._children.indexOf(tabItem) + 1;
+        }
+        return num + ". " + item.title;
+      } else
+        return item.title;
     case "url":
-      return this.rows[aRow].url;
+      return item.url;
     }
     return "";
   },

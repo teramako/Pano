@@ -2,7 +2,6 @@
 var EXPORTED_SYMBOLS = [
   "PanoramaTreeView",
   "APPTAB_GROUP_TYPE",
-  "ORPHANED_GROUP_TYPE",
   "TAB_GROUP_TYPE",
   "TAB_ITEM_TYPE",
 ];
@@ -12,7 +11,6 @@ const Cc = Components.classes,
       Cu = Components.utils;
 
 const APPTAB_GROUP_TYPE   = 1 << 0,
-      ORPHANED_GROUP_TYPE = 1 << 1,
       TAB_GROUP_TYPE      = 1 << 2,
       TAB_ITEM_TYPE       = 1 << 3;
 
@@ -41,9 +39,6 @@ Cu.import("resource://gre/modules/PlacesUtils.jsm");
  * @name PlacesUIUtils
  */
 Cu.import("resource://gre/modules/PlacesUIUtils.jsm");
-
-// since 7.0a1, OrphanedTabs don't exist
-const existOrphans = Services.vc.compare("7.0a1", Services.appinfo.version) > 0;
 
 XPCOMUtils.defineLazyServiceGetter(this, "atomService", "@mozilla.org/atom-service;1", "nsIAtomService");
 XPCOMUtils.defineLazyServiceGetter(this, "SessionStore", "@mozilla.org/browser/sessionstore;1", "nsISessionStore");
@@ -88,28 +83,6 @@ AppTabsGroup.prototype = {
     return this.win.gBrowser.mTabs[0].pinned;
   }
 };
-function OrphanedGroup (win, session) {
-  this.win = win;
-  this.title = bundle.GetStringFromName("orphanedGroup");
-  if (session && ("openState" in session))
-    this.isOpen = !!session.openState;
-}
-OrphanedGroup.prototype = {
-  __proto__: ItemPrototype,
-  type: TAB_GROUP_TYPE | ORPHANED_GROUP_TYPE,
-  isOpen: true,
-  get children () {
-    var tabs = [];
-    for (let [, tabItem] in Iterator(this.win.GroupItems.getOrphanedTabs())) {
-      tabs.push(new TabItem(tabItem.tab));
-    }
-    return tabs;
-  },
-  get hasChild () {
-    return this.win.GroupItems.getOrphanedTabs().length > 0;
-  },
-};
-
 function GroupItem (group, session) {
   this.group = group;
   group.addSubscriber(this, "close", Pano_dispatchGroupCloseEvent);
@@ -235,7 +208,6 @@ PanoramaTreeView.prototype = {
     var data = {
       apptabs: {},
       groups: {},
-      orphans: {}
     };
     for (let [, item] in Iterator(this.rows)) {
       switch (item.type) {
@@ -244,9 +216,6 @@ PanoramaTreeView.prototype = {
         break;
       case TAB_GROUP_TYPE | APPTAB_GROUP_TYPE:
         data.apptabs = item.getSessionData();
-        break;
-      case TAB_GROUP_TYPE | ORPHANED_GROUP_TYPE:
-        data.orphans = item.getSessionData();
         break;
       }
     }
@@ -257,7 +226,7 @@ PanoramaTreeView.prototype = {
       aWindow = this.gWindow;
 
     var data = SessionStore.getWindowValue(aWindow, PANO_SESSION_ID);
-        failedData = { apptabs: {}, groups: {}, orphans: {} };
+        failedData = { apptabs: {}, groups: {} };
     try {
       if (!data)
         return failedData;
@@ -323,13 +292,6 @@ PanoramaTreeView.prototype = {
         rows.push.apply(rows, item.children);
     }
 
-    if (existOrphans) {
-      item = new OrphanedGroup(this.tabView._window, aSession.orphans);
-      rows.push(item);
-      if (item.isOpen)
-        rows.push.apply(rows, item.children);
-    }
-
     return this.rows = rows;
   },
   getAtom: function PTV_getAtom (name) {
@@ -371,30 +333,16 @@ PanoramaTreeView.prototype = {
           return row;
 
         // 存在しないので作成
-        if (existOrphans) {
-          // 孤立タブのグループが存在するなら、その手前に新規グループを追加
-          row = this.lastGroupRow;
-          this.rows.splice(row, 0, new GroupItem(group));
-        } else {
-          row = this.rows.push(new GroupItem(group)) - 1;
-        }
+        row = this.rows.push(new GroupItem(group)) - 1;
         this.treeBox.rowCountChanged(row, 1);
         return row;
       }
-      if (existOrphans)
-        return this.orphanedGroupRow;
     }
     return -1;
   },
   get lastGroupRow () {
     for (let i = this.rowCount -1; i > 0; i--) {
       if (this.rows[i].type & TAB_GROUP_TYPE)
-        return i;
-    }
-  },
-  get orphanedGroupRow () {
-    for (let i = this.rowCount -1; i > 0; i--) {
-      if (this.rows[i].type & ORPHANED_GROUP_TYPE)
         return i;
     }
   },
@@ -670,13 +618,6 @@ PanoramaTreeView.prototype = {
         if (!tab.pinned)
           this.gBrowser.pinTab(tab);
       }
-      // move to OrphanedGroup
-      else if (sourceGroup) {
-        sourceGroup.remove(tab._tabViewTabItem);
-        this.onTabMove({type: "TabToOrphaned", target: tab});
-        if (sourceGroup === activeGroupItem)
-          this.gBrowser.hideTab(tab);
-      }
       this.gBrowser.moveTabTo(tab,
         getMoveTabPosition(aTargetItem.tab._tPos, tab._tPos, aOrientation));
     }
@@ -685,21 +626,6 @@ PanoramaTreeView.prototype = {
       // アプリタブ・グループへドロップ
       if (aTargetItem.type & APPTAB_GROUP_TYPE) {
         this.gBrowser.pinTab(aItem.tab);
-      }
-      // 孤立タブ・グループへドロップ
-      else if (aTargetItem.type & ORPHANED_GROUP_TYPE) {
-        if (aItem.tab.pinned)
-          this.gBrowser.unpinTab(aItem.tab);
-
-        let tabItem = aItem.tab._tabViewTabItem;
-        let itemGroup = tabItem.parent;
-        if (itemGroup)
-          itemGroup.remove(tabItem);
-
-        this.onTabMove({type: "TabToOrphaned", target: aItem.tab})
-
-        if (itemGroup && itemGroup === activeGroupItem)
-          this.gBrowser.hideTab(tabItem.tab);
       }
       // 移動元のタブはアプリタブ
       else if (aItem.tab.pinned) {
@@ -818,9 +744,6 @@ PanoramaTreeView.prototype = {
         let tabIndex = this.getIndexOfGroupForTab(tab, groupItem.group);
         changeIndex = groupRow + tabIndex + 1;
         this.rows.splice(changeIndex, 0, new TabItem(tab));
-      } else {
-        // 孤立タブ
-        changeIndex = this.rows.push(new TabItem(tab)) - 1;
       }
     } else if (tab.pinned) {
       changeIndex = i + tab._tPos;
@@ -876,10 +799,6 @@ PanoramaTreeView.prototype = {
           insertedRow = groupRow + tabIndex + 1;
           self.rows.splice(insertedRow, 0, item);
         }
-        // 孤立タブ
-        else {
-          insertedRow = self.rows.push(item) - 1;
-        }
       }
       return insertedRow;
     }
@@ -910,10 +829,7 @@ PanoramaTreeView.prototype = {
   onTabGroupAdded: function PTV_onTabGroupAdded (aEvent) {
     var group = this.GI.groupItems[this.GI.groupItems.length - 1];
     var item = new GroupItem(group);
-    if (existOrphans)
-      this.rows.splice(this.lastGroupRow, 0, item);
-    else
-      row = this.rows.push(item) - 1;
+    row = this.rows.push(item) - 1;
 
     this.treeBox.rowCountChanged(row, 1);
   },
@@ -1013,8 +929,6 @@ PanoramaTreeView.prototype = {
 
       if (item.type & APPTAB_GROUP_TYPE)
         aProperties.AppendElement(this.getAtom("AppTabs"));
-      else if (item.type & ORPHANED_GROUP_TYPE)
-        aProperties.AppendElement(this.getAtom("Orphaned"));
 
     } else {
       aProperties.AppendElement(this.getAtom("item"));
@@ -1024,8 +938,6 @@ PanoramaTreeView.prototype = {
 
       if (item.tab.pinned)
         aProperties.AppendElement(this.getAtom("apptab"));
-      else if (!item.tab._tabViewTabItem.parent)
-        aProperties.AppendElement(this.getAtom("orphaned"));
 
       if (item.tab.linkedBrowser.__SS_restoreState)
         aProperties.AppendElement(this.getAtom("TabNeedRestore"));

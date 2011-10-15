@@ -16,10 +16,6 @@
   list-style-image: url("chrome://pano/skin/application_double.png");
   -moz-image-region: auto;
 }
-.pano-tree treechildren::-moz-tree-image(group, primary, Orphaned) {
-  list-style-image: url("chrome://pano/skin/bullet_black.png");
-  -moz-image-region: auto;
-}
 .pano-tree treechildren::-moz-tree-cell-text(currentTab),
 .pano-tree treechildren::-moz-tree-cell-text(currentGroup) {
   font-weight: bold;

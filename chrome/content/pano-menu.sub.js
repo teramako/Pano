@@ -66,12 +66,6 @@ function onPopupShowing (aEvent) {
         if (group !== currentGroup)
           popup.appendChild(createMenu(group));
       }
-      if (GI.getOrphanedTabs) {
-        for (let [, tabItem] in Iterator(GI.getOrphanedTabs())) {
-          if (!tabItem.tab.selected)
-            popup.appendChild(createMenuItem(tabItem));
-        }
-      }
     });
   }
   else if (popup.id === "pano-toolbarbutton-popup") {

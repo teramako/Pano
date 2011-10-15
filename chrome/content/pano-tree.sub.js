@@ -20,13 +20,7 @@ function selectTab (aEvent) {
     }
     if (!item.tab.pinned) {
       let tabItem = item.tab._tabViewTabItem;
-      let UI = view.tabView._window.UI;
-      if (UI.setActiveTab) {
-        UI.setActiveTab(tabItem);
-        view.GI.setActiveGroupItem(tabItem.parent);
-      } else if (UI.setActive) {
-        UI.setActive(tabItem);
-      }
+      view.tabView._window.UI.setActive(tabItem);
     }
     if (gBrowser.selectedTab !== item.tab) {
       gBrowser.mTabContainer.selectedIndex = item.tab._tPos;

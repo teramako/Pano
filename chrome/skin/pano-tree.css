@@ -53,10 +53,6 @@
   background-repeat: no-repeat;
   background-image: -moz-element(#panoTabCapture);
 }
-#panoTreeTooltipImage.hide {
-  height: 0;
-  overflow: hidden;
-}
 #panoTreeTooltipImageContainer {
   -moz-box-pack: center;
 }

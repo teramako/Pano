@@ -42,8 +42,11 @@ function closeTab (aEvent) {
 }
 tree.addEventListener("click", closeTab, false);
 
-const PREF_SWITCH_BY = "extensions.pano.switchTabBySingleClick";
-const PREF_SHOW_CLOSEBUTTON = "extensions.pano.showCloseButton";
+const PREF_SWITCH_BY              = "extensions.pano.switchTabBySingleClick",
+      PREF_SHOW_CLOSEBUTTON       = "extensions.pano.showCloseButton",
+      PREF_TOOLTIP_SHOW_THUMBNAIL = "extensions.pano.tooltip.showThumbnail",
+      PREF_TOOLTIP_SHOW_TITLE     = "extensions.pano.tooltip.showTitle";
+
 function toggleSwitchTabHandler () {
   var type = Services.prefs.getBoolPref(PREF_SWITCH_BY) ?  "click" : "dblclick";
   tree.removeEventListener("click", selectTab, false);
@@ -99,6 +102,8 @@ var tooltip = {
     delete this.imageElm;
     return this.imageElm = elm;
   },
+  get showThumbnail () Services.prefs.getBoolPref(PREF_TOOLTIP_SHOW_THUMBNAIL),
+  get showTitle () Services.prefs.getBoolPref(PREF_TOOLTIP_SHOW_TITLE),
   build: function buildTooltip (aEvent) {
     aEvent.stopPropagation();
     var item = view.getItemFromEvent(aEvent);
@@ -107,21 +112,35 @@ var tooltip = {
       return;
     }
 
-    this.titleElm.setAttribute("value", item.title);
-    this.urlElm.setAttribute("value", item.url);
-    this.imageElm.classList.remove("hide");
-    var browser = item.tab.linkedBrowser;
-    let ({ width, height } = browser.boxObject,
-         boxWidth = parseInt(window.getComputedStyle(this.imageElm, "").width, 10)) {
-      this.imageElm.style.height = Math.round(boxWidth * height / width) + "px";
-    }
-    if (browser.__SS_restoreState) {
-      if (item.tab._tabViewTabItem)
-        document.mozSetImageElement("panoTabCapture", item.tab._tabViewTabItem.$cachedThumb[0]);
-      else
-        this.imageElm.classList.add("hide");
+    if (this.showTitle) {
+      this.titleElm.setAttribute("value", item.title);
+      this.titleElm.style.removeProperty("visibility");
     } else {
-      document.mozSetImageElement("panoTabCapture", browser);
+      this.titleElm.style.setProperty("visibility", "collapse", "");
+    }
+    this.urlElm.setAttribute("value", item.url);
+
+    if (this.showThumbnail) {
+      this.titleElm.setAttribute("crop", "center");
+      this.urlElm.setAttribute("crop", "center");
+      this.imageElm.style.removeProperty("visibility");
+      var browser = item.tab.linkedBrowser;
+      let ({ width, height } = browser.boxObject,
+           boxWidth = parseInt(window.getComputedStyle(this.imageElm, "").width, 10)) {
+        this.imageElm.style.height = Math.round(boxWidth * height / width) + "px";
+      }
+      if (browser.__SS_restoreState) {
+        if (item.tab._tabViewTabItem)
+          document.mozSetImageElement("panoTabCapture", item.tab._tabViewTabItem.$cachedThumb[0]);
+        else
+          this.imageElm.style.setProperty("visibility", "collapse", "");
+      } else {
+        document.mozSetImageElement("panoTabCapture", browser);
+      }
+    } else {
+      this.imageElm.style.setProperty("visibility", "collapse", "");
+      this.titleElm.removeAttribute("crop");
+      this.urlElm.removeAttribute("crop");
     }
   },
 };

@@ -75,10 +75,16 @@
    タブバーを隠すかどうかの設定(サイドバーが開いているときのみ有効)
  * `extensions.pano.showCloseButton`:
    閉じるボタンを表示するかどうかの設定
+ * `extensions.pano.showTabNumber`:
+   ツリーにタブ番号を付加
  * `extensions.pano.switchTabBySingleClick`:
    タブのアイテムをシングルクリックでスイッチするかどうかの設定
  * `extensions.pano.panel.autoCloseByTabSelect`:
    パネルからタブを切り替えた時、自動的にパネルを閉じるかどうかの設定
+ * `extensions.pano.tooltip.showThumbnial`:
+   ツールチップにサムネイルを表示
+ * `extensions.pano.tooltip.showTitle`:
+   ツールチップにタイトルを表示
 
 ##ドラッグ＆ドロップ
 

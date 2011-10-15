@@ -756,8 +756,9 @@ PanoramaTreeView.prototype = {
       let tabItem = tab._tabViewTabItem;
       if (tabItem.parent) {
         // グループに属しているタブ
-        groupItem = this.rows[groupRow];
-        let tabIndex = this.getIndexOfGroupForTab(tab, groupItem.group);
+        let group = this.rows[groupRow].group;
+        group._children.sort(function(a, b) a.tab._tPos - b.tab._tPos);
+        let tabIndex = this.getIndexOfGroupForTab(tab, group);
         changeIndex = groupRow + tabIndex + 1;
         this.rows.splice(changeIndex, 0, new TabItem(tab));
       }

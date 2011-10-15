@@ -28,17 +28,17 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
  * @namespace
  * @name Services
  */
-Cu.import("resource://gre/modules/Services.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
 /**
  * @namespace
  * @name PlacesUtils
  */
-Cu.import("resource://gre/modules/PlacesUtils.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/PlacesUtils.jsm");
 /**
  * @namespace
  * @name PlacesUIUtils
  */
-Cu.import("resource://gre/modules/PlacesUIUtils.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "PlacesUIUtils", "resource://gre/modules/PlacesUIUtils.jsm");
 
 XPCOMUtils.defineLazyServiceGetter(this, "atomService", "@mozilla.org/atom-service;1", "nsIAtomService");
 XPCOMUtils.defineLazyServiceGetter(this, "SessionStore", "@mozilla.org/browser/sessionstore;1", "nsISessionStore");

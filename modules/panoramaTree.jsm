@@ -325,7 +325,7 @@ PanoramaTreeView.prototype = {
 
     if (aTab.pinned) {
       return 0;
-    } else {
+    } else if (aTab._tabViewTabItem) {
       let group = aTab._tabViewTabItem.parent;
       if (group) {
         let row = this.getRowForGroup(group);
@@ -728,11 +728,27 @@ PanoramaTreeView.prototype = {
     if (this.filter)
       this.setFilter(this.filter);
   },
-  onTabOpen: function PTV_onTabOpen (aEvent) {
+  onTabOpen: function PTV_onTabOpen (aEvent, retryCount) {
     var tab = aEvent.target;
-    var groupRow = this.getGroupRowForTab(tab);
+    if (this.getRowForTab(tab) > 0)
+      return;
 
-    if (groupRow === -1 || !this.rows[groupRow].isOpen)
+    if (!retryCount)
+      retryCount = 0;
+
+    var groupRow = this.getGroupRowForTab(tab);
+    if (groupRow === -1) {
+      if (tab._tabViewTabItem && retryCount <= 2) {
+        // タイミングにより親が設定されていないことがある
+        // 100ms 後に2回ほど再実行
+        // XXX: 泥臭いので修正したいのだが...
+        this.gWindow.setTimeout(function(self){
+          self.onTabOpen(aEvent, ++retryCount);
+        }, 100, this);
+      }
+      return;
+    }
+    else if (!this.rows[groupRow].isOpen)
       return;
 
     var changeIndex = 0;
@@ -740,8 +756,9 @@ PanoramaTreeView.prototype = {
       let tabItem = tab._tabViewTabItem;
       if (tabItem.parent) {
         // グループに属しているタブ
-        groupItem = this.rows[groupRow];
-        let tabIndex = this.getIndexOfGroupForTab(tab, groupItem.group);
+        let group = this.rows[groupRow].group;
+        group._children.sort(function(a, b) a.tab._tPos - b.tab._tPos);
+        let tabIndex = this.getIndexOfGroupForTab(tab, group);
         changeIndex = groupRow + tabIndex + 1;
         this.rows.splice(changeIndex, 0, new TabItem(tab));
       }

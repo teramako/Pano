@@ -22,6 +22,12 @@
       <preference id="pref-panel-autoCloseByTabSelect"
                   name="extensions.pano.panel.autoCloseByTabSelect"
                   type="bool"/>
+      <preference id="pref-tooltip-showTitle"
+                  name="extensions.pano.tooltip.showTitle"
+                  type="bool"/>
+      <preference id="pref-tooltip-showThumbnail"
+                  name="extensions.pano.tooltip.showThumbnail"
+                  type="bool"/>
     </preferences>
     <vbox flex="1">
       <sperator class="thin"/>
@@ -34,6 +40,12 @@
       <checkbox label="&pref.switchTabBySingleClick.label;" preference="pref-switchTabBySingleClick"/>
       <sperator class="thin"/>
       <checkbox label="&pref.panel.autoCloseByTabSelect.label;" preference="pref-panel-autoCloseByTabSelect"/>
+      <sperator class="thin"/>
+      <groupbox id="tooltip-group">
+        <caption label="&tooltip.groupCaption;"/>
+        <checkbox label="&pref.tooltip.showTitle.label;" preference="pref-tooltip-showTitle"/>
+        <checkbox label="&pref.tooltip.showThumbnail.label;" preference="pref-tooltip-showThumbnail"/>
+      </groupbox>
     </vbox>
   </prefpane>
 </prefwindow>

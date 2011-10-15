@@ -6,6 +6,8 @@ Changelog
  * [#44 各ボックスのツールバー化](https://github.com/teramako/Pano/issues/44)
    * 「フィルター」や「タブバーを隠す」ボックスをツールバー化して表示/非表示を切り替えられるようにした
    * 「フィルター」アイテムのラベルを廃止し、プレイスホルダーに変更した
+ * [#34 miscs](https://github.com/teramako/Pano/issues/34)
+   * タブ番号を付加するオプションを追加
  * [#35 miscs](https://github.com/teramako/Pano/issues/35)
    * 「タブバーを隠す」チェックボックスをボタンにしてアイコンを追加
    * タブの選択履歴を戻る/進むボタンの実装

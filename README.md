@@ -1,7 +1,9 @@
 [English](http://teramako.github.com/Pano/)
 
 #なんぞコレ？
-Firefox 4のタブグループをリストする拡張機能だよん。
+タブグループをリストする拡張機能だよん。
+
+ * 対象：Firefox 7.0 - 10.0a1
 
 #キャプチャ画像
 ![sidebar](http://teramako.github.com/Pano/sidebar.png "Pano sidebar")

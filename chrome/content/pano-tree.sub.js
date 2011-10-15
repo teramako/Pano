@@ -57,20 +57,23 @@ function toggleShowCloseButton () {
 toggleSwitchTabHandler();
 toggleShowCloseButton();
 
-function observe (aSubject, aTopic, aData) {
-  if (aTopic === "nsPref:changed") {
-    switch (aData) {
-    case PREF_SWITCH_BY:
-      toggleSwitchTabHandler();
-      break;
-    case PREF_SHOW_CLOSEBUTTON:
-      toggleShowCloseButton();
-      break;
+var observer = {
+  observe: function (aSubject, aTopic, aData) {
+    if (aTopic === "nsPref:changed") {
+      switch (aData) {
+      case PREF_SWITCH_BY:
+        toggleSwitchTabHandler();
+        break;
+      case PREF_SHOW_CLOSEBUTTON:
+        toggleShowCloseButton();
+        break;
+      }
     }
-  }
+  },
+  QueryInterface: XPCOMUtils.generateQI(["nsIObserver", "nsISupportsWeakReference"]),
 }
-Services.prefs.addObserver(PREF_SWITCH_BY, this, false);
-Services.prefs.addObserver(PREF_SHOW_CLOSEBUTTON, this, false);
+Services.prefs.addObserver(PREF_SWITCH_BY, observer, true);
+Services.prefs.addObserver(PREF_SHOW_CLOSEBUTTON, observer, true);
 
 function newGroup () {
   view.GI.newGroup().newTab();

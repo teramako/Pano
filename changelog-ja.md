@@ -17,6 +17,7 @@ Changelog
    * [#42 url や title が 非常に長いときに tooltip の サムネイル画像の 拡大について](https://github.com/teramako/Pano/issues/42)
      * ツールチップの幅を固定にした
    * [#45 GI.getOrphanedTabs is not a function](https://github.com/teramako/Pano/issues/45)
+   * [#46 コンテキストメニューとサムネイル画像が重なって表示される](https://github.com/teramako/Pano/issues/46)
    * [#47, #48 閉じたタブの復元をした時、ツリーのリストが更新されないことがある](https://github.com/teramako/Pano/issues/47)
 
 ##version 0.9 (2011-09-29)

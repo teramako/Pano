@@ -106,6 +106,10 @@ var tooltip = {
   get showTitle () Services.prefs.getBoolPref(PREF_TOOLTIP_SHOW_TITLE),
   build: function buildTooltip (aEvent) {
     aEvent.stopPropagation();
+    if (contextMenu.currentItem) {
+      aEvent.preventDefault();
+      return;
+    }
     var item = view.getItemFromEvent(aEvent);
     if (!item || !(item.type & TAB_ITEM_TYPE)) {
       aEvent.preventDefault();

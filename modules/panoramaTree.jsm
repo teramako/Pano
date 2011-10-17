@@ -102,7 +102,11 @@ AppTabsGroup.prototype = {
 };
 function GroupItem (group, session) {
   this.group = group;
-  group.addSubscriber(this, "close", Pano_dispatchGroupCloseEvent);
+  if (group.addSubscriber.length > 2)
+    group.addSubscriber(this, "close", Pano_dispatchGroupCloseEvent);
+  else
+    group.addSubscriber("close", Pano_dispatchGroupCloseEvent);
+
   if (session && ("openState" in session))
     this.isOpen = !!session.openState;
 }

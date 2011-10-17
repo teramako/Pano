@@ -990,6 +990,9 @@ PanoramaTreeView.prototype = {
 
       if (item.tab.linkedBrowser.__SS_restoreState)
         aProperties.AppendElement(this.getAtom("pending"));
+
+      if (item.tab.hasAttribute("unread"))
+        aProperties.AppendElement(this.getAtom("unread"));
     }
   },
   getCellProperties: function PTV_getCellProperties (aRow, aColumn, aProperties) {

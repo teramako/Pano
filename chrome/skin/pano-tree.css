@@ -36,6 +36,9 @@
 .pano-tree treechildren::-moz-tree-cell-text(pending) {
   color: GrayText;
 }
+.pano-tree treechildren::-moz-tree-cell-text(unread) {
+  color: magenta;
+}
 .pano-tree treecol[anonid="closebutton"] {
   width: 33px;
 }

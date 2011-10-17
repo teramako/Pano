@@ -33,7 +33,7 @@
 .pano-tree treechildren::-moz-tree-image(checked, hover) {
   -moz-image-region: rect(0, 32px, 16px, 16px);
 }
-.pano-tree treechildren::-moz-tree-cell-text(TabNeedRestore) {
+.pano-tree treechildren::-moz-tree-cell-text(pending) {
   color: GrayText;
 }
 .pano-tree treecol[anonid="closebutton"] {

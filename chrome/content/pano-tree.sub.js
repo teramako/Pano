@@ -210,16 +210,17 @@ var contextMenu = {
 
     var isTabItem = (item.type & TAB_ITEM_TYPE) > 0;
     var selectedItems = view.getSelectedItems();
+    var visibleTabs = gBrowser.visibleTabs;
     if (isTabItem) {
       selectedItems.forEach(function (item) {
         if (item.type & TAB_ITEM_TYPE)
-          gBrowser.removeTab(item.tab);
+          gBrowser.removeTab(item.tab, { animate: visibleTabs.indexOf(item.tab) >= 0, byMouse: false });
       });
     } else if (item.type === TAB_GROUP_TYPE) {
       selectedItems.forEach(function (item) {
         if (item.type === TAB_GROUP_TYPE) {
           let childTabs = item.group._children.map(function(tabItem) tabItem.tab);
-          childTabs.forEach(function(tab) gBrowser.removeTab(tab));
+          childTabs.forEach(function(tab) gBrowser.removeTab(tab, { animate: visibleTabs.indexOf(tab) >= 0, byMouse: false }));
           item.group.close({ immediately: true });
         }
       });

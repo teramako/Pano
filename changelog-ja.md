@@ -14,6 +14,8 @@ Changelog
    * タブの選択履歴を戻る/進むボタンの実装
    * ツリーのグループ全てを展開/折り畳むボタンの実装
  * FixBug
+   * [#40 空白の行ができる](https://github.com/teramako/Pano/issues/40)
+   * [#41 アクティブでないグループのタブを閉じる](https://github.com/teramako/Pano/issues/41)
    * [#42 url や title が 非常に長いときに tooltip の サムネイル画像の 拡大について](https://github.com/teramako/Pano/issues/42)
      * ツールチップの幅を固定にした
    * [#45 GI.getOrphanedTabs is not a function](https://github.com/teramako/Pano/issues/45)

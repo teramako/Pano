@@ -38,7 +38,8 @@ function closeTab (aEvent) {
   if (!item || !(item.type & TAB_ITEM_TYPE)) {
     return;
   }
-  gBrowser.removeTab(item.tab, { animate: true, byMouse: true });
+  var animate = gBrowser.visibleTabs.indexOf(item.tab) >= 0;
+  gBrowser.removeTab(item.tab, { animate: animate, byMouse: false });
 }
 tree.addEventListener("click", closeTab, false);
 

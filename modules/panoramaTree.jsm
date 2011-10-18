@@ -313,7 +313,16 @@ PanoramaTreeView.prototype = {
         rows.push.apply(rows, item.children);
     }
 
-    return this.rows = rows;
+    var oldLength = this.rows.length,
+        newLength = rows.length,
+        count = newLength - oldLength;
+    this.rows = rows;
+    if (count !== 0)
+      this.treeBox.rowCountChanged(Math.min(newLength, oldLength), count);
+
+    this.treeBox.invalidate();
+
+    return rows;
   },
   getAtom: function PTV_getAtom (name) {
     if (atomCache[name])

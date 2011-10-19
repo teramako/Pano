@@ -21,6 +21,10 @@
   -moz-margin-end: 0;
 }
 
+#pano-pane {
+  max-width: 350px;
+}
+
 #panoTabGroupTree {
   min-width: 300px;
   min-height: 200px;

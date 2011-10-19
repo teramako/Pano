@@ -59,7 +59,6 @@
     <toolbar id="panoToolbar1"/>
     <toolbarpalette id="panoToolbarPalette">
       <toolbaritem id="panoSearchbar">
-        <label id="panoSearchLabel"/>
         <textbox id="panoSearchBox" oncommand="gPanoramaTree.setFilter(this.value);"/>
       </toolbaritem>
       <toolbarbutton id="hideTabbarCheck" type="checkbox"

@@ -65,7 +65,6 @@
       <toolbar id="panoToolbar1"/>
       <toolbarpalette id="panoToolbarPalette">
         <toolbaritem id="panoSearchbar">
-          <label id="panoSearchLabel"/>
           <textbox id="panoSearchBox" oncommand="gPano.pane.setFilter(this.value);"/>
         </toolbaritem>
       </toolbarpalette>

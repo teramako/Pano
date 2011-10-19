@@ -21,6 +21,7 @@ function TabSelectionHistory (aWindow) {
   this.index = 0;
   this.mTabContainer.addEventListener("TabSelect", this, false);
   this.mTabContainer.addEventListener("TabClose", this, false);
+  this.update();
 }
 TabSelectionHistory.prototype = {
   maxItems: -1,

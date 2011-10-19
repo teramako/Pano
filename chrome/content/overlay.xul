@@ -35,8 +35,8 @@
       <command id="panoCmdClose" oncommand="gPano.pane.contextMenu.closeItem();"/>
       <command id="panoCmdHibernate" oncommand="gPano.pane.contextMenu.hibernate();"/>
       <command id="panoCmdCustomizeToolbars" oncommand="gPano.pane.toolbarContextMenu.customizeToolbar(event);"/>
-      <command id="panoCmdTabHistoryBack" oncommand="gPano.tabHistory.goBack();" disabled="true"/>
-      <command id="panoCmdTabHistoryForward" oncommand="gPano.tabHistory.goForward();" disabled="true"/>
+      <command id="panoCmdTabHistoryBack" oncommand="gPano.tabHistory.goBack();"/>
+      <command id="panoCmdTabHistoryForward" oncommand="gPano.tabHistory.goForward();"/>
       <command id="panoCmdExpandAll" oncommand="gPano.pane.expandAll();"/>
       <command id="panoCmdCollapseAll" oncommand="gPano.pane.collapseAll();"/>
     </commandset>

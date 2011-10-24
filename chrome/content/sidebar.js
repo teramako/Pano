@@ -38,6 +38,10 @@ var gPanoramaTree = {
       this.tabbar.toolbar.style.visibility = "visible";
     }
     this.buttons.uninit();
+    let (splitter = document.getElementById("subFrameSplitter")) {
+      if (splitter.getAttribute("state") !== "collapsed")
+        splitter.setAttribute("state", "open");
+    }
   },
   view: null,
   tabViewCallback: function PT_tabViewCallback () {

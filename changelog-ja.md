@@ -21,6 +21,7 @@ Changelog
    * [#45 GI.getOrphanedTabs is not a function](https://github.com/teramako/Pano/issues/45)
    * [#46 コンテキストメニューとサムネイル画像が重なって表示される](https://github.com/teramako/Pano/issues/46)
    * [#47, #48 閉じたタブの復元をした時、ツリーのリストが更新されないことがある](https://github.com/teramako/Pano/issues/47)
+   * [#51 サブ・コンテンツが非表示状態に戻ってしまう](https://github.com/teramako/Pano/issues/51)
 
 ##version 0.9 (2011-09-29)
  * LessChrome HD と「タブバーを隠す」設定の互換性を向上

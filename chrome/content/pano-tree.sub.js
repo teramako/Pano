@@ -177,6 +177,11 @@ var contextMenu = {
     delete this.bookmarksAllTabsElm;
     return this.bookmarksAllTabsElm = elm;
   },
+  get reloadAllTabsElm () {
+    var elm = document.getElementById("panoContextMenu_reloadAllTabs");
+    delete reloadAllTabsElm;
+    return this.reloadAllTabsElm = elm;
+  },
   currentItem: null,
   build: function buildContextMenu (aEvent) {
     if (aEvent.target.id !== "panoContextMenu")
@@ -191,9 +196,11 @@ var contextMenu = {
       this.showItem("newTabElm", isNormalGroup);
       this.showItem("hibernateElm", true);
       this.showItem("bookmarksAllTabsElm", isNormalGroup);
+      this.showItem("reloadAllTabsElm", true);
     } else {
       this.showItem("hibernateElm", false);
       this.showItem("bookmarksAllTabsElm", false);
+      this.showItem("reloadAllTabsElm", false);
       this.showItem("groupCloseElm", false);
       this.showItem("tabCloseElm", false);
     }
@@ -254,6 +261,28 @@ var contextMenu = {
     });
     if (pages.length > 0)
       PlacesUIUtils.showMinimalAddMultiBookmarkUI(pages);
+  },
+  reloadAllTabs: function PT_reloadAllTabs () {
+    var item = this.currentItem;
+    if (!item)
+      return;
+
+    var items = view.getSelectedItems();
+    var browsers = items.reduce(function getTabs(bList, item) {
+      if (item.type & TAB_ITEM_TYPE) {
+        bList.push(item.tab.linkedBrowser);
+      } else {
+        item.children.forEach(function getTabsInGroup(child) {
+          if (bList.indexOf(child.tab.linkedBrowser) === -1)
+            bList.push(child.tab.linkedBrowser);
+        });
+      }
+      return bList;
+    }, []);
+    browsers.forEach(function reloadTab(b) {
+      Services.console.logStringMessage("reload: " + b.currentURI.spec);
+      b.reload();
+    });
   },
 };
 

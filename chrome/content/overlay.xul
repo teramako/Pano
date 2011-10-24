@@ -40,6 +40,7 @@
       <command id="panoCmdExpandAll" oncommand="gPano.pane.expandAll();"/>
       <command id="panoCmdCollapseAll" oncommand="gPano.pane.collapseAll();"/>
       <command id="panoCmdBookmarksAllTabs" oncommand="gPano.pane..contextMenu.bookmarksAllTabs();"/>
+      <command id="panoCmdReloadAllTabs" oncommand="gPano.pane.contextMenu.reloadAllTabs();"/>
     </commandset>
     <popupset id="panoPopupSet">
       <tooltip id="panoTreeTabTooltip"

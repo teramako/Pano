@@ -21,6 +21,7 @@
     <command id="panoCmdExpandAll" oncommand="gPanoramaTree.expandAll();"/>
     <command id="panoCmdCollapseAll" oncommand="gPanoramaTree.collapseAll();"/>
     <command id="panoCmdBookmarksAllTabs" oncommand="gPanoramaTree.contextMenu.bookmarksAllTabs();"/>
+    <command id="panoCmdReloadAllTabs" oncommand="gPanoramaTree.contextMenu.reloadAllTabs();"/>
   </commandset>
   <keyset id="panoKeySet">
     <key keycode="VK_RETURN" oncommand="gPanoramaTree.selectTab()"/>

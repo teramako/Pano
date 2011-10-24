@@ -104,3 +104,9 @@
   -moz-image-region: rect(0, 16px, 16px, 0);
 }
 
+/* Context-Menu */
+#panoContextMenu_bookmarksAllTabs {
+  list-style-image: url("chrome://browser/skin/places/bookmark.png");
+  -moz-image-region: rect(0px, 48px, 16px, 32px);
+}
+

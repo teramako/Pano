@@ -20,6 +20,7 @@
             insertbefore="panoContextMenuSep"/>
   <menuitem id="panoContextMenu_bookmarksAllTabs"
             label="&menu.bookmarksAllTabs;"
+            class="menuitem-iconic"
             accesskey="B"
             command="panoCmdBookmarksAllTabs"
             insertbefore="panoContextMenuSep"/>

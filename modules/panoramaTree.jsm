@@ -220,7 +220,6 @@ PanoramaTreeView.prototype = {
     for (let [, type] in Iterator(HANDLE_EVENT_TYPES)) {
       this.gWindow.removeEventListener(type, this, false);
     }
-    this.saveSession();
   },
   saveSession: function PTV_saveSession (aWindow) {
     if (!aWindow)
@@ -1061,6 +1060,7 @@ PanoramaTreeView.prototype = {
         this.treeBox.rowCountChanged(start, tabItems.length);
       }
     }
+    this.saveSession();
   },
   cycleHeader: function PTV_cycleHeader (aColumn) {},
   selectionChanged: function PTV_selectionChanged () {},

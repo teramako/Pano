@@ -21,9 +21,8 @@
   -moz-margin-end: 0;
 }
 
-#pano-pane,
 #panoToolBox {
-  max-width: 350px;
+  max-width: 308px;
 }
 
 #panoTabGroupTree {

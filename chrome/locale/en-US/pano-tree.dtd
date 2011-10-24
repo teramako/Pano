@@ -6,6 +6,7 @@
 <!ENTITY menu.hibernate "Hibernate">
 <!ENTITY menu.toolbar "Toolbar">
 <!ENTITY menu.customizeToolbar "Customize…">
+<!ENTITY menu.bookmarksAllTabs "Bookmarks All Tabs in the group">
 <!ENTITY search.label "Filter">
 <!ENTITY hidetabbar.label "Hide Tabbar">
 <!ENTITY hidetabbar.tooltip "Hide the tabbar automatically during Pano sidebar is opening.">

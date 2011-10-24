@@ -21,7 +21,8 @@
   -moz-margin-end: 0;
 }
 
-#pano-pane {
+#pano-pane,
+#panoToolBox {
   max-width: 350px;
 }
 

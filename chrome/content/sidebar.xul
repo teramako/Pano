@@ -20,6 +20,7 @@
     <command id="panoCmdTabHistoryForward" oncommand="gWin.gPano.tabHistory.goForward();"/>
     <command id="panoCmdExpandAll" oncommand="gPanoramaTree.expandAll();"/>
     <command id="panoCmdCollapseAll" oncommand="gPanoramaTree.collapseAll();"/>
+    <command id="panoCmdBookmarksAllTabs" oncommand="gPanoramaTree.contextMenu.bookmarksAllTabs();"/>
   </commandset>
   <keyset id="panoKeySet">
     <key keycode="VK_RETURN" oncommand="gPanoramaTree.selectTab()"/>

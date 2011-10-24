@@ -1,4 +1,5 @@
 
+XPCOMUtils.defineLazyModuleGetter(this, "PlacesUIUtils", "resource://gre/modules/PlacesUIUtils.jsm");
 
 function onDragStart (aEvent) {
   PanoramaTreeView.onDragStart(aEvent, view);
@@ -171,6 +172,11 @@ var contextMenu = {
     delete this.hibernateElm;
     return this.hibernateElm = elm;
   },
+  get bookmarksAllTabsElm () {
+    var elm = document.getElementById("panoContextMenu_bookmarksAllTabs");
+    delete this.bookmarksAllTabsElm;
+    return this.bookmarksAllTabsElm = elm;
+  },
   currentItem: null,
   build: function buildContextMenu (aEvent) {
     if (aEvent.target.id !== "panoContextMenu")
@@ -184,8 +190,10 @@ var contextMenu = {
       this.showItem("tabCloseElm", isTabItem);
       this.showItem("newTabElm", isNormalGroup);
       this.showItem("hibernateElm", true);
+      this.showItem("bookmarksAllTabsElm", isNormalGroup);
     } else {
       this.showItem("hibernateElm", false);
+      this.showItem("bookmarksAllTabsElm", false);
       this.showItem("groupCloseElm", false);
       this.showItem("tabCloseElm", false);
     }
@@ -230,6 +238,22 @@ var contextMenu = {
     var items = view.getSelectedItems();
     if (items.length > 0)
       view.hibernateItems(items);
+  },
+  bookmarksAllTabs: function PT_bookmarksAllTabs () {
+    var item = this.currentItem;
+    if (!item)
+      return;
+
+    var pages = [], unique = [];
+    item.group._children.forEach(function (tabItem) {
+      var uri = tabItem.tab.linkedBrowser.currentURI;
+      if (!(uri.spec in unique)) {
+        unique[uri.spec] = null;
+        pages.push(uri);
+      }
+    });
+    if (pages.length > 0)
+      PlacesUIUtils.showMinimalAddMultiBookmarkUI(pages);
   },
 };
 

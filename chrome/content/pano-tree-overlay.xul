@@ -18,6 +18,11 @@
             accesskey="T"
             command="panoCmdNewTab"
             insertbefore="panoContextMenuSep"/>
+  <menuitem id="panoContextMenu_bookmarksAllTabs"
+            label="Bookmarks All Tabs in the group"
+            accesskey="B"
+            command="panoCmdBookmarksAllTabs"
+            insertbefore="panoContextMenuSep"/>
   <menuitem id="panoContextMenu_hibernate"
             label="&menu.hibernate;"
             accesskey="H"

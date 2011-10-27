@@ -25,7 +25,7 @@
             command="panoCmdBookmarksAllTabs"
             insertbefore="panoContextMenuSep"/>
   <menuitem id="panoContextMenu_reloadAllTabs"
-            label="Reload All Tabs"
+            label="&menu.reloadAllTabs;"
             accesskey="R"
             command="panoCmdReloadAllTabs"
             insertbefore="panoContextMenuSep"/>

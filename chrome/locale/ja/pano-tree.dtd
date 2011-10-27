@@ -6,7 +6,7 @@
 <!ENTITY menu.hibernate "休止させる">
 <!ENTITY menu.toolbar "ツールバー">
 <!ENTITY menu.customizeToolbar "カスタマイズ...">
-<!ENTITY menu.bookmarksAllTabs "グループ内の全タブをブックマーク">
+<!ENTITY menu.bookmarksAllTabs "ブックマーク">
 <!ENTITY menu.reloadAllTabs "再読込">
 <!ENTITY search.label "フィルター">
 <!ENTITY hidetabbar.label "タブバーを隠す">

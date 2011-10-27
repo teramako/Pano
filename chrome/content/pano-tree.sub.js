@@ -195,7 +195,7 @@ var contextMenu = {
       this.showItem("tabCloseElm", isTabItem);
       this.showItem("newTabElm", isNormalGroup);
       this.showItem("hibernateElm", true);
-      this.showItem("bookmarksAllTabsElm", isNormalGroup);
+      this.showItem("bookmarksAllTabsElm", true);
       this.showItem("reloadAllTabsElm", true);
     } else {
       this.showItem("hibernateElm", false);
@@ -251,16 +251,31 @@ var contextMenu = {
     if (!item)
       return;
 
-    var pages = [], unique = [];
-    item.group._children.forEach(function (tabItem) {
-      var uri = tabItem.tab.linkedBrowser.currentURI;
-      if (!(uri.spec in unique)) {
-        unique[uri.spec] = null;
-        pages.push(uri);
+    var items = view.getSelectedItems();
+    var unique = {};
+    var tabs = items.reduce(function getTabs(tabList, item) {
+      if (item.type & TAB_ITEM_TYPE) {
+        let spec = item.tab.linkedBrowser.currentURI.spec;
+        if (tabList.indexOf(item.tab) === -1 && !(spec in unique)) {
+          unique[spec] = null;
+          tabList.push(item.tab);
+        }
+      } else {
+        item.children.forEach(function getTabsInGroup(child) {
+          let spec = item.tab.linkedBrowser.currentURI.spec;
+          if (tabList.indexOf(child.tab) === -1 && !(spec in unique)) {
+            unique[spec] = null;
+            tabList.push(child.tab);
+          }
+        });
       }
-    });
-    if (pages.length > 0)
-      PlacesUIUtils.showMinimalAddMultiBookmarkUI(pages);
+      return tabList;
+    }, []);
+
+    if (tabs.length == 1)
+      window.top.PlacesCommandHook.bookmarkPage(tabs[0].linkedBrowser, window.top.PlacesUtils.bookmarksMenuFolderId, true);
+    else if (tabs.length > 1)
+      PlacesUIUtils.showMinimalAddMultiBookmarkUI(tabs.map(function(tab) tab.linkedBrowser.currentURI));
   },
   reloadAllTabs: function PT_reloadAllTabs () {
     var item = this.currentItem;

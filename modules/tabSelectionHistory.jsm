@@ -37,7 +37,7 @@ TabSelectionHistory.prototype = {
 
     this.tabs.splice(i, this.tabs.length - i, aTab);
     if (max > 0 && this.tabs.length > max)
-      this.tabs.splice(max, this.tabs.length - max);
+      this.tabs.splice(0, this.tabs.length - max);
 
     this.index = this.tabs.length - 1;
     this.update();
@@ -82,6 +82,15 @@ TabSelectionHistory.prototype = {
         this.tabs.splice(i, 1);
         if (i <= this.index)
           --this.index;
+      }
+      for (let i = 1; i < this.tabs.length; ++i) {
+        let prevTab = this.tabs[i - 1],
+            currentTab = this.tabs[i];
+        if (prevTab === currentTab) {
+          this.tabs.splice(i--, 1);
+          if (1 <= this.index)
+            --this.index;
+        }
       }
       this.update();
       break;

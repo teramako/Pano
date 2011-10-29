@@ -109,4 +109,8 @@
   list-style-image: url("chrome://browser/skin/places/bookmark.png");
   -moz-image-region: rect(0px, 48px, 16px, 32px);
 }
+#panoContextMenu_reloadAllTabs {
+  list-style-image: url("chrome://browser/skin/reload-stop-go.png");
+  -moz-image-region: rect(0px, 14px, 14px, 0px);
+}
 

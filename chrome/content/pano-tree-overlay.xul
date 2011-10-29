@@ -26,6 +26,7 @@
             insertbefore="panoContextMenuSep"/>
   <menuitem id="panoContextMenu_reloadAllTabs"
             label="&menu.reloadAllTabs;"
+            class="menuitem-iconic"
             accesskey="R"
             command="panoCmdReloadAllTabs"
             insertbefore="panoContextMenuSep"/>

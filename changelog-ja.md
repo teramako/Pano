@@ -1,6 +1,8 @@
 Changelog
 =========
 
+##version 0.11
+
 ##version 0.10 (2011-10-30)
  * 諸事情により、サポート対象を Firefox 7.0 からに変更
  * [#36 コンテキストメニューに再読込をするメニューを追加](https://github.com/teramako/Pano/issues/36)

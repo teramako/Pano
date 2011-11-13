@@ -6,6 +6,7 @@
             title="&window.title;"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <prefpane>
+    <script type="application/javascript" src="chrome://pano/content/preferences.js"/>
     <preferences>
       <preference id="pref-showCloseButton"
                   name="extensions.pano.showCloseButton"
@@ -46,6 +47,8 @@
         <checkbox label="&pref.tooltip.showTitle.label;" preference="pref-tooltip-showTitle"/>
         <checkbox label="&pref.tooltip.showThumbnail.label;" preference="pref-tooltip-showThumbnail"/>
       </groupbox>
+      <sperator class="thin"/>
+      <button label="&styleeditor.label;" oncommand="openStyleEditor();"/>
     </vbox>
   </prefpane>
 </prefwindow>

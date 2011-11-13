@@ -1,0 +1,47 @@
+/*
+ * Pano Tree Style
+ *
+ * Common Style Guide
+ *  see https://developer.mozilla.org/en/XUL_Tutorial/Styling_a_Tree
+ *
+ * Additional properties:
+ *
+ *  currentTab  : the cell and row of the current active tab
+ *  currentGroup: the cell and row of the current active group
+ *  item        : the cell and row of tabs
+ *  group       : the cell and row of groups
+ *  AppTabs     : the cell and row of the pinned tab's group
+ *  apptab      : the cell and row of pinned tabs
+ *  pending     : the cell and row of tabs which is not loaded the contents
+ *  unread      : the cell and row of tabs which is not selected yet
+ *
+ * Use following "@-moz-document" (see https://developer.mozilla.org/en/CSS/@-moz-document )
+ * if you want to apply styles to only either the sidebar or the panel,
+ *
+ *  Sidebar:
+ *    @-moz-document url(chrome://pano/content/sidebar.xul) { ... }
+ *  Panel:
+ *    @-moz-document url(chrome://browser/content/browser.xul) { ... }
+ * 
+ */
+
+@charset "utf-8";
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+.pano-tree treechildren::-moz-tree-cell-text(currentTab),
+.pano-tree treechildren::-moz-tree-cell-text(currentGroup) {
+  font-weight: bold;
+}
+
+.pano-tree treechildren::-moz-tree-cell-text(pending) {
+  color: GrayText !important;
+}
+
+.pano-tree treechildren::-moz-tree-cell-text(unread) {
+  color: magenta !important;
+}
+
+.pano-tree treechildren::-moz-tree-cell-text(hover) {
+  text-decoration: underline;
+}
+

@@ -1,0 +1,42 @@
+<!ENTITY window.title "Pano Style Editor">
+<!ENTITY fileMenu.label "File">
+<!ENTITY fileMenu.accesskey "F">
+<!ENTITY saveFileCmd.label "Save">
+<!ENTITY saveFileCmd.accesskey "S">
+<!ENTITY saveFileCmd.commandkey "s">
+<!ENTITY resetCmd.label "Reset">
+<!ENTITY resetCmd.accesskey "R">
+<!ENTITY closeCmd.label "Close">
+<!ENTITY closeCmd.key "W">
+<!ENTITY closeCmd.accesskey "C">
+<!ENTITY editMenu.label "Eidt">
+<!ENTITY editMenu.accesskey "E">
+<!ENTITY undoCmd.label "Undo">
+<!ENTITY undoCmd.key "Z">
+<!ENTITY undoCmd.accesskey "U">
+<!ENTITY redoCmd.label "Redo">
+<!ENTITY redoCmd.key "Y">
+<!ENTITY redoCmd.accesskey "R">
+<!ENTITY cutCmd.label "Cut">
+<!ENTITY cutCmd.key "X">
+<!ENTITY cutCmd.accesskey "t">
+<!ENTITY copyCmd.label "Copy">
+<!ENTITY copyCmd.key "C">
+<!ENTITY copyCmd.accesskey "C">
+<!ENTITY pasteCmd.label "Paste">
+<!ENTITY pasteCmd.key "V">
+<!ENTITY pasteCmd.accesskey "P">
+<!ENTITY selectAllCmd.label "Select All">
+<!ENTITY selectAllCmd.key "A">
+<!ENTITY selectAllCmd.accesskey "A">
+<!ENTITY helpMenu.label "Help">
+<!ENTITY helpMenu.accesskey "H">
+<!ENTITY styleguide.label "Style a Tree">
+<!ENTITY styleguide.accesskey "S">
+<!ENTITY mozdocument.label "About @-moz-document">
+<!ENTITY mozdocument.accesskey "A">
+<!ENTITY cssreference.label "CSS Reference">
+<!ENTITY cssreference.accesskey "C">
+<!ENTITY mozcssreference.label "Mozilla CSS Extensions">
+<!ENTITY mozcssreference.accesskey "M">
+

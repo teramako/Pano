@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="chrome://global/skin/global.css"?>
+<?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
+<!DOCTYPE window [
+<!ENTITY % styleEditorDTD SYSTEM "chrome://pano/locale/styleEditor.dtd" >
+ %styleEditorDTD;
+]>
+<window id="styleEditorWindow"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        title="&window.title;"
+        windowtype="Pano:StyleEditor"
+        screenX="10" screenY="10"
+        width="640"
+        height="480"
+        persist="screenX screenY width height">
+<script type="application/javascript" src="chrome://global/content/globalOverlay.js"/>
+<script type="application/javascript" src="chrome://pano/content/styleEditor.js"/>
+<commandset id="editMenuCommands"/>
+<commandset id="se-commandset">
+  <command id="se-cmd-close" oncommand="window.close();"/>
+  <command id="se-cmd-save"  oncommand="Pad.saveFile();"/>
+  <command id="se-cmd-reset" oncommand="Pad.reset();"/>
+  <command id="se-cmd-undo"  oncommand="Pad.editor.undo();" disabled="true"/>
+  <command id="se-cmd-redo"  oncommand="Pad.editor.redo();" disabled="true"/>
+</commandset>
+
+<keyset id="se-keyset">
+  <key id="se-key-save"   key="&saveFileCmd.commandkey;" modifiers="accel" command="se-cmd-save"/>
+  <key id="se-key-close"  key="&closeCmd.key;"           modifiers="accel" command="se-cmd-close"/>
+  <key id="key_cut"       key="&cutCmd.key;"             modifiers="accel"/>
+  <key id="key_copy"      key="&copyCmd.key;"            modifiers="accel"/>
+  <key id="key_paste"     key="&pasteCmd.key;"           modifiers="accel"/>
+  <key id="key_selectAll" key="&selectAllCmd.key;"       modifiers="accel"/>
+  <key id="key_undo"      key="&undoCmd.key;"            modifiers="accel"       oncommand="Pad.editor.undo();"/>
+  <key id="Key_redo"      key="&undoCmd.key;"            modifiers="accel,shift" oncommand="Pad.editor.redo();"/>
+</keyset>
+
+<menubar id="se-menubar">
+  <menu id="se-menu-file" label="&fileMenu.label;" accesskey="&fileMenu.accesskey;">
+    <menupopup id="se-menu-filepopup">
+      <menuitem id="se-menu-save"
+                label="&saveFileCmd.label;"
+                accesskey="&saveFileCmd.accesskey;"
+                command="se-cmd-save"
+                key="se-key-save"/>
+      <menuitem id="se-menu-reset"
+                label="&resetCmd.label;"
+                accesskey="&resetCmd.accesskey;"
+                command="se-cmd-reset"/>
+      <menuseparator/>
+      <menuitem id="se-menu-close"
+                label="&closeCmd.label;"
+                accesskey="&closeCmd.accesskey;"
+                command="se-cmd-close"
+                key="se-key-close"/>
+    </menupopup>
+  </menu>
+  <menu id="se-menu-edit" label="&editMenu.label;" accesskey="&editMenu.accesskey;">
+    <menupopup id="se-menu-editpopup"
+               onpopupshowing="Pad.onEditPopupShowing();">
+      <menuitem id="se-menu-undo"
+                label="&undoCmd.label;"
+                accesskey="&undoCmd.accesskey;"
+                key="key_undo"
+                command="se-cmd-undo"/>
+      <menuitem id="se-menu-redo"
+                label="&redoCmd.label;"
+                accesskey="&redoCmd.accesskey;"
+                key="key_redo"
+                command="se-cmd-redo"/>
+      <menuseparator/>
+      <menuitem id="se-menu-cut"
+                label="&cutCmd.label;"
+                key="key_cut"
+                accesskey="&cutCmd.accesskey;"
+                command="cmd_cut"/>
+      <menuitem id="se-menu-copy"
+                label="&copyCmd.label;"
+                key="key_copy"
+                accesskey="&copyCmd.accesskey;"
+                command="cmd_copy"/>
+      <menuitem id="se-menu-paste"
+                label="&pasteCmd.label;"
+                key="key_paste"
+                accesskey="&pasteCmd.accesskey;"
+                command="cmd_paste"/>
+      <menuseparator/>
+      <menuitem id="se-menu-selectAll"
+                label="&selectAllCmd.label;"
+                key="key_selectAll"
+                accesskey="&selectAllCmd.accesskey;"
+                command="cmd_selectAll"/>
+    </menupopup>
+  </menu>
+  <menu id="se-menu-help"
+        label="&helpMenu.label;"
+        accesskey="&helpMenu.accesskey;">
+    <menupopup id="se-menu-helppopup">
+      <menuitem id="se-menu-styleguide"
+                label="&styleguide.label;"
+                accesskey="&styleguide.accesskey;"
+                value="https://developer.mozilla.org/en/XUL_Tutorial/Styling_a_Tree"
+                oncommand="Pad.openTab(this.value);"/>
+      <menuitem id="se-menu-mozdocument"
+                label="&mozdocument.label;"
+                accesskey="&mozdocument.accesskey;"
+                value="https://developer.mozilla.org/en/CSS/@-moz-document"
+                oncommand="Pad.openTab(this.value);"/>
+      <menuitem id="se-menu-cssreference"
+                label="&cssreference.label;"
+                accesskey="&cssreference.accesskey;"
+                value="https://developer.mozilla.org/en/CSS/CSS_Reference"
+                oncommand="Pad.openTab(this.value);"/>
+      <menuitem id="se-menu-mozcssreference"
+                label="&mozcssreference.label;"
+                accesskey="&mozcssreference.accesskey;"
+                value="https://developer.mozilla.org/en/CSS_Reference/Mozilla_Extensions"
+                oncommand="Pad.openTab(this.value);"/>
+    </menupopup>
+  </menu>
+</menubar>
+
+<popupset id="se-popups">
+  <menupopup id="se-text-popup">
+    <menuitem id="menu_cut"/>
+    <menuitem id="menu_copy"/>
+    <menuitem id="menu_paste"/>
+    <menuitem id="menu_delete"/>
+    <menuseparator/>
+    <menuitem id="menu_selectAll"/>
+  </menupopup>
+</popupset>
+
+<hbox id="style-editor" flex="1" context="se-text-popup"/>
+
+<statusbar id="se-statusbar" align="end">
+  <statusbarpanel id="se-status"
+                  label=""
+                  class="statusbarpanel-iconic-text"/>
+  <spacer flex="1"/>
+</statusbar>
+</window>

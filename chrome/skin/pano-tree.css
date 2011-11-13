@@ -16,13 +16,6 @@
   list-style-image: url("chrome://pano/skin/application_double.png");
   -moz-image-region: auto;
 }
-.pano-tree treechildren::-moz-tree-cell-text(currentTab),
-.pano-tree treechildren::-moz-tree-cell-text(currentGroup) {
-  font-weight: bold;
-}
-.pano-tree treechildren::-moz-tree-cell-text(hover) {
-  text-decoration: underline;
-}
 .pano-tree treechildren::-moz-tree-image(checked) {
   list-style-image: url("chrome://global/skin/icons/close.png");
   width: 16px;
@@ -32,12 +25,6 @@
 }
 .pano-tree treechildren::-moz-tree-image(checked, hover) {
   -moz-image-region: rect(0, 32px, 16px, 16px);
-}
-.pano-tree treechildren::-moz-tree-cell-text(pending) {
-  color: GrayText;
-}
-.pano-tree treechildren::-moz-tree-cell-text(unread) {
-  color: magenta;
 }
 .pano-tree treecol[anonid="closebutton"] {
   width: 33px;

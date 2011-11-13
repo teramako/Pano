@@ -1,0 +1,42 @@
+<!ENTITY window.title "Pano スタイルエディタ">
+<!ENTITY fileMenu.label "ファイル">
+<!ENTITY fileMenu.accesskey "F">
+<!ENTITY saveFileCmd.label "保存">
+<!ENTITY saveFileCmd.accesskey "S">
+<!ENTITY saveFileCmd.commandkey "s">
+<!ENTITY resetCmd.label "リセット">
+<!ENTITY resetCmd.accesskey "R">
+<!ENTITY closeCmd.label "閉じる">
+<!ENTITY closeCmd.key "W">
+<!ENTITY closeCmd.accesskey "C">
+<!ENTITY editMenu.label "編集">
+<!ENTITY editMenu.accesskey "E">
+<!ENTITY undoCmd.label "元に戻す">
+<!ENTITY undoCmd.key "Z">
+<!ENTITY undoCmd.accesskey "U">
+<!ENTITY redoCmd.label "やり直し">
+<!ENTITY redoCmd.key "Y">
+<!ENTITY redoCmd.accesskey "R">
+<!ENTITY cutCmd.label "切り取り">
+<!ENTITY cutCmd.key "X">
+<!ENTITY cutCmd.accesskey "t">
+<!ENTITY copyCmd.label "コピー">
+<!ENTITY copyCmd.key "C">
+<!ENTITY copyCmd.accesskey "C">
+<!ENTITY pasteCmd.label "貼り付け">
+<!ENTITY pasteCmd.key "V">
+<!ENTITY pasteCmd.accesskey "P">
+<!ENTITY selectAllCmd.label "すべて選択">
+<!ENTITY selectAllCmd.key "A">
+<!ENTITY selectAllCmd.accesskey "A">
+<!ENTITY helpMenu.label "ヘルプ">
+<!ENTITY helpMenu.accesskey "H">
+<!ENTITY styleguide.label "ツリーのスタイル付け">
+<!ENTITY styleguide.accesskey "S">
+<!ENTITY mozdocument.label "@-moz-document について">
+<!ENTITY mozdocument.accesskey "A">
+<!ENTITY cssreference.label "CSS リファレンス">
+<!ENTITY cssreference.accesskey "C">
+<!ENTITY mozcssreference.label "Mozilla CSS 拡張仕様">
+<!ENTITY mozcssreference.accesskey "M">
+

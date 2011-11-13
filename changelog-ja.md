@@ -2,6 +2,8 @@ Changelog
 =========
 
 ##version 0.11
+ * [#50 タブの状態に応じた更なるスタイリング (提案)](https://github.com/teramako/Pano/issues/50)
+   * スタイルエディタを実装
 
 ##version 0.10 (2011-10-30)
  * 諸事情により、サポート対象を Firefox 7.0 からに変更

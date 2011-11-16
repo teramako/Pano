@@ -63,7 +63,8 @@ var observer = {
 }
 Services.prefs.addObserver(PREF_SHOW_NUMBER, observer, true);
 
-var atomCache = {};
+var atomCache = {}
+    itemCache = new WeakMap;
 
 var ItemPrototype = {
   title: "",
@@ -101,6 +102,9 @@ AppTabsGroup.prototype = {
   }
 };
 function GroupItem (group, session) {
+  if (itemCache.has(group))
+    return itemCache.get(group);
+
   this.group = group;
   if (group.addSubscriber.length > 2)
     group.addSubscriber(this, "close", Pano_dispatchGroupCloseEvent);
@@ -109,6 +113,8 @@ function GroupItem (group, session) {
 
   if (session && ("openState" in session))
     this.isOpen = !!session.openState;
+
+  itemCache.set(group, this);
 }
 GroupItem.prototype = {
   __proto__: ItemPrototype,
@@ -128,7 +134,11 @@ GroupItem.prototype = {
   },
 };
 function TabItem (tab) {
+  if (itemCache.has(tab))
+    return itemCache.get(tab);
+
   this.tab = tab;
+  itemCache.set(tab, this);
 }
 TabItem.prototype = {
   __proto__: ItemPrototype,

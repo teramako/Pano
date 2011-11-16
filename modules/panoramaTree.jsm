@@ -296,6 +296,16 @@ PanoramaTreeView.prototype = {
     this.treeBox.invalidate();
   },
   build: function PTV_build (aSession) {
+    // when the sessionstore is busy, wait the sessionstore is ready then build
+    if (this.tabView._window.TabItems.reconnectingPaused()) {
+      let self = this;
+      let onSSWindowStateReady = function PTV_onSSWindowStateReady(aEvent) {
+        aEvent.target.removeEventListener(aEvent.type, PTV_onSSWindowStateReady, false);
+        this.build(aSession);
+      }.bind(this);
+      this.gWindow.addEventListener("SSWindowStateReady", onSSWindowStateReady, false);
+      return [];
+    }
     if (!aSession)
       aSession = this.getSession();
 

@@ -153,6 +153,7 @@ const HANDLE_EVENT_TYPES = [
   "TabOpen",
   "TabClose",
   "TabMove",
+  "TabSelect",
   "TabPinned",
   "TabUnpinned",
   "TabAttrModified",
@@ -761,6 +762,9 @@ PanoramaTreeView.prototype = {
     case "TabGroupMove":
       this.onTabMove(aEvent);
       break;
+    case "TabSelect":
+      this.onTabSelect(aEvent);
+      break;
     case "TabGroupAdded":
       this.onTabGroupAdded(aEvent);
       break;
@@ -891,6 +895,12 @@ PanoramaTreeView.prototype = {
         this.treeBox.rowCountChanged(i ,1);
       }
     }
+  },
+  onTabSelect: function PTV_onTabSelect (aEvent) {
+    var tab = aEvent.target;
+    var row = this.getRowForTab(tab);
+
+    this.treeBox.ensureRowIsVisible(row);
   },
   onTabGroupAdded: function PTV_onTabGroupAdded (aEvent) {
     var group = this.GI.groupItems[this.GI.groupItems.length - 1];

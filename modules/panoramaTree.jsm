@@ -340,6 +340,7 @@ PanoramaTreeView.prototype = {
     if (count !== 0)
       this.treeBox.rowCountChanged(Math.min(newLength, oldLength), count);
 
+    this.ensureCurrentTabIsVisible();
     this.treeBox.invalidate();
 
     return rows;
@@ -422,6 +423,14 @@ PanoramaTreeView.prototype = {
         this.isEditable(index, this.treeBox.columns[0])) {
       this.treeBox.element.startEditing(index, this.treeBox.columns[0]);
     }
+  },
+  getCurrentTabAndIndex: function PTV_getCurrentTabAndIndex () {
+    for (let [i, item] in Iterator(this.rows)) {
+      if (item.type & TAB_ITEM_TYPE && item.tab.selected) {
+        return [item, i];
+      }
+    }
+    return [null, -1];
   },
   getSelectedItems: function PTV_getSelectedItems () {
     var sel = this.selection,
@@ -737,6 +746,11 @@ PanoramaTreeView.prototype = {
     this.GI.setActiveGroupItem(activeGroupItem);
     this.selection.clearSelection();
   },
+  ensureCurrentTabIsVisible: function PTV_ensureCurrentTabIsVisible () {
+    var [tab, index] = this.getCurrentTabAndIndex();
+    if (!tab) return;
+    this.treeBox.ensureRowIsVisible(index);
+  },
   // ==========================================================================
   // Handlers
   // ==========================================================================
@@ -897,10 +911,7 @@ PanoramaTreeView.prototype = {
     }
   },
   onTabSelect: function PTV_onTabSelect (aEvent) {
-    var tab = aEvent.target;
-    var row = this.getRowForTab(tab);
-
-    this.treeBox.ensureRowIsVisible(row);
+    this.ensureCurrentTabIsVisible();
   },
   onTabGroupAdded: function PTV_onTabGroupAdded (aEvent) {
     var group = this.GI.groupItems[this.GI.groupItems.length - 1];

@@ -12,8 +12,9 @@
  *  group       : the cell and row of groups
  *  AppTabs     : the cell and row of the pinned tab's group
  *  apptab      : the cell and row of pinned tabs
- *  pending     : the cell and row of tabs which is not loaded the contents
- *  unread      : the cell and row of tabs which is not selected yet
+ *  pending     : the cell and row of tab which is not loaded the contents
+ *  unread      : the cell and row of tab which is not selected yet
+ *  loading     : the cell and row of tab which is loading(busy)
  *
  * Use following "@-moz-document" (see https://developer.mozilla.org/en/CSS/@-moz-document )
  * if you want to apply styles to only either the sidebar or the panel,

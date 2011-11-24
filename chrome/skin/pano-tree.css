@@ -8,6 +8,9 @@
 .pano-tree treechildren::-moz-tree-image(item, primary) {
   list-style-image: url("chrome://mozapps/skin/places/defaultFavicon.png");
 }
+.pano-tree treechildren::-moz-tree-image(item, primary, loading) {
+  list-style-image: url("chrome://browser/skin/tabbrowser/loading.png");
+}
 .pano-tree treechildren::-moz-tree-image(group, primary) {
   list-style-image: url("chrome://browser/skin/tabview/tabview.png");
   -moz-image-region: rect(1px, 35px, 16px, 19px);

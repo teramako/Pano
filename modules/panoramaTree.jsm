@@ -976,7 +976,8 @@ PanoramaTreeView.prototype = {
     return this.filter ? 0 : this.rows[aRow].level;
   },
   getImageSrc: function PTV_getImageSrc (aRow, aColumn) {
-    if (aColumn.index === 0 && this.rows[aRow].level > 0) {
+    var row = this.rows[aRow];
+    if (aColumn.index === 0 && row.level > 0 && !row.tab.hasAttribute("busy")) {
       return this.rows[aRow].tab.image;
     }
     return "";
@@ -1042,6 +1043,9 @@ PanoramaTreeView.prototype = {
 
       if (item.tab.hasAttribute("unread"))
         aProperties.AppendElement(this.getAtom("unread"));
+
+      if (item.tab.hasAttribute("busy"))
+        aProperties.AppendElement(this.getAtom("loading"));
     }
   },
   getCellProperties: function PTV_getCellProperties (aRow, aColumn, aProperties) {

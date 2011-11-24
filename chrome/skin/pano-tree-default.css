@@ -15,6 +15,7 @@
  *  pending     : the cell and row of tab which is not loaded the contents
  *  unread      : the cell and row of tab which is not selected yet
  *  loading     : the cell and row of tab which is loading(busy)
+ *  titlechanged: the cell and row of tab which is changed title
  *
  * Use following "@-moz-document" (see https://developer.mozilla.org/en/CSS/@-moz-document )
  * if you want to apply styles to only either the sidebar or the panel,
@@ -44,5 +45,9 @@
 
 .pano-tree treechildren::-moz-tree-cell-text(hover) {
   text-decoration: underline;
+}
+
+.pano-tree treechildren::-moz-tree-cell-text(titlechanged) {
+  font-style: italic;
 }
 

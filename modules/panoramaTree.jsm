@@ -1046,6 +1046,9 @@ PanoramaTreeView.prototype = {
 
       if (item.tab.hasAttribute("busy"))
         aProperties.AppendElement(this.getAtom("loading"));
+
+      if (item.tab.hasAttribute("titlechanged"))
+        aProperties.AppendElement(this.getAtom("titlechanged"))
     }
   },
   getCellProperties: function PTV_getCellProperties (aRow, aColumn, aProperties) {

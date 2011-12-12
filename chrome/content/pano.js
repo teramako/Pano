@@ -85,6 +85,7 @@ window.addEventListener("load", function () {
     window.removeEventListener("TabSelect", arguments.callee, false);
     let th = gPano.tabHistory;
     th.clear();
+    th.maxItems = 20;
   }, false);
 }, false);
 

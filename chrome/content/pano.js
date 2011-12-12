@@ -57,6 +57,12 @@ const gPano = {
     Services.obs.addObserver(self, "pano-tab-selection-changed", true);
     return self;
   })(),
+  get tabHistory() {
+    let tmp = {};
+    Components.utils.import("resource://pano/tabSelectionHistory.jsm", tmp);
+    delete this.tabHistory;
+    return this.tabHistory = new tmp.TabSelectionHistory(window);
+  },
 };
 XPCOMUtils.defineLazyModuleGetter(gPano, "styler", "resource://pano/panoStyle.jsm", "PanoStyle");
 
@@ -77,10 +83,8 @@ window.addEventListener("load", function () {
 
   window.addEventListener("TabSelect", function () {
     window.removeEventListener("TabSelect", arguments.callee, false);
-    let (tmp = {}) {
-      Components.utils.import("resource://pano/tabSelectionHistory.jsm", tmp);
-      gPano.tabHistory = new tmp.TabSelectionHistory(window);
-    }
+    let th = gPano.tabHistory;
+    th.clear();
   }, false);
 }, false);
 

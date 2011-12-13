@@ -48,6 +48,10 @@
 
       <field name="tabViewWindow">null</field>
 
+      <field name="mScrollBox">
+        document.getAnonymousElementByAttribute(this, "anonid", "arrowscrollbox");
+      </field>
+
       <property name="activeGroupItem" readonly="true"
                 onget="return this.tabViewWindow ? this.tabViewWindow.GroupItems._activeGroupItem : null"/>
 
@@ -72,6 +76,8 @@
             tab._selected = true;
 
             this.setAttribute("value", tab.value);
+
+            this.mScrollBox.ensureElementIsVisible(tab);
 
             if (!this.tabViewWindow)
               return;

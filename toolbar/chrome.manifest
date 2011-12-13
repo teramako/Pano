@@ -1,0 +1,5 @@
+content pano-toolbar content/
+locale pano-toolbar en-US locale/en-US/
+locale pano-toolbar ja    locale/ja/
+skin pano-toolbar classic/1.0 skin/
+

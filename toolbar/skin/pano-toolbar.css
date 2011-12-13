@@ -1,0 +1,57 @@
+
+#PanoTabGroupTabs {
+  -moz-binding: url("chrome://pano-toolbar/content/tabs.xml#tabgroup-tabs");
+}
+
+.pano-tabgroup-tab {
+  min-width: 150px;
+  -moz-appearance: none !important;
+  background: -moz-linear-gradient(bottom, rgba(10%,10%,10%,.4) 1px, transparent 1px),
+              -moz-linear-gradient(transparent, hsla(0,0%,45%,.1) 1px, hsla(0,0%,32%,.2) 80%, hsla(0,0%,0%,.2)),
+              -moz-linear-gradient(-moz-dialog, -moz-dialog);
+  background-origin: border-box;
+  background-position: 1px 2px;
+  background-size: -moz-calc(100% - 2px) -moz-calc(100% - 2px);
+  background-repeat: no-repeat;
+  margin: 0 !important;
+  padding: 2px 0 4px;
+  -moz-border-image: url(chrome://browser/skin/tabbrowser/tab.png) 4 3 0 / 4px 3px 0 repeat stretch;
+  border-radius: 0;
+}
+
+#PanoTabGroupToolbar {
+  -moz-box-ordinal-group: 95;
+}
+
+#navigator-toolbox[tabsontop=true] > #PanoTabGroupToolbar {
+  -moz-box-ordinal-group: 5 !important;
+}
+
+#main-window[disablechrome] #navigator-toolbox[tabsontop="true"] > #PanoTabGroupToolbar {
+  visibility: visible !important;
+}
+
+
+/* lwtheme */
+
+
+.pano-tabgroup-tab:-moz-lwtheme {
+  color: inherit !important;
+  background-color: transparent !important;
+}
+.pano-tabgroup-tab[selected=true]:-moz-lwtheme {
+  background-image: -moz-linear-gradient(rgba(255,255,255,.7), rgba(255,255,255,.5) 50%);
+}
+.pano-tabgroup-tab:-moz-lwtheme-brighttext:not([selected=true]) {
+  background-image: -moz-linear-gradient(hsla(0,0%,40%,.6), hsla(0,0%,30%,.6) 80%);
+}
+.pano-tabgroup-tab:-moz-lwtheme-brighttext:not([selected=true]):hover {
+  background-image: -moz-linear-gradient(hsla(0,0%,60%,.6), hsla(0,0%,45%,.6) 80%);
+}
+.pano-tabgroup-tab:-moz-lwtheme-darktext:not([selected=true]) {
+  background-image: -moz-linear-gradient(hsla(0,0%,60%,.5), hsla(0,0%,45%,.5) 80%);
+}
+.pano-tabgroup-tab:-moz-lwtheme-darktext:not([selected=true]):hover {
+  background-image: -moz-linear-gradient(hsla(0,0%,80%,.5), hsla(0,0%,60%,.5) 80%);
+}
+

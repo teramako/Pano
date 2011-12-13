@@ -1,0 +1,239 @@
+<?xml version="1.0"?>
+<!DOCTYPE bindings [
+<!ENTITY % panoToolbarDTD SYSTEM "chrome://pano-toolbar/locale/toolbar.dtd" >
+%panoToolbarDTD;
+]>
+<bindings id="panoTabGroupBindings"
+          xmlns="http://www.mozilla.org/xbl"
+          xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+          xmlns:xbl="http://www.mozilla.org/xbl">
+  <binding id="tabgroup-tabs"
+           extends="chrome://global/content/bindings/tabbox.xml#tabs">
+    <resources>
+      <stylesheet src="chrome://browser/content/tabbrowser.css"/>
+    </resources>
+
+    <content>
+      <xul:hbox align="end">
+        <xul:image class="tab-drop-indicator" anonid="tab-drop-indicator" collapsed="true"/>
+      </xul:hbox>
+      <xul:arrowscrollbox anonid="arrowscrollbox" orient="horizontal" flex="1"
+                          style="min-width: 1px;"
+                          clicktoscroll="true"
+                          class="tabbrowser-arrowscrollbox">
+        <children includes="tab"/>
+        <children/>
+        <xul:toolbarbutton class="tabs-newtab-button"
+                           oncommand="this.parentNode.parentNode.tabViewWindow.GroupItems.newGroup().newTab();"
+                           tooltiptext="&newGroup.tooltip;"/>
+        <xul:spacer class="closing-tabs-spacer" anonid="closing-tabs-spacer"
+                    style="width: 0;"/>
+      </xul:arrowscrollbox>
+    </content>
+    <implementation implements="nsIDOMEventListener">
+      <constructor><![CDATA[
+        Services.console.logStringMessage("PanoToolbar constructor: initializing");
+        TabView._initFrame(this.rebuild.bind(this));
+
+        for (let [, type] in Iterator(["tabviewhidden","TabGroupAdded","TabGroupClose","TabSelect","TabGroupTitleChanged"])) {
+          window.addEventListener(type, this, false);
+        }
+      ]]></constructor>
+
+      <destructor><![CDATA[
+        Services.console.logStringMessage("PanoToolbar destructor");
+        this.tabViewWindow = null;
+        for (let [, type] in Iterator(["tabviewhidden","TabGroupAdded","TabGroupClose","TabSelect","TabGroupTitleChanged"])) {
+          window.removeEventListener(type, this, false);
+        }
+      ]]></destructor>
+
+      <field name="tabViewWindow">null</field>
+
+      <property name="activeGroupItem" readonly="true"
+                onget="return this.tabViewWindow ? this.tabViewWindow.GroupItems._activeGroupItem : null"/>
+
+      <property name="selectedIndex">
+        <getter><![CDATA[
+          const tabs = this.childNodes;
+          for (var i = 0; i < tabs.length; i++) {
+            if (tabs[i].selected)
+              return i;
+          }
+          return -1;
+        ]]></getter>
+        <setter><![CDATA[
+          var tab = this.getItemAtIndex(val);
+          if (tab) {
+            var alreadySelected = tab.selected;
+
+            Array.forEach(this.childNodes, function (aTab) {
+              if (aTab.selected && aTab != tab)
+                aTab._selected = false;
+            });
+            tab._selected = true;
+
+            this.setAttribute("value", tab.value);
+
+            if (!this.tabViewWindow)
+              return;
+
+            var group = this.tabViewWindow.GroupItems.groupItem(tab.value);
+            if (this.activeGroupItem !== group) {
+              this.tabViewWindow.UI.setActive(group);
+              let item = group.getActiveTab() || group._children[0];
+              gBrowser.mTabContainer.selectedIndex = item.tab._tPos;
+            }
+
+            if (!alreadySelected) {
+              // Fire an onselect event for the tabs element.
+              var event = document.createEvent('Events');
+              event.initEvent('select', true, true);
+              this.dispatchEvent(event);
+            }
+          }
+          return val;
+        ]]></setter>
+      </property>
+      <method name="rebuild">
+        <body><![CDATA[
+          var win = this.tabViewWindow = TabView._window,
+              self = this;
+          if (!win)
+            return;
+
+          Services.console.logStringMessage("TabToolbar: _initFrame rebuild start");
+          if (win.TabItems.reconnectingPaused()) {
+            Services.console.logStringMessage("TabToolbar: reconnectingPaused");
+            window.addEventListener("SSWindowStateReady", function PT_onSSWindowStateReady (aEvent) {
+              Services.console.logStringMessage("TabToolbar: PTV_onSSWindowStateReady");
+              window.removeEventListener(aEvent.type, PT_onSSWindowStateReady, false);
+              Services.console.logStringMessage("TabToolbar: " + self.build);
+              self.rebuild();
+            }, false);
+            return;
+          }
+          while (this.childNodes.length > 1) {
+            this.removeChild(self.lastChild);
+          }
+          var groupItems = win.GroupItems.groupItems;
+          this.setGroup(this.childNodes[0], groupItems[0]);
+          if (groupItems[0] === this.activeGroupItem)
+            this.selectedIndex = 0;
+
+          for (let i = 1, len = groupItems.length; i < len; ++i) {
+            this.addGroup(groupItems[i]);
+          }
+        ]]></body>
+      </method>
+      <method name="setGroup">
+        <parameter name="aTab"/>
+        <parameter name="aGroup"/>
+        <body><![CDATA[
+          aTab.setAttribute("label", aGroup.getTitle() || "- " + group.id + " -");
+          aTab.setAttribute("value", aGroup.id);
+        ]]></body>
+      </method>
+      <method name="addGroup">
+        <parameter name="group"/>
+        <body><![CDATA[
+          var tab = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "tab");
+          this.setGroup(tab, group);
+          tab.setAttribute("class", "pano-tabgroup-tab");
+          this.appendChild(tab);
+          if (group === this.activeGroupItem)
+            this.selectedItem = tab;
+        ]]></body>
+      </method>
+      <method name="getItemFromGroupId">
+        <parameter name="aGroupId"/>
+        <body><![CDATA[
+          for (let i = 0, len = this.childNodes.length; i < len; ++i) {
+            if (this.childNodes[i].value == aGroupId)
+              return this.childNodes[i];
+          }
+          return null;
+        ]]></body>
+      </method>
+      <method name="handleEvent">
+        <parameter name="aEvent"/>
+        <body><![CDATA[
+          switch (aEvent.type) {
+            case "tabviewhidden":
+              this.onTabViewHidden(aEvent);
+              break;
+            case "TabGroupAdded":
+              this.onTabGroupAdded(aEvent);
+              break;
+            case "TabGroupClose":
+              this.onTabGroupClose(aEvent);
+              break;
+            case "TabSelect":
+              this.onTabSelect(aEvent);
+              break;
+            case "TabGroupTitleChanged":
+              this.onTabGroupTitleChanged(aEvent);
+              break;
+          }
+        ]]></body>
+      </method>
+      <method name="onTabViewHidden">
+        <parameter name="aEvent"/>
+        <body><![CDATA[
+          this.rebuild();
+        ]]></body>
+      </method>
+      <method name="onTabGroupAdded">
+        <parameter name="aEvent"/>
+        <body><![CDATA[
+          var groupItems = this.tabViewWindow.GroupItems.groupItems;
+          var group = groupItems[groupItems.length - 1];
+          this.addGroup(group);
+        ]]></body>
+      </method>
+      <method name="onTabGroupClose">
+        <parameter name="aEvent"/>
+        <body><![CDATA[
+          var groupId = aEvent.detail;
+          for (let i = 0, len = this.childNodes.length; i < len; ++i) {
+            if (this.childNodes[i].value == groupId) {
+              this.removeItemAt(i);
+              return;
+            }
+          }
+        ]]></body>
+      </method>
+      <method name="onTabSelect">
+        <parameter name="aEvent"/>
+        <body><![CDATA[
+          var tab = aEvent.target;
+          if (tab.pinned) {
+            return;
+          }
+          if (!tab._tabViewTabItem)
+            return;
+
+          var group = tab._tabViewTabItem.parent;
+          var item = this.getItemFromGroupId(group.id);
+          if (item) {
+            this.selectedItem = item;
+          } else {
+            this.addGroup(group);
+          }
+        ]]></body>
+      </method>
+      <method name="onTabGroupTitleChanged">
+        <parameter name="aEvent"/>
+        <body><![CDATA[
+          var id = aEvent.detail;
+          var item = this.getItemFromGroupId(id),
+              group = this.tabViewWindow.GroupItems.groupItem(id);
+          if (item && group) {
+            item.label = group.getTitle() || "- " + id + " -";
+          }
+        ]]></body>
+      </method>
+    </implementation>
+  </binding>
+</bindings>
+

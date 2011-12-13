@@ -18,6 +18,27 @@
   -moz-border-image: url(chrome://browser/skin/tabbrowser/tab.png) 4 3 0 / 4px 3px 0 repeat stretch;
   border-radius: 0;
 }
+.pano-tabgroup-tab:hover {
+    background-image: -moz-linear-gradient(bottom, rgba(10%,10%,10%,.4) 1px, transparent 1px),
+                      -moz-linear-gradient(hsla(0,0%,100%,.3) 1px, hsla(0,0%,75%,.2) 80%, hsla(0,0%,60%,.2)),
+                      -moz-linear-gradient(-moz-dialog, -moz-dialog);
+}
+
+@media all and (-moz-windows-theme: luna-blue) {
+  .pano-tabgroup-tab {
+    background-image: -moz-linear-gradient(bottom, rgba(10%,10%,10%,.4) 1px, transparent 1px),
+                      -moz-linear-gradient(hsla(51,34%,89%,.9), hsla(51,15%,79%,.9) 1px, hsla(51,9%,68%,.9));
+  }
+  .pano-tabgroup-tab:hover {
+    background-image: -moz-linear-gradient(bottom, rgba(10%,10%,10%,.4) 1px, transparent 1px),
+                      -moz-linear-gradient(hsla(51,34%,100%,.9), hsla(51,15%,94%,.9) 1px, hsla(51,9%,83%,.9));
+  }
+}
+
+.pano-tabgroup-tab[selected=true] {
+  background-image: -moz-linear-gradient(rgba(255,255,255,.7), rgba(255,255,255,.5) 50%),
+                    -moz-linear-gradient(-moz-dialog, -moz-dialog);
+}
 
 #PanoTabGroupToolbar {
   -moz-box-ordinal-group: 95;

@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <svg width="48" height="48" viewBox="0 0 128 128" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <rect x="12" y="60" width="104" height="50" rx="4" ry="4" stroke="white" stroke-width="24" fill="none"/>
+  <rect x="12" y="60" width="104" height="50" rx="4" ry="4" stroke="black" stroke-width="16" fill="none"/>
   <g transform="matrix(0.8, 0, 0, 0.8, 10, 25)">
+    <path d="M20,108 L48,26 A30,35 0 1,1 48,85" stroke="white" stroke-width="24" stroke-linecap="round" fill="none"/>
     <path d="M20,108 L48,26 A30,35 0 1,1 48,85" stroke="black" stroke-width="16" stroke-linecap="round" fill="none"/>
+    <circle r="12" cx="100" cy="104" fill="white"/>
     <circle r="8" cx="100" cy="104" fill="black"/>
   </g>
-  <path d="M90,5 L80,25 H25 q-20,0 -20,20 V103 q0,20 20,20 H103 q20,0 20,-20 V45 q0,-20 -20,-20 H100 L90,5"
-        stroke="black" stroke-width="10" fill="none" stroke-linecap="round"/>
 </svg>
 

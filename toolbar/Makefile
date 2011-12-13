@@ -2,7 +2,7 @@
 VERSION = $(shell sed -n 's,^.*<em:version>\(.*\)</em:version>.*$$,\1,p' install.rdf)
 TARGET = pano-toolbar-${VERSION}.xpi
 DIRS = content locale skin
-FILES = install.rdf bootstrap.js chrome.manifest
+FILES = install.rdf bootstrap.js chrome.manifest README.md
 CONTENTS = $(shell find ${DIRS} ! -name ".*")
 
 clean:
@@ -14,7 +14,7 @@ ${TARGET}: ${FILES} ${CONTENTS}
 	@echo created $@
 
 .xpi: ${TARGET}
-	@ls -l pano-toolbar.xpi
+	@ls -l ${TARGET}
 
 xpi: .xpi
 

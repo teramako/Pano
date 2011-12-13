@@ -4,7 +4,7 @@
     <em:id>pano-toolbar@teramako.github.com</em:id>
     <em:type>2</em:type>
     <em:name>Pano Toolbar</em:name>
-    <em:version>0.1</em:version>
+    <em:version>0.1pre</em:version>
     <em:creator>teramako</em:creator>
     <em:description>Show TabGroup Toolbar</em:description>
     <em:bootstrap>true</em:bootstrap>

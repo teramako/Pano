@@ -124,7 +124,7 @@
         <parameter name="aTab"/>
         <parameter name="aGroup"/>
         <body><![CDATA[
-          aTab.setAttribute("label", aGroup.getTitle() || "- " + group.id + " -");
+          aTab.setAttribute("label", aGroup.getTitle() || "- " + aGroup.id + " -");
           aTab.setAttribute("value", aGroup.id);
         ]]></body>
       </method>

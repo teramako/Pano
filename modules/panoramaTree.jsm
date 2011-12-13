@@ -1141,7 +1141,14 @@ PanoramaTreeView.prototype = {
     }
   },
   setCellText: function PTV_setCellText (aRow, aColumn, aValue) {
-    this.rows[aRow].group.setTitle(aValue);
+    var group = this.rows[aRow].group;
+    if (group.id != aValue) {
+      group.setTitle(aValue);
+      let doc = this.gWindow.document;
+      let event = doc.createEvent("UIEvents");
+      event.initUIEvent("TabGroupTitleChanged", true, false, this.gWindow, group.id);
+      this.gWindow.dispatchEvent(event);
+    }
   },
   performAction: function PTV_performAction (aAction) {},
   performActionOnRow: function PTV_performActionOnRow (aAction, aRow) {},

@@ -4,7 +4,7 @@
 }
 
 .pano-tabgroup-tab {
-  min-width: 150px;
+  min-width: 100px;
   -moz-appearance: none !important;
   background: -moz-linear-gradient(bottom, rgba(10%,10%,10%,.4) 1px, transparent 1px),
               -moz-linear-gradient(transparent, hsla(0,0%,45%,.1) 1px, hsla(0,0%,32%,.2) 80%, hsla(0,0%,0%,.2)),

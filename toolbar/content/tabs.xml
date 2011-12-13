@@ -32,7 +32,6 @@
     </content>
     <implementation implements="nsIDOMEventListener">
       <constructor><![CDATA[
-        Services.console.logStringMessage("PanoToolbar constructor: initializing");
         TabView._initFrame(this.rebuild.bind(this));
 
         for (let [, type] in Iterator(["tabviewhidden","TabGroupAdded","TabGroupClose","TabSelect","TabGroupTitleChanged"])) {
@@ -41,7 +40,6 @@
       ]]></constructor>
 
       <destructor><![CDATA[
-        Services.console.logStringMessage("PanoToolbar destructor");
         this.tabViewWindow = null;
         for (let [, type] in Iterator(["tabviewhidden","TabGroupAdded","TabGroupClose","TabSelect","TabGroupTitleChanged"])) {
           window.removeEventListener(type, this, false);
@@ -102,13 +100,9 @@
           if (!win)
             return;
 
-          Services.console.logStringMessage("TabToolbar: _initFrame rebuild start");
           if (win.TabItems.reconnectingPaused()) {
-            Services.console.logStringMessage("TabToolbar: reconnectingPaused");
             window.addEventListener("SSWindowStateReady", function PT_onSSWindowStateReady (aEvent) {
-              Services.console.logStringMessage("TabToolbar: PTV_onSSWindowStateReady");
               window.removeEventListener(aEvent.type, PT_onSSWindowStateReady, false);
-              Services.console.logStringMessage("TabToolbar: " + self.build);
               self.rebuild();
             }, false);
             return;

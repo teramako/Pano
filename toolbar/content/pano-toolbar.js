@@ -10,10 +10,8 @@ function PanoToolbar(win) {
 PanoToolbar.prototype = {
   constructor: PanoToolbar,
   init: function PT_init () {
-    Services.console.logStringMessage("PanoToolbar: init");
     var doc = this.window.document;
     var gNaviToolbox = doc.getElementById("navigator-toolbox");
-    Services.console.logStringMessage("PanoToolbar: " + gNaviToolbox.id);
     var range = doc.createRange();
     range.selectNodeContents(gNaviToolbox);
     range.collapse(false);
@@ -40,7 +38,6 @@ var windowObserver = {
     if (aTopic === "domwindowopened") {
       //win.addEventListener("DOMContentLoaded", function PT_onDOMContentLoaded (aEvent) {
       win.addEventListener("load", function PT_onDOMContentLoaded (aEvent) {
-        Services.console.logStringMessage([win.location.href, aTopic, aData].join(", "));
         win.removeEventListener(aEvent.type, PT_onDOMContentLoaded, false);
         if (win.location.href === "chrome://browser/content/browser.xul")
           initWindow(win);

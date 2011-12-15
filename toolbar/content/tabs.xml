@@ -286,7 +286,6 @@
           var id = this.value;
           var GI = TabView._window.GroupItems;
           var group = GI.groupItem(id);
-          group.closeAll({ immediately: true });
           group.closeHidden();
         ]]></body>
       </method>

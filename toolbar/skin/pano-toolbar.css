@@ -4,7 +4,8 @@
 }
 
 .pano-tabgroup-tab {
-  min-width: 100px;
+  min-width: 80px;
+  -moz-binding: url("chrome://pano-toolbar/content/tabs.xml#tabgroup-tab");
   -moz-appearance: none !important;
   background: -moz-linear-gradient(bottom, rgba(10%,10%,10%,.4) 1px, transparent 1px),
               -moz-linear-gradient(transparent, hsla(0,0%,45%,.1) 1px, hsla(0,0%,32%,.2) 80%, hsla(0,0%,0%,.2)),
@@ -17,6 +18,8 @@
   padding: 2px 0 4px;
   -moz-border-image: url(chrome://browser/skin/tabbrowser/tab.png) 4 3 0 / 4px 3px 0 repeat stretch;
   border-radius: 0;
+  list-style-image: url("chrome://browser/skin/tabview/tabview.png");
+  -moz-image-region: rect(1px, 35px, 16px, 19px);
 }
 .pano-tabgroup-tab:hover {
     background-image: -moz-linear-gradient(bottom, rgba(10%,10%,10%,.4) 1px, transparent 1px),
@@ -38,6 +41,36 @@
 .pano-tabgroup-tab[selected=true] {
   background-image: -moz-linear-gradient(rgba(255,255,255,.7), rgba(255,255,255,.5) 50%),
                     -moz-linear-gradient(-moz-dialog, -moz-dialog);
+}
+
+.tabgroup-closebutton {
+  /*
+  -moz-binding: url("chrome://pano-toolbar/content/tabs.xml#tabgroup-closebutton");
+  */
+  -moz-appearance: none !important;
+  -moz-image-region: rect(0, 64px, 16px, 48px);
+  border: none !important;
+  padding: 0 !important;
+  list-style-image: url("chrome://global/skin/icons/close.png");
+}
+.tabgroup-closebutton[selected=true] {
+  -moz-user-focus: normal;
+  -moz-image-region: rect(0, 16px, 16px, 0);
+}
+.tabgroup-closebutton:hover,
+.tabgroup-closebutton:hover[selected=true] {
+  -moz-image-region: rect(0, 32px, 16px, 16px) !important;
+}
+.tabgroup-closebutton:hover:active,
+.tabgroup-closebutton:hover:active[selected=true] {
+  -moz-image-region: rect(0, 48px, 16px, 32px) !important;
+}
+.tabgroup-closebutton:focus {
+  outline: none !important;
+}
+.tabgroup-title-textbox {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 #PanoTabGroupToolbar {

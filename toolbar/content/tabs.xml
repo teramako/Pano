@@ -24,7 +24,7 @@
         <children includes="tab"/>
         <children/>
         <xul:toolbarbutton class="tabs-newtab-button"
-                           oncommand="this.parentNode.parentNode.tabViewWindow.GroupItems.newGroup().newTab();"
+                           oncommand="this.parentNode.parentNode.newGroup();"
                            tooltiptext="&newGroup.tooltip;"/>
         <xul:spacer class="closing-tabs-spacer" anonid="closing-tabs-spacer"
                     style="width: 0;"/>
@@ -40,20 +40,14 @@
       ]]></constructor>
 
       <destructor><![CDATA[
-        this.tabViewWindow = null;
         for (let [, type] in Iterator(["tabviewhidden","TabGroupAdded","TabGroupClose","TabSelect","TabGroupTitleChanged"])) {
           window.removeEventListener(type, this, false);
         }
       ]]></destructor>
 
-      <field name="tabViewWindow">null</field>
-
       <field name="mScrollBox">
         document.getAnonymousElementByAttribute(this, "anonid", "arrowscrollbox");
       </field>
-
-      <property name="activeGroupItem" readonly="true"
-                onget="return this.tabViewWindow ? this.tabViewWindow.GroupItems._activeGroupItem : null"/>
 
       <property name="selectedIndex">
         <getter><![CDATA[
@@ -79,14 +73,18 @@
 
             this.mScrollBox.ensureElementIsVisible(tab);
 
-            if (!this.tabViewWindow)
-              return;
-
-            var group = this.tabViewWindow.GroupItems.groupItem(tab.value);
-            if (this.activeGroupItem !== group) {
-              this.tabViewWindow.UI.setActive(group);
-              let item = group.getActiveTab() || group._children[0];
-              gBrowser.mTabContainer.selectedIndex = item.tab._tPos;
+            if (TabView._window) {
+              let tabViewWindow = TabView._window;
+              var group = tabViewWindow.GroupItems.groupItem(tab.value);
+              if (tabViewWindow.GroupItems._activeGroupItem !== group) {
+                tabViewWindow.UI.setActive(group, { dontSetActiveTabInGroup: true });
+                if (!gBrowser.selectedTab.pinned) {
+                  let item = group.getActiveTab() || group._children[0];
+                  gBrowser.mTabContainer.selectedIndex = item.tab._tPos;
+                } else {
+                  tabViewWindow.UI.onTabSelect(gBrowser.selectedTab);
+                }
+              }
             }
 
             if (!alreadySelected) {
@@ -101,7 +99,7 @@
       </property>
       <method name="rebuild">
         <body><![CDATA[
-          var win = this.tabViewWindow = TabView._window,
+          var win = TabView._window,
               self = this;
           if (!win)
             return;
@@ -118,20 +116,24 @@
           }
           var groupItems = win.GroupItems.groupItems;
           this.setGroup(this.childNodes[0], groupItems[0]);
-          if (groupItems[0] === this.activeGroupItem)
+          if (groupItems[0] === win.GroupItems._activeGroupItem)
             this.selectedIndex = 0;
 
           for (let i = 1, len = groupItems.length; i < len; ++i) {
             this.addGroup(groupItems[i]);
           }
+          this.mScrollBox.ensureElementIsVisible(this.selectedItem);
         ]]></body>
       </method>
       <method name="setGroup">
         <parameter name="aTab"/>
         <parameter name="aGroup"/>
         <body><![CDATA[
-          aTab.setAttribute("label", aGroup.getTitle() || "- " + aGroup.id + " -");
-          aTab.setAttribute("value", aGroup.id);
+          var title = typeof aGroup.getTitle === "function" ? aGroup.getTitle() : aGroup.title,
+              id = aGroup.id;
+          aTab.setAttribute("label", title || "- " + id + " -");
+          aTab.setAttribute("value", id);
+          aTab.setAttribute("crop", "end");
         ]]></body>
       </method>
       <method name="addGroup">
@@ -141,8 +143,15 @@
           this.setGroup(tab, group);
           tab.setAttribute("class", "pano-tabgroup-tab");
           this.appendChild(tab);
-          if (group === this.activeGroupItem)
+          if (TabView._window && TabView._window.GroupItems._activeGroupItem.id == group.id)
             this.selectedItem = tab;
+        ]]></body>
+      </method>
+      <method name="newGroup">
+        <body><![CDATA[
+          TabView._initFrame(function(){
+            TabView._window.GroupItems.newGroup().newTab();
+          });
         ]]></body>
       </method>
       <method name="getItemFromGroupId">
@@ -186,8 +195,8 @@
       <method name="onTabGroupAdded">
         <parameter name="aEvent"/>
         <body><![CDATA[
-          var groupItems = this.tabViewWindow.GroupItems.groupItems;
-          var group = groupItems[groupItems.length - 1];
+          var groupItems = TabView._window.GroupItems.groupItems,
+              group = groupItems[groupItems.length - 1];
           this.addGroup(group);
         ]]></body>
       </method>
@@ -227,13 +236,110 @@
         <body><![CDATA[
           var id = aEvent.detail;
           var item = this.getItemFromGroupId(id),
-              group = this.tabViewWindow.GroupItems.groupItem(id);
+              group = TabView._window.GroupItems.groupItem(id);
           if (item && group) {
             item.label = group.getTitle() || "- " + id + " -";
           }
         ]]></body>
       </method>
     </implementation>
+  </binding>
+
+  <binding id="tabgroup-tab" display="xul:hbox"
+           extends="chrome://global/content/bindings/tabbox.xml#tab">
+    <content>
+      <xul:hbox class="tab-middle box-inherit" xbl:inherits="align,dir,pack,orient,selected" flex="1">
+        <xul:image class="tab-icon"
+                   xbl:inherits="validate,src=image"
+                   role="presentation"/>
+        <xul:deck anonid="title-deck" selectedIndex="1" flex="1">
+          <xul:textbox flex="1" anonid="title-textbox" class="tabgroup-title-textbox"/>
+          <xul:label xbl:inherits="value=label,accesskey,crop,disabled"
+                     flex="1"
+                     role="presentation"/>
+        </xul:deck>
+        <xul:toolbarbutton anonid="close-button"
+                           xbl:inherits="selected,value"
+                           oncommand="this.parentNode.parentNode.close(event);"
+                           clickthrough="never"
+                           class="tabgroup-closebutton"/>
+      </xul:hbox>
+    </content>
+    <implementation>
+      <field name="mOverCloseButton">false</field>
+      <field name="mDeck">
+        document.getAnonymousElementByAttribute(this, "anonid", "title-deck")
+      </field>
+      <field name="mTextbox">
+        document.getAnonymousElementByAttribute(this, "anonid", "title-textbox")
+      </field>
+      <method name="close">
+        <parameter name="aEvent"/>
+        <body><![CDATA[
+          aEvent.stopPropagation();
+          if (this.selected) {
+            let tab = this.nextElementSibling || this.previousElementSibling;
+            if (tab) {
+              this.parentNode.selectedItem = tab;
+            }
+          }
+          var id = this.value;
+          var GI = TabView._window.GroupItems;
+          var group = GI.groupItem(id);
+          group.closeAll({ immediately: true });
+          group.closeHidden();
+        ]]></body>
+      </method>
+    </implementation>
+    <handlers>
+      <handler event="mouseover">
+        var anonid = event.originalTarget.getAttribute("anonid");
+        if (anonid == "close-button")
+          this.mOverCloseButton = true;
+      </handler>
+      <handler event="mouseout">
+        var anonid = event.originalTarget.getAttribute("anonid");
+        if (anonid == "close-button")
+          this.mOverCloseButton = false;
+      </handler>
+      <handler event="dragstart" phase="capturing">
+        this.style.MozUserFocus = '';
+      </handler>
+      <handler event="mousedown" phase="capturing">
+      <![CDATA[
+        if (this.selected) {
+          this.style.MozUserFocus = 'ignore';
+          this.clientTop; // just using this to flush style updates
+        } else if (this.mOverCloseButton) {
+          // Prevent tabbox.xml from selecting the tab.
+          event.stopPropagation();
+        }
+      ]]>
+      </handler>
+      <handler event="mouseup">
+        this.style.MozUserFocus = '';
+      </handler>
+      <handler event="dblclick" button="0"><![CDATA[
+        this.mDeck.selectedIndex = 0;
+        this.mTextbox.value = this.label;
+        this.mTextbox.focus();
+      ]]></handler>
+      <handler event="keypress"><![CDATA[
+        if (this.mDeck.selectedIndex == 1)
+          return;
+
+        switch (event.keyCode) {
+          case KeyEvent.DOM_VK_ENTER:
+          case KeyEvent.DOM_VK_RETURN:
+          case KeyEvent.DOM_VK_ESCAPE:
+            this.mTextbox.blur();
+            this.mDeck.selectedIndex = 1;
+            let label = this.mTextbox.value;
+            this.label = label;
+            TabView._window.GroupItems.groupItem(this.value).setTitle(label);
+        }
+      ]]></handler>
+    </handlers>
   </binding>
 </bindings>
 

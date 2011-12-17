@@ -63,6 +63,38 @@ var observer = {
 }
 Services.prefs.addObserver(PREF_SHOW_NUMBER, observer, true);
 
+var tabsSession = {
+  tabs: {},
+  init: function (win) {
+    var self = this;
+    var result = {};
+    var tabs = win.gBrowser.tabs;
+    for (let i = 0, tab; tab = tabs[i]; ++i) {
+      let value = SessionStore.getTabValue(tab, "tabview-tab");
+      if (value) {
+        let id, data = JSON.parse(value);
+        if (data)
+          id = data.groupID;
+
+        if (!id)
+          continue;
+
+        if (!(id in result))
+          result[id] = [];
+
+        result[id].push(tab._tPos);
+      }
+    }
+    this.tabs[win.__SSi] = result;
+  },
+  get: function (win, id) {
+    if (!this.tabs[win.__SSi]) {
+      this.init(win);
+    }
+    return this.tabs[win.__SSi][id];
+  },
+};
+
 var atomCache = {}
     itemCache = new WeakMap;
 
@@ -110,7 +142,10 @@ function GroupItem (win, group, session) {
   } else {
     this._win = win;
     if (!session)
-      session = { indexes: [], };
+      session = {};
+
+    if (!("indexes" in session))
+      session.indexes = tabsSession.get(win, group.id) || [];
 
     this.session = session;
     this._group = group;
@@ -146,7 +181,7 @@ GroupItem.prototype = {
     var win = this._win.TabView._window;
     if (win) {
       let groupItem = win.GroupItems.groupItem(this._group.id);
-      if (groupItem)
+      if (groupItem && groupItem._children.length > 0)
         return this.init(groupItem);
     }
     return this._group;

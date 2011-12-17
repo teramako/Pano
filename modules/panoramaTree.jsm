@@ -298,16 +298,6 @@ PanoramaTreeView.prototype = {
       return failedData;
     }
   },
-  getAppTabs: function PTV_getAppTabs () {
-    var tabs = [];
-    for (let [,tab] in Iterator(this.gBrowser.visibleTabs)) {
-      if (!tab.pinned)
-        return tabs;
-
-      tabs.push(new TabItem(tab));
-    }
-    return tabs;
-  },
   filter: null,
   setFilter: function PTV_setFilter (aValue) {
     var count = this.rowCount,

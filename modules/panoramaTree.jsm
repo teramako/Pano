@@ -725,13 +725,13 @@ PanoramaTreeView.prototype = {
         this.tabView.moveTabTo(aItem.tab, aTargetItem.group.id);
       }
 
-      let children = aTargetItem.children;
+      let children = [tab for (tab in aTargetItem.rawChildren)];
       if (children.length > 0) {
         let tabIndex = children.length - 1;
         if (aTargetItem.isOpen && aOrientation === Ci.nsITreeView.DROP_AFTER)
           tabIndex = 0;
 
-        let targetTab = children[tabIndex].tab;
+        let targetTab = children[tabIndex];
         this.gBrowser.moveTabTo(aItem.tab,
           getMoveTabPosition(targetTab._tPos, aItem.tab._tPos, Ci.nsITreeView.DROP_AFTER));
       }
@@ -1160,9 +1160,8 @@ PanoramaTreeView.prototype = {
         if (item.type & APPTAB_GROUP_TYPE)
           return;
 
-        item.children.forEach(function (tabItem) {
-          this.removeTab(tabItem.tab, { animate: false });
-        }, this.gBrowser)
+        for (let tab in item.rawChildren)
+          this.gBrowser.removeTab(tab, { animate: false });
 
         if (item.group)
           item.group.close({ immediately: true });

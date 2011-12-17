@@ -1,8 +1,8 @@
 
 Components.utils.import("resource://gre/modules/Services.jsm");
 
-function openStyleEditor () {
-  var win = Services.wm.getMostRecentWindow("Pano:StyleEditor");
+function openCSSEditor () {
+  var win = Services.wm.getMostRecentWindow("Pano:CSSEditor");
   if (win) {
     win.focus();
   } else {
@@ -10,7 +10,7 @@ function openStyleEditor () {
     // ダイアログを閉じるとスタイルエディタも閉じてしまう。
     // それを回避するために、Firefoxのウィンドウから開く
     let gWin = Services.wm.getMostRecentWindow("navigator:browser");
-    gWin.open("chrome://pano/content/styleEditor.xul", "_blank", "chrome,dialog=no");
+    gWin.open("chrome://pano/content/cssEditor.xul", "_blank", "chrome,dialog=no");
   }
 }
 

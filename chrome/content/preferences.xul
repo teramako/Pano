@@ -48,7 +48,7 @@
         <checkbox label="&pref.tooltip.showThumbnail.label;" preference="pref-tooltip-showThumbnail"/>
       </groupbox>
       <sperator class="thin"/>
-      <button label="&styleeditor.label;" oncommand="openStyleEditor();"/>
+      <button label="&cssEditor.label;" oncommand="openCSSEditor();"/>
     </vbox>
   </prefpane>
 </prefwindow>

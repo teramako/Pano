@@ -2,19 +2,19 @@
 <?xml-stylesheet type="text/css" href="chrome://global/skin/global.css"?>
 <?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
 <!DOCTYPE window [
-<!ENTITY % styleEditorDTD SYSTEM "chrome://pano/locale/styleEditor.dtd" >
- %styleEditorDTD;
+<!ENTITY % cssEditorDTD SYSTEM "chrome://pano/locale/cssEditor.dtd" >
+ %cssEditorDTD;
 ]>
-<window id="styleEditorWindow"
+<window id="cssEditorWindow"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         title="&window.title;"
-        windowtype="Pano:StyleEditor"
+        windowtype="Pano:CSSEditor"
         screenX="10" screenY="10"
         width="640"
         height="480"
         persist="screenX screenY width height">
 <script type="application/javascript" src="chrome://global/content/globalOverlay.js"/>
-<script type="application/javascript" src="chrome://pano/content/styleEditor.js"/>
+<script type="application/javascript" src="chrome://pano/content/cssEditor.js"/>
 <commandset id="editMenuCommands"/>
 <commandset id="se-commandset">
   <command id="se-cmd-close" oncommand="window.close();"/>
@@ -131,7 +131,7 @@
   </menupopup>
 </popupset>
 
-<hbox id="style-editor" flex="1" context="se-text-popup"/>
+<hbox id="css-editor" flex="1" context="se-text-popup"/>
 
 <statusbar id="se-statusbar" align="end">
   <statusbarpanel id="se-status"

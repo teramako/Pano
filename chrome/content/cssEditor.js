@@ -22,7 +22,7 @@ var Pad = {
     }
   },
   loadContent: function Pad_loadContent (aContent) {
-    var editorContainer = document.getElementById("style-editor");
+    var editorContainer = document.getElementById("css-editor");
 
     this.editor = new SourceEditor();
     this.editor.init(editorContainer, {

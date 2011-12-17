@@ -7,5 +7,5 @@
 <!ENTITY pref.tooltip.showTitle.label "タイトルを表示">
 <!ENTITY pref.tooltip.showThumbnail.label "サムネイルを表示">
 <!ENTITY tooltip.groupCaption "ツールチップ">
-<!ENTITY styleeditor.label "スタイルエディタを開く">
+<!ENTITY cssEditor.label "CSSエディタを開く">
 

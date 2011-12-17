@@ -1,42 +1,42 @@
-<!ENTITY window.title "Pano Style Editor">
-<!ENTITY fileMenu.label "File">
+<!ENTITY window.title "Pano CSS エディタ">
+<!ENTITY fileMenu.label "ファイル">
 <!ENTITY fileMenu.accesskey "F">
-<!ENTITY saveFileCmd.label "Save">
+<!ENTITY saveFileCmd.label "保存">
 <!ENTITY saveFileCmd.accesskey "S">
 <!ENTITY saveFileCmd.commandkey "s">
-<!ENTITY resetCmd.label "Reset">
+<!ENTITY resetCmd.label "リセット">
 <!ENTITY resetCmd.accesskey "R">
-<!ENTITY closeCmd.label "Close">
+<!ENTITY closeCmd.label "閉じる">
 <!ENTITY closeCmd.key "W">
 <!ENTITY closeCmd.accesskey "C">
-<!ENTITY editMenu.label "Eidt">
+<!ENTITY editMenu.label "編集">
 <!ENTITY editMenu.accesskey "E">
-<!ENTITY undoCmd.label "Undo">
+<!ENTITY undoCmd.label "元に戻す">
 <!ENTITY undoCmd.key "Z">
 <!ENTITY undoCmd.accesskey "U">
-<!ENTITY redoCmd.label "Redo">
+<!ENTITY redoCmd.label "やり直し">
 <!ENTITY redoCmd.key "Y">
 <!ENTITY redoCmd.accesskey "R">
-<!ENTITY cutCmd.label "Cut">
+<!ENTITY cutCmd.label "切り取り">
 <!ENTITY cutCmd.key "X">
 <!ENTITY cutCmd.accesskey "t">
-<!ENTITY copyCmd.label "Copy">
+<!ENTITY copyCmd.label "コピー">
 <!ENTITY copyCmd.key "C">
 <!ENTITY copyCmd.accesskey "C">
-<!ENTITY pasteCmd.label "Paste">
+<!ENTITY pasteCmd.label "貼り付け">
 <!ENTITY pasteCmd.key "V">
 <!ENTITY pasteCmd.accesskey "P">
-<!ENTITY selectAllCmd.label "Select All">
+<!ENTITY selectAllCmd.label "すべて選択">
 <!ENTITY selectAllCmd.key "A">
 <!ENTITY selectAllCmd.accesskey "A">
-<!ENTITY helpMenu.label "Help">
+<!ENTITY helpMenu.label "ヘルプ">
 <!ENTITY helpMenu.accesskey "H">
-<!ENTITY styleguide.label "Style a Tree">
+<!ENTITY styleguide.label "ツリーのスタイル付け">
 <!ENTITY styleguide.accesskey "S">
-<!ENTITY mozdocument.label "About @-moz-document">
+<!ENTITY mozdocument.label "@-moz-document について">
 <!ENTITY mozdocument.accesskey "A">
-<!ENTITY cssreference.label "CSS Reference">
+<!ENTITY cssreference.label "CSS リファレンス">
 <!ENTITY cssreference.accesskey "C">
-<!ENTITY mozcssreference.label "Mozilla CSS Extensions">
+<!ENTITY mozcssreference.label "Mozilla CSS 拡張仕様">
 <!ENTITY mozcssreference.accesskey "M">
 

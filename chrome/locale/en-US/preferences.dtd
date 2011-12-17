@@ -7,5 +7,5 @@
 <!ENTITY pref.tooltip.showTitle.label "Show the title">
 <!ENTITY pref.tooltip.showThumbnail.label "Show the thumbnail">
 <!ENTITY tooltip.groupCaption "Tooltip">
-<!ENTITY styleeditor.label "Open Style Editor">
+<!ENTITY cssEditor.label "Open CSS Editor">
 

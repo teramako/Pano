@@ -4,8 +4,14 @@
 #pano-alltabs-group-menu {
   list-style-image: url("chrome://pano/content/pano.svg");
 }
+#pano-sidebarbutton:-moz-lwtheme-brighttext {
+  list-style-image: url("chrome://pano/content/pano-invert.svg");
+}
 #pano-pane-button {
   list-style-image: url("chrome://pano/content/pano-pane.svg");
+}
+#pano-pane-button:-moz-lwtheme-brighttext {
+  list-style-image: url("chrome://pano/content/pano-pane-invert.svg");
 }
 #pano-sidebarbutton:hover {
   background-image: -moz-linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.5)),

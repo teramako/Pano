@@ -2,6 +2,7 @@ Changelog
 =========
 
 ##version 0.12
+  * Firefox起動直後のツリー構築速度を改善
   * [#64 「スタイルエディタ」という名前は Firefox 11 のと同じ名前になってしまう](https://github.com/teramako/Pano/issues/64)
     * 「CSSエディタ」に変更
   * [#65 暗いテーマの場合にPanoのボタンが見え難い](https://github.com/teramako/Pano/issues/65)

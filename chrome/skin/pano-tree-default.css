@@ -35,12 +35,12 @@
   font-weight: bold;
 }
 
-.pano-tree treechildren::-moz-tree-cell-text(pending) {
-  color: GrayText !important;
-}
-
 .pano-tree treechildren::-moz-tree-cell-text(unread) {
   color: magenta !important;
+}
+
+.pano-tree treechildren::-moz-tree-cell-text(pending) {
+  color: GrayText !important;
 }
 
 .pano-tree treechildren::-moz-tree-cell-text(hover) {

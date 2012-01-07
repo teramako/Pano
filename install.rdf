@@ -19,6 +19,8 @@
       <Description>
         <em:locale>ja</em:locale>
         <em:description>タブグループをリスト表示します</em:description>
+        <em:contributor>Higmmer</em:contributor>
+        <em:contributor>mooz</em:contributor>
       </Description>
     </em:localized>
 

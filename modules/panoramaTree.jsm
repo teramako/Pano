@@ -70,6 +70,9 @@ var tabsSession = {
     var result = {};
     var tabs = win.gBrowser.tabs;
     for (let i = 0, tab; tab = tabs[i]; ++i) {
+      if (tab.pinned)
+        continue;
+
       let value = SessionStore.getTabValue(tab, "tabview-tab");
       if (value) {
         let id, data = JSON.parse(value);
@@ -189,7 +192,7 @@ GroupItem.prototype = {
   isOpen: true,
   get rawChildren () {
     for (let [, tabItem] in Iterator(this.group._children)) {
-      if (tabItem.tab)
+      if (tabItem.tab && !tabItem.tab.pinned)
         yield tabItem.tab;
     }
   },

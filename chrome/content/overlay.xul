@@ -41,6 +41,7 @@
       <command id="panoCmdCollapseAll" oncommand="gPano.pane.collapseAll();"/>
       <command id="panoCmdBookmarksAllTabs" oncommand="gPano.pane.contextMenu.bookmarksAllTabs();"/>
       <command id="panoCmdReloadAllTabs" oncommand="gPano.pane.contextMenu.reloadAllTabs();"/>
+      <command id="panoCmdCloseEmptyGroups" oncommand="gPano.pane.closeEmptyGroups();"/>
     </commandset>
     <popupset id="panoPopupSet">
       <tooltip id="panoTreeTabTooltip"

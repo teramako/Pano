@@ -68,7 +68,8 @@
 #panoSelectTabBack,
 #panoSelectTabForward,
 #panoExpandAll,
-#panoCollapseAll {
+#panoCollapseAll,
+#panoCloseEmptyGroups {
   list-style-image: url("chrome://pano/skin/buttons.png");
 }
 
@@ -85,13 +86,16 @@
   -moz-image-region: rect(16px, 48px, 32px, 32px);
 }
 #panoSelectTabForward[disabled="true"]  {
-  -moz-image-region: rect(16px, 62px, 32px, 48px);
+  -moz-image-region: rect(16px, 64px, 32px, 48px);
 }
 #panoExpandAll {
   -moz-image-region: rect(0, 32px, 16px, 16px);
 }
 #panoCollapseAll {
   -moz-image-region: rect(0, 16px, 16px, 0);
+}
+#panoCloseEmptyGroups {
+  -moz-image-region: rect(0, 64px, 16px, 48px);
 }
 
 /* Context-Menu */

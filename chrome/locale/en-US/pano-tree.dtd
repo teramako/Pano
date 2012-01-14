@@ -19,6 +19,8 @@
 <!ENTITY expandAll.tooltip "Expand All tree items">
 <!ENTITY collapseAll.label "Collapse All">
 <!ENTITY collapseAll.tooltip "Collapse All tree items">
+<!ENTITY closeEmptyGroups.label "Close Empty">
+<!ENTITY closeEmptyGroups.tooltip "Close Empty Groups">
 <!ENTITY subFrame.label "Sub Content">
 <!ENTITY toolbar.topToolbar "Top Toolbar">
 <!ENTITY toolbar.bottomToolbar "Bottom Toolbar">

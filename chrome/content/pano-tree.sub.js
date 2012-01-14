@@ -317,4 +317,12 @@ function collapseAll () {
   }
 }
 
+function closeEmptyGroups () {
+  for (let i = 0; i < view.rows.length; ++i) {
+    let row = view.rows[i];
+    if ((row.type === TAB_GROUP_TYPE) && !row.hasChild)
+      row.group.closeHidden();
+  }
+}
+
 // vim: sw=2 ts=2 et:

@@ -19,6 +19,8 @@
 <!ENTITY expandAll.tooltip "全てのグループを展開">
 <!ENTITY collapseAll.label "全て折り畳む">
 <!ENTITY collapseAll.tooltip "全てのグループを折り畳む">
+<!ENTITY closeEmptyGroups.label "ブランクグループを閉じる">
+<!ENTITY closeEmptyGroups.tooltip "ブランクグループを閉じる">
 <!ENTITY subFrame.label "サブ・コンテンツ">
 <!ENTITY toolbar.topToolbar "ツールバー(上部)">
 <!ENTITY toolbar.bottomToolbar "ツールバー(下部)">

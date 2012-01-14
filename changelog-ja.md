@@ -6,6 +6,7 @@ Changelog
   * [#64 「スタイルエディタ」という名前は Firefox 11 のと同じ名前になってしまう](https://github.com/teramako/Pano/issues/64)
     * 「CSSエディタ」に変更
   * [#65 暗いテーマの場合にPanoのボタンが見え難い](https://github.com/teramako/Pano/issues/65)
+  * [#68 ブランクグループを削除するボタンを追加](https://github.com/teramako/Pano/issues/68)
 
 ##version 0.11 (2011-11-29)
  * [#50 タブの状態に応じた更なるスタイリング (提案)](https://github.com/teramako/Pano/issues/50)

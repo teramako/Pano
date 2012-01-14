@@ -82,7 +82,7 @@ var tabsSession = {
         if (!(id in result))
           result[id] = [];
 
-        result[id].push(tab._tPos);
+        result[id].push(i);
       }
     }
     this.tabs[win.__SSi] = result;
@@ -189,7 +189,8 @@ GroupItem.prototype = {
   isOpen: true,
   get rawChildren () {
     for (let [, tabItem] in Iterator(this.group._children)) {
-      yield tabItem.tab;
+      if (tabItem.tab)
+        yield tabItem.tab;
     }
   },
   get children () [new TabItem(tab) for (tab in this.rawChildren)],

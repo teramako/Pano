@@ -813,7 +813,10 @@ PanoramaTreeView.prototype = {
   ensureCurrentTabIsVisible: function PTV_ensureCurrentTabIsVisible () {
     var [tab, index] = this.getCurrentTabAndIndex();
     if (!tab) return;
-    this.treeBox.ensureRowIsVisible(index);
+    if (this.treeBox)
+      this.treeBox.ensureRowIsVisible(index);
+    else
+      this._visibleIndex = index;
   },
   // ==========================================================================
   // Handlers
@@ -1005,6 +1008,10 @@ PanoramaTreeView.prototype = {
   setTree: function PTV_setTree (treeBox) {
     this.treeBox = treeBox;
     this.init();
+    if (this._visibleIndex) {
+      treeBox.ensureRowIsVisible(this._visibleIndex);
+      delete this._visibleIndex;
+    }
   },
   getCellText: function PTV_getCellText (aRow, aColumn) {
     var item = this.rows[aRow];

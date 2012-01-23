@@ -1,3 +1,5 @@
+var groupsNumber = document.getElementById("tabviewGroupsNumber");
+
 function createElement (aTagName, aAttributes) {
   var element = document.createElement(aTagName);
   for (let [name, value] in Iterator(aAttributes)) {
@@ -59,6 +61,10 @@ function onPopupShowing (aEvent) {
 
   aEvent.stopPropagation();
   if (popup.id === "pano-alltabs-group-popup") {
+    if (groupsNumber.getAttribute("groups") < 2) {
+      aEvent.preventDefault();
+      return;
+    }
     TabView._initFrame(function () {
       var GI = TabView._window.GroupItems;
       var currentGroup = GI.getActiveGroupItem();
@@ -69,6 +75,10 @@ function onPopupShowing (aEvent) {
     });
   }
   else if (popup.id === "pano-toolbarbutton-popup") {
+    if (groupsNumber.getAttribute("groups") < 2) {
+      aEvent.preventDefault();
+      return;
+    }
     TabView._initFrame(function () {
       var GI = TabView._window.GroupItems;
       var currentGroup = GI.getActiveGroupItem();

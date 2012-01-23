@@ -108,3 +108,8 @@
   -moz-image-region: rect(0px, 14px, 14px, 0px);
 }
 
+#panoSelectTabBack menupopup > menuitem,
+#panoSelectTabForward menupopup > mnuitem {
+  list-style-image: url("chrome://mozapps/skin/places/defaultFavicon.png");
+}
+

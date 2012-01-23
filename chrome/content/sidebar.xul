@@ -61,6 +61,24 @@
   <toolbox id="panoToolBox">
     <toolbar id="panoToolbar1"/>
     <toolbarpalette id="panoToolbarPalette">
+      <toolbarbutton id="panoSelectTabBack"
+                     type="menu-button"
+                     label="&tabHistory.back.label;"
+                     tooltiptext="&tabHistory.back.tooltip;"
+                     command="panoCmdTabHistoryBack">
+        <menupopup id="panoSelectTabBackPopup"
+                  oncommand="gWin.gPano.tabHistory.jumpTo(event)"
+                  onpopupshowing="gWin.gPano.tabHistory.createMenu(false, this)"/>
+      </toolbarbutton>
+      <toolbarbutton id="panoSelectTabForward"
+                     type="menu-button"
+                     label="&tabHistory.forward.label;"
+                     tooltiptext="&tabHistory.forward.tooltip;"
+                     command="panoCmdTabHistoryForward">
+        <menupopup id="panoSelectTabForwardPopup"
+                  oncommand="gWin.gPano.tabHistory.jumpTo(event)"
+                  onpopupshowing="gWin.gPano.tabHistory.createMenu(true, this)"/>
+      </toolbarbutton>
       <toolbaritem id="panoSearchbar">
         <textbox id="panoSearchBox" oncommand="gPanoramaTree.setFilter(this.value);"/>
       </toolbaritem>

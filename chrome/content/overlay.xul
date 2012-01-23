@@ -4,7 +4,12 @@
 
 <?xul-overlay href="chrome://pano/content/pano-tree-overlay.xul"?>
 
-<!DOCTYPE overlay SYSTEM "chrome://pano/locale/pano.dtd">
+<!DOCTYPE overlay [
+  <!ENTITY % panoDTD SYSTEM "chrome://pano/locale/pano.dtd">
+  %panoDTD;
+  <!ENTITY % panoTreeDTD SYSTEM "chrome://pano/locale/pano-tree.dtd">
+  %panoTreeDTD;
+]>
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script type="application/javascript" src="chrome://pano/content/pano.js"/>
@@ -67,6 +72,24 @@
     <toolbox id="panoToolBox">
       <toolbar id="panoToolbar1"/>
       <toolbarpalette id="panoToolbarPalette">
+        <toolbarbutton id="panoSelectTabBack"
+                       type="menu-button"
+                       label="&tabHistory.back.label;"
+                       tooltiptext="&tabHistory.back.tooltip;"
+                       command="panoCmdTabHistoryBack">
+          <menupopup id="panoSelectTabBackPopup"
+                    oncommand="gPano.tabHistory.jumpTo(event)"
+                    onpopupshowing="gPano.tabHistory.createMenu(false, this)"/>
+        </toolbarbutton>
+        <toolbarbutton id="panoSelectTabForward"
+                       type="menu-button"
+                       label="&tabHistory.forward.label;"
+                       tooltiptext="&tabHistory.forward.tooltip;"
+                       command="panoCmdTabHistoryForward">
+          <menupopup id="panoSelectTabForwardPopup"
+                    oncommand="gPano.tabHistory.jumpTo(event)"
+                    onpopupshowing="gPano.tabHistory.createMenu(true, this)"/>
+        </toolbarbutton>
         <toolbaritem id="panoSearchbar">
           <textbox id="panoSearchBox" oncommand="gPano.pane.setFilter(this.value);"/>
         </toolbaritem>

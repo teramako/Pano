@@ -59,6 +59,14 @@ TabSelectionHistory.prototype = {
     this.index = 0;
   },
   select: function TSH_select (aTab) {
+    if (typeof aTab === "number") {
+      let i = aTab;
+      aTab = this.tabs[i];
+      if (!aTab)
+        return;
+
+      this.index = i;
+    }
     if (aTab !== this.mTabContainer.selectedItem) {
       this.mTabContainer.__panoTransactioning__ = true;
       this.mTabContainer.selectedItem = aTab;
@@ -101,6 +109,32 @@ TabSelectionHistory.prototype = {
       canGoForward: this.canGoForward,
       canGoBack:    this.canGoBack
     }));
+  },
+  jumpTo: function TSH_jumpTo (aEvent) {
+    aEvent.stopPropagation();
+    var index = parseInt(aEvent.target.value, 10);
+    if (!isNaN(index)) {
+      this.select(index);
+    }
+  },
+  createMenu: function TSH_createMenu(isForward, aPopup) {
+    while (aPopup.hasChildNodes()) {
+      aPopup.removeChild(aPopup.firstChild);
+    }
+
+    var doc = aPopup.ownerDocument,
+        orientation = isForward ? 1 : -1;
+    for (let i = this.index + orientation, tab; tab = this.tabs[i]; i += orientation) {
+      let menuitem = doc.createElement("menuitem");
+      menuitem.setAttribute("crop", "end");
+      menuitem.setAttribute("class", "menuitem-iconic");
+      menuitem.setAttribute("label", tab.label);
+      if (tab.image)
+        menuitem.setAttribute("image", tab.image);
+
+      menuitem.setAttribute("value", i);
+      aPopup.appendChild(menuitem);
+    }
   },
 };
 

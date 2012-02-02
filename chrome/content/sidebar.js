@@ -26,7 +26,7 @@ var gPanoramaTree = {
   gBrowser: gWin.gBrowser,
   init: function PT_init () {
     Cu.import("resource://pano/panoramaTree.jsm", this);
-    this.tree.view = this.view = new this.PanoramaTreeView(gWin);
+    gWin.TabView._initFrame(this.tabViewCallback.bind(this));
     Services.scriptloader.loadSubScript("chrome://pano/content/pano-tree.sub.js", this);
     this.tabbar.init();
     this.buttons.init();
@@ -44,6 +44,10 @@ var gPanoramaTree = {
     }
   },
   view: null,
+  tabViewCallback: function PT_tabViewCallback () {
+    this.view = new this.PanoramaTreeView(gWin);
+    this.tree.view = this.view;
+  },
   isPanel: false,
   tabbar: {
     init: function () {

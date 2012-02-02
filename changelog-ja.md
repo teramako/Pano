@@ -1,7 +1,7 @@
 Changelog
 =========
 
-##version 0.12
+##version 0.12 (2012-01-28)
   * Firefox起動直後のツリー構築速度を改善
   * [#60 ツールバーのタブ選択履歴で任意のタブを選択できるように](https://github.com/teramako/Pano/issues/60)
     * タブ履歴のボタンにメニューを追加しました

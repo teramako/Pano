@@ -63,41 +63,6 @@ var observer = {
 }
 Services.prefs.addObserver(PREF_SHOW_NUMBER, observer, true);
 
-var tabsSession = {
-  tabs: {},
-  init: function (win) {
-    var self = this;
-    var result = {};
-    var tabs = win.gBrowser.tabs;
-    for (let i = 0, tab; tab = tabs[i]; ++i) {
-      if (tab.pinned)
-        continue;
-
-      let value = SessionStore.getTabValue(tab, "tabview-tab");
-      if (value) {
-        let id, data = JSON.parse(value);
-        if (data)
-          id = data.groupID;
-
-        if (!id)
-          continue;
-
-        if (!(id in result))
-          result[id] = [];
-
-        result[id].push(i);
-      }
-    }
-    this.tabs[win.__SSi] = result;
-  },
-  get: function (win, id) {
-    if (!this.tabs[win.__SSi]) {
-      this.init(win);
-    }
-    return this.tabs[win.__SSi][id];
-  },
-};
-
 var atomCache = {}
     itemCache = new WeakMap;
 
@@ -108,8 +73,7 @@ var ItemPrototype = {
   id: 0,
   getSessionData: function PanoItem_getSessionData () {
     return {
-      openState: this.isOpen,
-      indexes: [tab._tPos for (tab in this.rawChildren)],
+      openState: this.isOpen
     };
   },
 };
@@ -123,80 +87,48 @@ AppTabsGroup.prototype = {
   __proto__: ItemPrototype,
   type: TAB_GROUP_TYPE | APPTAB_GROUP_TYPE,
   isOpen: true,
-  get rawChildren () {
-    for (let [, tab] in Iterator(this.win.gBrowser.visibleTabs)) {
+  get children () {
+    var tabs = [];
+    for (let [,tab] in Iterator(this.win.gBrowser.visibleTabs)) {
       if (!tab.pinned)
-        throw StopIteration;
+        return tabs;
 
-      yield tab;
+      tabs.push(new TabItem(tab));
     }
+    return tabs;
   },
-  get children () [new TabItem(tab) for (tab in this.rawChildren)],
   get hasChild () {
     return this.win.gBrowser.mTabs[0].pinned;
   }
 };
-function GroupItem (win, group, session) {
+function GroupItem (group, session) {
   if (itemCache.has(group))
     return itemCache.get(group);
 
-  if (group.isAGroupItem) {
-    this.init(group);
-  } else {
-    this._win = win;
-    if (!session)
-      session = {};
-
-    if (!("indexes" in session))
-      session.indexes = tabsSession.get(win, group.id) || [];
-
-    this.session = session;
-    this._group = group;
-    this._group.getTitle = function() this.title;
-    this._group._children = [{ tab: win.gBrowser.tabs[i] } for ([, i] in Iterator(session.indexes))];
-  }
+  this.group = group;
+  if (group.addSubscriber.length > 2)
+    group.addSubscriber(this, "close", Pano_dispatchGroupCloseEvent);
+  else
+    group.addSubscriber("close", Pano_dispatchGroupCloseEvent);
 
   if (session && ("openState" in session))
     this.isOpen = !!session.openState;
 
+  itemCache.set(group, this);
 }
 GroupItem.prototype = {
   __proto__: ItemPrototype,
-  init: function (group) {
-    Object.defineProperty(this, "group", { enumerable: true, value: group });
-
-    if (group.addSubscriber.length > 2)
-      group.addSubscriber(this, "close", Pano_dispatchGroupCloseEvent);
-    else
-      group.addSubscriber("close", Pano_dispatchGroupCloseEvent);
-
-    itemCache.set(group, this);
-
-    delete this.session;
-    delete this._group;
-    delete this._win;
-    return group;
-  },
   type: TAB_GROUP_TYPE,
   get title () this.group.getTitle() || this.group.id,
   get id () this.group.id,
-  get group () {
-    var win = this._win.TabView._window;
-    if (win) {
-      let groupItem = win.GroupItems.groupItem(this._group.id);
-      if (groupItem && groupItem._children.length > 0)
-        return this.init(groupItem);
-    }
-    return this._group;
-  },
   isOpen: true,
-  get rawChildren () {
+  get children () {
+    var tabs = [];
     for (let [, tabItem] in Iterator(this.group._children)) {
-      if (tabItem.tab && !tabItem.tab.pinned)
-        yield tabItem.tab;
+      tabs.push(new TabItem(tabItem.tab));
     }
+    return tabs;
   },
-  get children () [new TabItem(tab) for (tab in this.rawChildren)],
   get hasChild () {
     return this.group._children.length > 0;
   },
@@ -268,6 +200,7 @@ function PanoramaTreeView (gWindow) {
   this.gWindow = gWindow;
   this.tabView = gWindow.TabView;
   this.gBrowser = gWindow.gBrowser;
+  this.GI = gWindow.TabView._window.GroupItems;
   this.treeBox = null;
   this.rows = [];
   this.inited = false;
@@ -282,19 +215,16 @@ PanoramaTreeView.prototype = {
       this.gWindow.addEventListener(type, this, false);
     }
     this.build();
-    this.tabView._initFrame(function() {
-      this.GI = this.tabView._window.GroupItems;
-      var originalMoveTabToGroupItem = this.GI.moveTabToGroupItem;
-      if (originalMoveTabToGroupItem.name !== "Pano_moveTabToGroupItem") {
-        this.GI.originalMoveTabToGroupItem = originalMoveTabToGroupItem;
-        this.GI.moveTabToGroupItem = Pano_moveTabToGroupItem;
-      }
-      var originalRegister = this.GI.register;
-      if (originalRegister.name != "Pano_registerGroup") {
-        this.GI.originalRegister = originalRegister;
-        this.GI.register = Pano_registerGroup;
-      }
-    }.bind(this));
+    var originalMoveTabToGroupItem = this.GI.moveTabToGroupItem;
+    if (originalMoveTabToGroupItem.name !== "Pano_moveTabToGroupItem") {
+      this.GI.originalMoveTabToGroupItem = originalMoveTabToGroupItem;
+      this.GI.moveTabToGroupItem = Pano_moveTabToGroupItem;
+    }
+    var originalRegister = this.GI.register;
+    if (originalRegister.name != "Pano_registerGroup") {
+      this.GI.originalRegister = originalRegister;
+      this.GI.register = Pano_registerGroup;
+    }
     this.inited = true;
   },
   destroy: function PTV_destroy () {
@@ -326,7 +256,7 @@ PanoramaTreeView.prototype = {
     if (!aWindow)
       aWindow = this.gWindow;
 
-    var data = SessionStore.getWindowValue(aWindow, PANO_SESSION_ID),
+    var data = SessionStore.getWindowValue(aWindow, PANO_SESSION_ID);
         failedData = { apptabs: {}, groups: {} };
     try {
       if (!data)
@@ -367,35 +297,27 @@ PanoramaTreeView.prototype = {
     this.treeBox.invalidate();
   },
   build: function PTV_build (aSession) {
-    var win = this.gWindow;
-    if (!("__SSi" in win)) {
+    // when the sessionstore is busy, wait the sessionstore is ready then build
+    if (this.tabView._window.TabItems.reconnectingPaused()) {
       let self = this;
-      let OBS = {
-        observe: function (aSubject, aTopic, aData) {
-          Services.obs.removeObserver(this, "sessionstore-windows-restored");
-          if (aTopic === "sessionstore-windows-restored")
-            self.build(aSession);
-        },
-        QueryInterface: XPCOMUtils.generateQI(["nsIObserver", "nsISupportsWeakReference"]),
-      };
-      Services.obs.addObserver(OBS, "sessionstore-windows-restored", true);
-      return;
+      let onSSWindowStateReady = function PTV_onSSWindowStateReady(aEvent) {
+        aEvent.target.removeEventListener(aEvent.type, PTV_onSSWindowStateReady, false);
+        this.build(aSession);
+      }.bind(this);
+      this.gWindow.addEventListener("SSWindowStateReady", onSSWindowStateReady, false);
+      return [];
     }
     if (!aSession)
       aSession = this.getSession();
 
     var rows = [];
-    var item = new AppTabsGroup(win, aSession.apptabs);
+    let item = new AppTabsGroup(this.tabView._window, aSession.apptabs);
     rows.push(item);
     if (item.isOpen)
       rows.push.apply(rows, item.children);
 
-    var groupItems = ("GI" in this) ? this.GI.groupItems: [];
-    if (groupItems.length === 0)
-      groupItems = [data for ([, data] in Iterator(JSON.parse(SessionStore.getWindowValue(win, "tabview-group"))))];
-
-    for (let [,group] in Iterator(groupItems)) {
-      item = new GroupItem(win, group, aSession.groups[group.id]);
+    for (let [,group] in Iterator(this.GI.groupItems)) {
+      item = new GroupItem(group, aSession.groups[group.id]);
       rows.push(item);
       if (item.isOpen)
         rows.push.apply(rows, item.children);
@@ -452,7 +374,7 @@ PanoramaTreeView.prototype = {
           return row;
 
         // 存在しないので作成
-        row = this.rows.push(new GroupItem(null, group)) - 1;
+        row = this.rows.push(new GroupItem(group)) - 1;
         this.treeBox.rowCountChanged(row, 1);
         return row;
       }
@@ -554,7 +476,7 @@ PanoramaTreeView.prototype = {
         activeGroupItem = this.GI._activeGroupItem,
         background = true;
     if (!aGroupItem)
-      group = activeGroupItem;
+      group = this.GI._activeGroupItem;
     else if ("group" in aGroupItem)
       group = aGroupItem.group;
     else
@@ -764,13 +686,13 @@ PanoramaTreeView.prototype = {
         this.tabView.moveTabTo(aItem.tab, aTargetItem.group.id);
       }
 
-      let children = [tab for (tab in aTargetItem.rawChildren)];
+      let children = aTargetItem.children;
       if (children.length > 0) {
         let tabIndex = children.length - 1;
         if (aTargetItem.isOpen && aOrientation === Ci.nsITreeView.DROP_AFTER)
           tabIndex = 0;
 
-        let targetTab = children[tabIndex];
+        let targetTab = children[tabIndex].tab;
         this.gBrowser.moveTabTo(aItem.tab,
           getMoveTabPosition(targetTab._tPos, aItem.tab._tPos, Ci.nsITreeView.DROP_AFTER));
       }
@@ -986,7 +908,7 @@ PanoramaTreeView.prototype = {
   },
   onTabGroupAdded: function PTV_onTabGroupAdded (aEvent) {
     var group = this.GI.groupItems[this.GI.groupItems.length - 1];
-    var item = new GroupItem(null, group);
+    var item = new GroupItem(group);
     row = this.rows.push(item) - 1;
 
     this.treeBox.rowCountChanged(row, 1);
@@ -1098,7 +1020,7 @@ PanoramaTreeView.prototype = {
     if (item.level === 0) {
       aProperties.AppendElement(this.getAtom("group"));
 
-      if (("GI" in this) && (item.type & TAB_GROUP_TYPE) && item.group === this.GI._activeGroupItem)
+      if (item.group && item.group === this.GI._activeGroupItem)
         aProperties.AppendElement(this.getAtom("currentGroup"));
 
       if (item.type & APPTAB_GROUP_TYPE)
@@ -1206,8 +1128,9 @@ PanoramaTreeView.prototype = {
         if (item.type & APPTAB_GROUP_TYPE)
           return;
 
-        for (let tab in item.rawChildren)
-          this.gBrowser.removeTab(tab, { animate: false });
+        item.children.forEach(function (tabItem) {
+          this.removeTab(tabItem.tab, { animate: false });
+        }, this.gBrowser)
 
         if (item.group)
           item.group.close({ immediately: true });

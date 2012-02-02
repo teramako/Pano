@@ -18,8 +18,10 @@ function onPopupShowing (aEvent) {
   if (view)
     return;
 
-  tree.view = view = new PanoramaTreeView(window);
-  onPopupShown();
+  TabView._initFrame(function() {
+    tree.view = view = new PanoramaTreeView(window);
+    onPopupShown();
+  });
 }
 function onPopupShown (aEvent) {
   if (aEvent && aEvent.target !== aEvent.currentTarget)

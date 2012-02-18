@@ -239,11 +239,13 @@ PanoramaTreeView.prototype = {
     var data = {
       apptabs: {},
       groups: {},
+      groupOrder: [],
     };
     for (let [, item] in Iterator(this.rows)) {
       switch (item.type) {
       case TAB_GROUP_TYPE:
         data.groups[item.id] = item.getSessionData();
+        data.groupOrder.push(item.id);
         break;
       case TAB_GROUP_TYPE | APPTAB_GROUP_TYPE:
         data.apptabs = item.getSessionData();
@@ -257,7 +259,7 @@ PanoramaTreeView.prototype = {
       aWindow = this.gWindow;
 
     var data = SessionStore.getWindowValue(aWindow, PANO_SESSION_ID);
-        failedData = { apptabs: {}, groups: {} };
+        failedData = { apptabs: {}, groups: {}, groupOrder: [] };
     try {
       if (!data)
         return failedData;
@@ -316,6 +318,13 @@ PanoramaTreeView.prototype = {
     if (item.isOpen)
       rows.push.apply(rows, item.children);
 
+    if (aSession.groupOrder && aSession.groupOrder.length > 0) {
+      let order = aSession.groupOrder;
+      this.GI.groupItems.sort(function sortGroup(a, b) {
+        var bIndex = order.indexOf(b.id);
+        return (bIndex === -1) ? false : order.indexOf(a.id) > bIndex;
+      });
+    }
     for (let [,group] in Iterator(this.GI.groupItems)) {
       item = new GroupItem(group, aSession.groups[group.id]);
       rows.push(item);

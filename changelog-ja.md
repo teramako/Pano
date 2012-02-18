@@ -3,6 +3,7 @@ Changelog
 
 ##version 1.0
   * [#69 並び替えたグループの順番を再起動後も維持したい](https://github.com/teramako/Pano/issues/69)
+  * CSS エディタからアイコンの変更を可能に
 
 ##version 0.12.1 (2012-02-02)
   * 「Firefox起動直後のツリー構築速度を改善」関連コミットをリバート

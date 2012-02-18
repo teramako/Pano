@@ -5,29 +5,10 @@
   width: 16px;
   height: 16px;
 }
-.pano-tree treechildren::-moz-tree-image(item, primary) {
-  list-style-image: url("chrome://mozapps/skin/places/defaultFavicon.png");
-}
-.pano-tree treechildren::-moz-tree-image(item, primary, loading) {
-  list-style-image: url("chrome://browser/skin/tabbrowser/loading.png");
-}
-.pano-tree treechildren::-moz-tree-image(group, primary) {
-  list-style-image: url("chrome://browser/skin/tabview/tabview.png");
-  -moz-image-region: rect(1px, 35px, 16px, 19px);
-}
-.pano-tree treechildren::-moz-tree-image(group, primary, AppTabs) {
-  list-style-image: url("chrome://pano/skin/application_double.png");
-  -moz-image-region: auto;
-}
 .pano-tree treechildren::-moz-tree-image(checked) {
-  list-style-image: url("chrome://global/skin/icons/close.png");
   width: 16px;
   margin: 0 !important;
   padding: 0 !important;
-  -moz-image-region: rect(0, 16px, 16px, 0);
-}
-.pano-tree treechildren::-moz-tree-image(checked, hover) {
-  -moz-image-region: rect(0, 32px, 16px, 16px);
 }
 .pano-tree treecol[anonid="closebutton"] {
   width: 33px;

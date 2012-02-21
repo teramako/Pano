@@ -4,6 +4,9 @@ Changelog
 ##version 1.0
   * [#69 並び替えたグループの順番を再起動後も維持したい](https://github.com/teramako/Pano/issues/69)
   * CSS エディタからアイコンの変更を可能に
+  * [#70 現在のタブを選択するようにして欲しい](https://github.com/teramako/Pano/issues/70)
+    * `extensions.pano.select_currenttab` オプションの追加(default: true)  
+      タブ選択が切り替わった時、そのタブの行が自動で選択された状態になります
 
 ##version 0.12.1 (2012-02-02)
   * 「Firefox起動直後のツリー構築速度を改善」関連コミットをリバート

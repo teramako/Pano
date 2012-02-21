@@ -19,7 +19,8 @@ const TAB_DROP_TYPE = "application/x-moz-tabbrowser-tab",
 
 const PANO_SESSION_ID = "pano-tabview-group";
 
-const PREF_SHOW_NUMBER = "extensions.pano.showTabNumber";
+const PREF_SHOW_NUMBER = "extensions.pano.showTabNumber",
+      PREF_SELECT_CURRENTTAB = "extensions.pano.select_currenttab";
 
 /**
  * @namespace
@@ -424,12 +425,15 @@ PanoramaTreeView.prototype = {
     }
   },
   getCurrentTabAndIndex: function PTV_getCurrentTabAndIndex () {
+    var groupData = [null, -1];
     for (let [i, item] in Iterator(this.rows)) {
-      if (item.type & TAB_ITEM_TYPE && item.tab.selected) {
+      if (item.type & TAB_GROUP_TYPE && item.group === this.GI._activeGroupItem) {
+        groupData = [item, i];
+      } else if (item.type & TAB_ITEM_TYPE && item.tab.selected) {
         return [item, i];
       }
     }
-    return [null, -1];
+    return groupData;
   },
   getSelectedItems: function PTV_getSelectedItems () {
     var sel = this.selection,
@@ -746,11 +750,13 @@ PanoramaTreeView.prototype = {
     this.selection.clearSelection();
   },
   ensureCurrentTabIsVisible: function PTV_ensureCurrentTabIsVisible () {
-    var [tab, index] = this.getCurrentTabAndIndex();
-    if (!tab) return;
-    if (this.treeBox)
+    var [item, index] = this.getCurrentTabAndIndex();
+    if (!item) return;
+    if (this.treeBox) {
       this.treeBox.ensureRowIsVisible(index);
-    else
+      if (Services.prefs.getBoolPref(PREF_SELECT_CURRENTTAB))
+        this.selection.select(index);
+    } else
       this._visibleIndex = index;
   },
   // ==========================================================================

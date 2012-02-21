@@ -4,6 +4,7 @@
 <!ENTITY pref.showTabNumber.label "Show number of tabs in groups.">
 <!ENTITY pref.switchTabBySingleClick.label "Switch the tab by SINGLE click.">
 <!ENTITY pref.panel.autoCloseByTabSelect.label "Close automatically at switching a tab">
+<!ENTITY pref.select_currenttab "Select the current tab's (or group's) row when the current tab is changed">
 <!ENTITY pref.tooltip.showTitle.label "Show the title">
 <!ENTITY pref.tooltip.showThumbnail.label "Show the thumbnail">
 <!ENTITY tooltip.groupCaption "Tooltip">

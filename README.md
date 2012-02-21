@@ -82,6 +82,8 @@
    タブのアイテムをシングルクリックでスイッチするかどうかの設定
  * `extensions.pano.panel.autoCloseByTabSelect`:
    パネルからタブを切り替えた時、自動的にパネルを閉じるかどうかの設定
+ * `extensions.pano.select_currenttab`:
+   タブが切り替わった時、自動でそのタブの行が選択された状態にする
  * `extensions.pano.tooltip.showThumbnial`:
    ツールチップにサムネイルを表示
  * `extensions.pano.tooltip.showTitle`:

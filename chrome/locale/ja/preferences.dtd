@@ -4,6 +4,7 @@
 <!ENTITY pref.showTabNumber.label "タブ番号を付加する">
 <!ENTITY pref.switchTabBySingleClick.label "シングルクリックでタブにスイッチ">
 <!ENTITY pref.panel.autoCloseByTabSelect.label "タブをスイッチした時、自動的にパネルを閉じる">
+<!ENTITY pref.select_currenttab "タブが選択された時、ツリーの選択もそのタブの行を選択する">
 <!ENTITY pref.tooltip.showTitle.label "タイトルを表示">
 <!ENTITY pref.tooltip.showThumbnail.label "サムネイルを表示">
 <!ENTITY tooltip.groupCaption "ツールチップ">

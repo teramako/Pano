@@ -1,7 +1,7 @@
 Changelog
 =========
 
-##version 1.0
+##version 1.0 (2012-02-29)
   * [#69 並び替えたグループの順番を再起動後も維持したい](https://github.com/teramako/Pano/issues/69)
   * CSS エディタからアイコンの変更を可能に
   * [#70 現在のタブを選択するようにして欲しい](https://github.com/teramako/Pano/issues/70)

@@ -272,13 +272,13 @@ PanoramaTreeView.prototype = {
   },
   filter: null,
   setFilter: function PTV_setFilter (aValue) {
-    var count = this.rowCount,
-        rows = [],
-        reg;
     if (!aValue) {
-      rows = this.build();
+      this.build();
       this.filter = null;
     } else {
+      var count = this.rowCount,
+          rows = [],
+          reg;
       if (!this.filter)
         this.saveSession();
 
@@ -295,9 +295,9 @@ PanoramaTreeView.prototype = {
         this.rows = rows;
         this.filter = reg;
       }
+      this.treeBox.rowCountChanged(rows.length, rows.length - count);
+      this.treeBox.invalidate();
     }
-    this.treeBox.rowCountChanged(rows.length, rows.length - count);
-    this.treeBox.invalidate();
   },
   build: function PTV_build (aSession) {
     // when the sessionstore is busy, wait the sessionstore is ready then build

@@ -1,6 +1,8 @@
 Changelog
 =========
 
+##version 1.1
+
 ##version 1.0 (2012-02-29)
   * [#69 並び替えたグループの順番を再起動後も維持したい](https://github.com/teramako/Pano/issues/69)
   * CSS エディタからアイコンの変更を可能に

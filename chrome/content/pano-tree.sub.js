@@ -226,20 +226,45 @@ var contextMenu = {
     var isTabItem = (item.type & TAB_ITEM_TYPE) > 0;
     var selectedItems = view.getSelectedItems();
     var visibleTabs = gBrowser.visibleTabs;
-    if (isTabItem) {
-      selectedItems.forEach(function (item) {
-        if (item.type & TAB_ITEM_TYPE)
-          gBrowser.removeTab(item.tab, { animate: visibleTabs.indexOf(item.tab) >= 0, byMouse: false });
-      });
-    } else if (item.type === TAB_GROUP_TYPE) {
-      selectedItems.forEach(function (item) {
-        if (item.type === TAB_GROUP_TYPE) {
-          let childTabs = item.group._children.map(function(tabItem) tabItem.tab);
-          childTabs.forEach(function(tab) gBrowser.removeTab(tab, { animate: visibleTabs.indexOf(tab) >= 0, byMouse: false }));
-          item.group.close({ immediately: true });
+    var tabs = [], groups = {};
+
+    for (let [, item] in Iterator(selectedItems)) {
+      if (item.type & TAB_ITEM_TYPE) {
+        let tabItem = item.tab._tabViewTabItem;
+        if (tabItem && tabItem.parent && (tabItem.parent.id in groups)) {
+          continue;
+        } else {
+          tabs.push(item);
         }
-      });
+      } else if (item.type === TAB_GROUP_TYPE) {
+        groups[item.id] = item;
+      }
     }
+    const promptService = Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Ci.nsIPromptService);
+    const PREF_CONFIRM_CLOSING_GROUP = "extensions.pano.confirm_closing_group";
+    for (let [id, item] in Iterator(groups)) {
+      let state = {};
+      if (Services.prefs.getBoolPref(PREF_CONFIRM_CLOSING_GROUP)) {
+        if (promptService.confirmCheck(window,
+                                       "Closing group ...",
+                                       "Closing [" + item.title + "] group.",
+                                       "Don't show this warning next time.",
+                                       state))
+        {
+          if (state.value)
+            Services.prefs.setBoolPref(PREF_CONFIRM_CLOSING_GROUP, false);
+        } else {
+          continue;
+        }
+      }
+      item.group._children.forEach(function(tabItem) {
+        gBrowser.removeTab(tabItem.tab, { animate: visibleTabs.indexOf(tabItem.tab) >= 0, byMouse: false });
+      });
+      item.group.close({ immediately: true });
+    }
+    tabs.forEach(function(tabItem) {
+      gBrowser.removeTab(tabItem.tab, { animate: visibleTabs.indexOf(tabItem.tab) >= 0, byMouse: false });
+    });
   },
   hibernate: function PT_hibernate () {
     var items = view.getSelectedItems();

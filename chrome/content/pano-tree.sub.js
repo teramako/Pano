@@ -1,5 +1,8 @@
 
 XPCOMUtils.defineLazyModuleGetter(this, "PlacesUIUtils", "resource://gre/modules/PlacesUIUtils.jsm");
+XPCOMUtils.defineLazyGetter(this, "stringBundle", function() {
+  return Services.strings.createBundle("chrome://pano/locale/pano-tree.properties");
+});
 
 function onDragStart (aEvent) {
   PanoramaTreeView.onDragStart(aEvent, view);
@@ -246,9 +249,9 @@ var contextMenu = {
       let state = {};
       if (Services.prefs.getBoolPref(PREF_CONFIRM_CLOSING_GROUP)) {
         if (promptService.confirmCheck(window,
-                                       "Closing group ...",
-                                       "Closing [" + item.title + "] group.",
-                                       "Don't show this warning next time.",
+                                       stringBundle.GetStringFromName("confirm_closing_group.title"),
+                                       stringBundle.formatStringFromName("confirm_closing_group.msg", [item.title], 1),
+                                       stringBundle.GetStringFromName("confirm_closing_group.checkMsg"),
                                        state))
         {
           if (state.value)

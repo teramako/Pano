@@ -7,6 +7,7 @@
 <!ENTITY pref.select_currenttab "タブが選択された時、ツリーの選択もそのタブの行を選択する">
 <!ENTITY pref.tooltip.showTitle.label "タイトルを表示">
 <!ENTITY pref.tooltip.showThumbnail.label "サムネイルを表示">
+<!ENTITY pref.confirm_closing_group "タブグループを閉じる時、確認ダイアログを表示する">
 <!ENTITY tooltip.groupCaption "ツールチップ">
 <!ENTITY cssEditor.label "CSSエディタを開く">
 

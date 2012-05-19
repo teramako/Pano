@@ -7,6 +7,7 @@
 <!ENTITY pref.select_currenttab "Select the current tab's (or group's) row when the current tab is changed">
 <!ENTITY pref.tooltip.showTitle.label "Show the title">
 <!ENTITY pref.tooltip.showThumbnail.label "Show the thumbnail">
+<!ENTITY pref.confirm_closing_group "Show confirm dialog when closing tab groups">
 <!ENTITY tooltip.groupCaption "Tooltip">
 <!ENTITY cssEditor.label "Open CSS Editor">
 

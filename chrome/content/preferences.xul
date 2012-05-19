@@ -32,6 +32,9 @@
       <preference id="pref-select-currenttab"
                   name="extensions.pano.select_currenttab"
                   type="bool"/>
+      <preference id="pref-confirm-closing-group"
+                  name="extensions.pano.confirm_closing_group"
+                  type="bool"/>
     </preferences>
     <vbox flex="1">
       <sperator class="thin"/>
@@ -46,6 +49,8 @@
       <checkbox label="&pref.panel.autoCloseByTabSelect.label;" preference="pref-panel-autoCloseByTabSelect"/>
       <sperator class="thin"/>
       <checkbox label="&pref.select_currenttab;" preference="pref-select-currenttab"/>
+      <sperator class="thin"/>
+      <checkbox label="&pref.confirm_closing_group;" preference="pref-confirm-closing-group"/>
       <sperator class="thin"/>
       <groupbox id="tooltip-group">
         <caption label="&tooltip.groupCaption;"/>

@@ -2,6 +2,7 @@ Changelog
 =========
 
 ##version 1.1
+  * [#74 ツリーの空白部分をダブルクリックで新規グループを作成できるように](https://github.com/teramako/Pano/issues/74)
   * BugFix
     * [#72 フィルターを解除後、ツリーのツリーのアイテム数がおかしくなる](https://github.com/teramako/Pano/issues/72)
 

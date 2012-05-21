@@ -98,6 +98,7 @@ Services.prefs.addObserver(PREF_SHOW_CLOSEBUTTON, observer, true);
 
 function newGroup () {
   view.GI.newGroup().newTab();
+  view.gWindow.focusAndSelectUrlBar();
 }
 
 function setFilter (aString) {
@@ -232,6 +233,7 @@ var contextMenu = {
     var item = this.currentItem;
     if (item && item.type === TAB_GROUP_TYPE) {
       item.group.newTab();
+      view.gWindow.focusAndSelectUrlBar();
     }
   },
   closeItem: function PT_closeItemFromContextMenu () {

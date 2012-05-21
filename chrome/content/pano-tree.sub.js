@@ -8,7 +8,6 @@ function onDragStart (aEvent) {
   PanoramaTreeView.onDragStart(aEvent, view);
 }
 function onDblClick (aEvent) {
-  Services.console.logStringMessage("onDblClick: " + aEvent.target.localName + ", button: "+ aEvent.button);
   if (aEvent.button !== 0)
     return;
 

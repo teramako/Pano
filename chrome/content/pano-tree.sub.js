@@ -7,6 +7,18 @@ XPCOMUtils.defineLazyGetter(this, "stringBundle", function() {
 function onDragStart (aEvent) {
   PanoramaTreeView.onDragStart(aEvent, view);
 }
+function onDblClick (aEvent) {
+  Services.console.logStringMessage("onDblClick: " + aEvent.target.localName + ", button: "+ aEvent.button);
+  if (aEvent.button !== 0)
+    return;
+
+  var item = view.getItemFromEvent(aEvent);
+  if (item === null) {
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    newGroup();
+  }
+}
 
 function selectTab (aEvent) {
   if (aEvent.button !== 0 || aEvent.ctrlKey || aEvent.shiftKey || aEvent.metaKey || aEvent.altKey)
@@ -46,6 +58,7 @@ function closeTab (aEvent) {
   gBrowser.removeTab(item.tab, { animate: animate, byMouse: false });
 }
 tree.addEventListener("click", closeTab, false);
+tree.addEventListener("dblclick", onDblClick, false);
 
 const PREF_SWITCH_BY              = "extensions.pano.switchTabBySingleClick",
       PREF_SHOW_CLOSEBUTTON       = "extensions.pano.showCloseButton",

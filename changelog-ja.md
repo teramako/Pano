@@ -1,9 +1,11 @@
 Changelog
 =========
 
-##version 1.1
+##version 1.1 (2012-05-29)
   * [#74 ツリーの空白部分をダブルクリックで新規グループを作成できるように](https://github.com/teramako/Pano/issues/74)
   * [#75 新規タブを開いた時、URLバーにフォーカス](https://github.com/teramako/Pano/issues/75)
+  * [#76 タブグループの閉じるメニューは危険だ](https://github.com/teramako/Pano/issues/76)
+    * 要望とは異なるが、確認ダイアログを出すように修正
   * BugFix
     * [#72 フィルターを解除後、ツリーのツリーのアイテム数がおかしくなる](https://github.com/teramako/Pano/issues/72)
 

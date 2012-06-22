@@ -31,4 +31,15 @@
   max-height: 600px;
   -moz-transition: height 0.3s;
 }
+#pano-pane .panoPanelResizer {
+  -moz-appearance: none;
+  background-image: none !important;
+  height: 3px;
+}
+#pano-pane:not([side=top]) #panoPanelFooter {
+  visibility: collapse;
+}
+#pano-pane[side=top] #panoPanelHeader {
+  visibility: collapse;
+}
 

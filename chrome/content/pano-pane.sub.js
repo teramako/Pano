@@ -29,9 +29,12 @@ function onPopupShown (aEvent) {
 
   var count = tree.view.rowCount;
   if (count > 0) {
-    let y = {}, h = {};
-    tree.treeBoxObject.getCoordsForCellItem(count - 1, tree.columns[0], "cell", {}, y, {}, h);
-    tree.style.height = (y.value + h.value + 20) + "px";
+    let attrHeight = panel.hasAttribute("height") ? parseInt(panel.getAttribute("height"), 10) : 0;
+    let panelHeight = (tree.treeBoxObject.rowHeight * (count + 1)) + panel.boxObject.height - tree.treeBoxObject.height;
+    if (panelHeight > attrHeight) {
+      panel.removeAttribute("height");
+      panel.style.height = panelHeight + "px";
+    }
   }
   if (keyset.hasAttribute("disabled"))
     keyset.removeAttribute("disabled");

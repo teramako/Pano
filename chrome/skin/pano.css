@@ -25,10 +25,9 @@
   max-width: 308px;
 }
 
-#panoTabGroupTree {
-  min-width: 300px;
+#pano-pane {
+  min-width: 350px;
   min-height: 200px;
-  max-height: 600px;
   -moz-transition: height 0.3s;
 }
 #pano-pane .panoPanelResizer {

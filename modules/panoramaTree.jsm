@@ -84,24 +84,25 @@ function AppTabsGroup (win, session) {
   if (session && ("openState" in session))
     this.isOpen = !!session.openState;
 }
-AppTabsGroup.prototype = {
-  __proto__: ItemPrototype,
-  type: TAB_GROUP_TYPE | APPTAB_GROUP_TYPE,
-  isOpen: true,
-  get children () {
-    var tabs = [];
-    for (let [,tab] in Iterator(this.win.gBrowser.visibleTabs)) {
-      if (!tab.pinned)
-        return tabs;
+AppTabsGroup.prototype = Object.create(ItemPrototype, {
+  type: { value: TAB_GROUP_TYPE | APPTAB_GROUP_TYPE },
+  isOpen: { value: true },
+  children: {
+    get: function () {
+      var tabs = [];
+      for (let [,tab] in Iterator(this.win.gBrowser.visibleTabs)) {
+        if (!tab.pinned)
+          return tabs;
 
-      tabs.push(new TabItem(tab));
+        tabs.push(new TabItem(tab));
+      }
+      return tabs;
     }
-    return tabs;
   },
-  get hasChild () {
-    return this.win.gBrowser.mTabs[0].pinned;
-  }
-};
+  hasChild: {
+    get: function () { return this.win.gBrowser.mTabs[0].pinned; },
+  },
+});
 function GroupItem (group, session) {
   if (itemCache.has(group))
     return itemCache.get(group);
@@ -117,23 +118,31 @@ function GroupItem (group, session) {
 
   itemCache.set(group, this);
 }
-GroupItem.prototype = {
-  __proto__: ItemPrototype,
-  type: TAB_GROUP_TYPE,
-  get title () this.group.getTitle() || this.group.id,
-  get id () this.group.id,
-  isOpen: true,
-  get children () {
-    var tabs = [];
-    for (let [, tabItem] in Iterator(this.group._children)) {
-      tabs.push(new TabItem(tabItem.tab));
-    }
-    return tabs;
+GroupItem.prototype = Object.create(ItemPrototype, {
+  type: { value: TAB_GROUP_TYPE },
+  title: {
+    get: function() { return this.group.getTitle() || this.group.id; },
   },
-  get hasChild () {
-    return this.group._children.length > 0;
+  id: {
+    get: function() { return this.group.id; },
   },
-};
+  isOpen: {
+    writable: true,
+    value: true,
+  },
+  children: {
+    get: function () {
+      var tabs = [];
+      for (let [, tabItem] in Iterator(this.group._children)) {
+        tabs.push(new TabItem(tabItem.tab));
+      }
+      return tabs;
+    },
+  },
+  hasChild: {
+    get: function () { return this.group._children.length > 0; }
+  },
+});
 function TabItem (tab) {
   if (itemCache.has(tab))
     return itemCache.get(tab);
@@ -141,14 +150,19 @@ function TabItem (tab) {
   this.tab = tab;
   itemCache.set(tab, this);
 }
-TabItem.prototype = {
-  __proto__: ItemPrototype,
-  level: 1,
-  type: TAB_ITEM_TYPE,
-  get title() this.tab.label,
-  get url () this.tab.linkedBrowser.currentURI.spec,
-  get id () this.tab._tPos,
-};
+TabItem.prototype = Object.create(ItemPrototype, {
+  level: { value: 1 },
+  type: { value: TAB_ITEM_TYPE },
+  title: {
+    get: function () { return this.tab.label; },
+  },
+  url: {
+    get: function () { return this.tab.linkedBrowser.currentURI.spec; },
+  },
+  id: {
+    get: function () { return this.tab._tPos; },
+  },
+});
 
 const HANDLE_EVENT_TYPES = [
   "TabOpen",

@@ -463,25 +463,26 @@ PanoramaTreeView.prototype = {
 
     var activeGroupItem = this.GI._activeGroupItem;
     for (let i = 0, len = tabs.length; i < len; ++i) {
-      let tab = tabs[i];
-      if (tab.linkedBrowser.__SS_restoreState)
+      let tab = tabs[i],
+          browser = tab.linkedBrowser;
+      if (browser.__SS_restoreState)
         continue;
 
-      let group = null;
-      if (!tab.pinned) {
-        group = tab._tabViewTabItem.parent;
-      }
-      let state = SessionStore.getTabState(tab);
-      let newTab = this.gBrowser.addTab(null, { skipAnimation: true });
-      SessionStore.setTabState(newTab, state);
-      if (tab.pinned) {
-        this.gBrowser.pinTab(newTab);
-        this.gBrowser.moveTabTo(newTab, tab._tPos + 1);
-      } else {
-        this.gBrowser.moveTabTo(newTab, tab._tPos + 1);
-        this.GI.moveTabToGroupItem(newTab, group ? group.id : null);
-      }
-      this.gBrowser.removeTab(tab);
+      let state = SessionStore.getTabState(tab),
+          shistory = browser.sessionHistory,
+          icon = tab.getAttribute("image");
+
+      browser.addEventListener("load", function onload(){
+        this.removeEventListener("load", onload, true);
+        if (shistory.count > 1)
+          shistory.PurgeHistory(shistory.count -1);
+
+        tab.ownerDocument.defaultView.setTimeout(function(){
+          tab.setAttribute("image", icon);
+        }, 0);
+        SessionStore.setTabState(tab, state);
+      }, true);
+      browser.loadURI("about:blank");
     }
   },
   openTabs: function PTV_openTabs (aPages, aGroupItem, aTabPos) {

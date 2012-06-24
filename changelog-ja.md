@@ -3,7 +3,6 @@ Changelog
 
 ##version 1.2
   * [#71 パネルのサイズを可能にして欲しい](https://github.com/teramako/Pano/issues/71)
-    * 縦サイズは変更可能にした。しかし、横サイズは方法が分からないorz
 
 ##version 1.1 (2012-05-29)
   * [#74 ツリーの空白部分をダブルクリックで新規グループを作成できるように](https://github.com/teramako/Pano/issues/74)

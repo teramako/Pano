@@ -86,7 +86,10 @@ function AppTabsGroup (win, session) {
 }
 AppTabsGroup.prototype = Object.create(ItemPrototype, {
   type: { value: TAB_GROUP_TYPE | APPTAB_GROUP_TYPE },
-  isOpen: { value: true },
+  isOpen: {
+    writable: true,
+    value: true
+  },
   children: {
     get: function () {
       var tabs = [];

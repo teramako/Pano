@@ -87,6 +87,8 @@
    タブが切り替わった時、自動でそのタブの行が選択された状態にする
  * `extensions.pano.confirm_closing_group`:
    タブグループを閉じる時に、確認ダイアログを表示するかどうかの設定
+ * `extensions.pano.autoCollapseGroupWithoutCurrent`:
+   自動的にアクティブなグループ以外を畳むかどうかの設定
  * `extensions.pano.tooltip.showThumbnial`:
    ツールチップにサムネイルを表示
  * `extensions.pano.tooltip.showTitle`:

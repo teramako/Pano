@@ -9,6 +9,7 @@ Changelog
   * [#75 新規タブを開いた時、URLバーにフォーカス](https://github.com/teramako/Pano/issues/75)
   * [#76 タブグループの閉じるメニューは危険だ](https://github.com/teramako/Pano/issues/76)
     * 要望とは異なるが、確認ダイアログを出すように修正
+  * [#77 現在グループ以外を自動で閉じる機能が欲しい](https://github.com/teramako/Pano/issues/77)
   * BugFix
     * [#72 フィルターを解除後、ツリーのツリーのアイテム数がおかしくなる](https://github.com/teramako/Pano/issues/72)
 

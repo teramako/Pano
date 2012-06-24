@@ -20,7 +20,8 @@ const TAB_DROP_TYPE = "application/x-moz-tabbrowser-tab",
 const PANO_SESSION_ID = "pano-tabview-group";
 
 const PREF_SHOW_NUMBER = "extensions.pano.showTabNumber",
-      PREF_SELECT_CURRENTTAB = "extensions.pano.select_currenttab";
+      PREF_SELECT_CURRENTTAB = "extensions.pano.select_currenttab",
+      PREF_AUTO_COLLAPSE = "extensions.pano.autoCollapseGroupWithoutCurrent";
 
 /**
  * @namespace
@@ -767,6 +768,28 @@ PanoramaTreeView.prototype = {
     this.GI.setActiveGroupItem(activeGroupItem);
     this.selection.clearSelection();
   },
+  expandAll: function PTV_expandAll () {
+    for (let i = 0; i < this.rows.length; ++i) {
+      let row = this.rows[i];
+      if ((row.type & TAB_GROUP_TYPE) && !row.isOpen)
+        this.toggleOpenState(i);
+    }
+  },
+  collapseAll: function PTV_collapseAll (aButOpenCurrentGroup) {
+    var activeGroup = this.GI._activeGroupItem,
+        i = 0;
+    for (; i < this.rows.length; ++i) {
+      let row = this.rows[i];
+      if (row.type & TAB_GROUP_TYPE) {
+        if (aButOpenCurrentGroup && row.group === activeGroup) {
+          if (!row.isOpen)
+            this.toggleOpenState(i);
+        } else if (row.isOpen) {
+          this.toggleOpenState(i);
+        }
+      }
+    }
+  },
   ensureCurrentTabIsVisible: function PTV_ensureCurrentTabIsVisible () {
     var [item, index] = this.getCurrentTabAndIndex();
     if (!item) return;
@@ -937,6 +960,9 @@ PanoramaTreeView.prototype = {
     }
   },
   onTabSelect: function PTV_onTabSelect (aEvent) {
+    if (Services.prefs.getBoolPref(PREF_AUTO_COLLAPSE))
+      this.collapseAll(true);
+
     this.ensureCurrentTabIsVisible();
   },
   onTabGroupAdded: function PTV_onTabGroupAdded (aEvent) {

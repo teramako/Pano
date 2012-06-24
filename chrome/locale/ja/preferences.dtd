@@ -8,6 +8,7 @@
 <!ENTITY pref.tooltip.showTitle.label "タイトルを表示">
 <!ENTITY pref.tooltip.showThumbnail.label "サムネイルを表示">
 <!ENTITY pref.confirm_closing_group "タブグループを閉じる時、確認ダイアログを表示する">
+<!ENTITY pref.autoCollapseGroup "自動的にアクティブグループ以外のグループを畳む">
 <!ENTITY tooltip.groupCaption "ツールチップ">
 <!ENTITY cssEditor.label "CSSエディタを開く">
 

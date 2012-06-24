@@ -10,6 +10,12 @@ XPCOMUtils.defineLazyGetter(this, "toolbarContextMenu", function () {
   Services.scriptloader.loadSubScript("chrome://pano/content/toolbarmenu.sub.js", container);
   return container;
 });
+XPCOMUtils.defineLazyGetter(this, "resizerLeft", function () {
+  return document.getElementById("panoPanelLeft");
+});
+XPCOMUtils.defineLazyGetter(this, "resizerRight", function () {
+  return document.getElementById("panoPanelRight");
+});
 
 function onPopupShowing (aEvent) {
   if (aEvent.target !== aEvent.currentTarget)
@@ -36,6 +42,14 @@ function onPopupShown (aEvent) {
       panel.style.height = panelHeight + "px";
     }
   }
+  if (window.screenX + window.outerWidth / 2 > panel.anchorNode.boxObject.screenX) {
+    resizerLeft.style.visibility = "collapse";
+    resizerRight.style.visibility = "";
+  } else {
+    resizerLeft.style.visibility= "";
+    resizerRight.style.visibility = "collapse";
+  }
+
   if (keyset.hasAttribute("disabled"))
     keyset.removeAttribute("disabled");
 

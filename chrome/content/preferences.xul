@@ -35,6 +35,9 @@
       <preference id="pref-confirm-closing-group"
                   name="extensions.pano.confirm_closing_group"
                   type="bool"/>
+      <preference id="pref-auto-collapse-group"
+                  name="extensions.pano.autoCollapseGroupWithoutCurrent"
+                  type="bool"/>
     </preferences>
     <vbox flex="1">
       <sperator class="thin"/>
@@ -52,6 +55,7 @@
       <sperator class="thin"/>
       <checkbox label="&pref.confirm_closing_group;" preference="pref-confirm-closing-group"/>
       <sperator class="thin"/>
+      <checkbox label="&pref.autoCollapseGroup;" preference="pref-auto-collapse-group"/>
       <groupbox id="tooltip-group">
         <caption label="&tooltip.groupCaption;"/>
         <checkbox label="&pref.tooltip.showTitle.label;" preference="pref-tooltip-showTitle"/>

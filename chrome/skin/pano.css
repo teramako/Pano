@@ -21,10 +21,6 @@
   -moz-margin-end: 0;
 }
 
-#panoToolBox {
-  max-width: 308px;
-}
-
 #pano-pane {
   min-width: 350px;
   min-height: 200px;
@@ -33,12 +29,18 @@
 #pano-pane .panoPanelResizer {
   -moz-appearance: none;
   background-image: none !important;
-  height: 3px;
 }
 #pano-pane:not([side=top]) #panoPanelFooter {
   visibility: collapse;
 }
 #pano-pane[side=top] #panoPanelHeader {
   visibility: collapse;
+}
+
+.panoPanelResizer[dir=top], .panoPanelResizer[dir=bottom] {
+  height: 3px;
+}
+.panoPanelResizer[dir=left], .panoPanelResizer[dir=right] {
+  width: 3px;
 }
 

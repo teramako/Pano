@@ -73,11 +73,7 @@ var ItemPrototype = {
   url: "",
   level: 0,
   id: 0,
-  getSessionData: function PanoItem_getSessionData () {
-    return {
-      openState: this.isOpen
-    };
-  },
+  getSessionData: function () {},
 };
 function AppTabsGroup (win, session) {
   this.win = win;
@@ -105,6 +101,11 @@ AppTabsGroup.prototype = Object.create(ItemPrototype, {
   },
   hasChild: {
     get: function () { return this.win.gBrowser.mTabs[0].pinned; },
+  },
+  getSessionData: {
+    value: function PanoAppTabsGroup_getSessionData () {
+      return { openState: this.isOpen };
+    }
   },
 });
 function GroupItem (group, session) {
@@ -146,6 +147,11 @@ GroupItem.prototype = Object.create(ItemPrototype, {
   hasChild: {
     get: function () { return this.group._children.length > 0; }
   },
+  getSessionData: {
+    value: function PanoGroupItem_getSessionData () {
+      return { openState: this.isOpen };
+    }
+  },
 });
 function TabItem (tab) {
   if (itemCache.has(tab))
@@ -165,6 +171,14 @@ TabItem.prototype = Object.create(ItemPrototype, {
   },
   id: {
     get: function () { return this.tab._tPos; },
+  },
+  getSessionData: {
+    value: function PanoTabItem_getSessionData () {
+      var data = JSON.parse(SessionStore.getTabState(this.tab));
+      delete data.extData;
+      delete data.attributes;
+      return data;
+    },
   },
 });
 

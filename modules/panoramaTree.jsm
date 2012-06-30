@@ -193,8 +193,8 @@ function Pano_moveTabToGroupItem (tab, groupItemId) {
 function Pano_registerGroup (groupItem) {
   this.originalRegister(groupItem);
   var win = Components.utils.getGlobalForObject(groupItem),
-      event = win.gWindow.document.createEvent("Events");
-  event.initEvent("TabGroupAdded", true, false);
+      event = win.gWindow.document.createEvent("UIEvents");
+  event.initUIEvent("TabGroupAdded", true, false, win, groupItem.id);
   win.gBrowser.dispatchEvent(event);
 }
 
@@ -966,11 +966,12 @@ PanoramaTreeView.prototype = {
     this.ensureCurrentTabIsVisible();
   },
   onTabGroupAdded: function PTV_onTabGroupAdded (aEvent) {
-    var group = this.GI.groupItems[this.GI.groupItems.length - 1];
+    var group = this.GI.groupItem(aEvent.detail);
     var item = new GroupItem(group);
-    row = this.rows.push(item) - 1;
-
-    this.treeBox.rowCountChanged(row, 1);
+    if (this.rows.indexOf(item) === -1) {
+      let row = this.rows.push(item) - 1;
+      this.treeBox.rowCountChanged(row, 1);
+    }
   },
   onTabGroupClose: function PTV_onTabGroupClose (aEvent) {
     // グループが削除される時、既にタブは削除されているので考慮の必要なし

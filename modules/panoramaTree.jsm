@@ -581,6 +581,12 @@ PanoramaTreeView.prototype = {
         tPos = -1,
         groupItem;
 
+    if (!targetItem) {
+      // ツリーのアイテム外では、アクティブなグループに対してドロップしたとする
+      targetItem = new GroupItem(this.GI._activeGroupItem);
+      aOrientation = Ci.nsITreeView.DROP_ON;
+    }
+
     if (targetItem.type & TAB_ITEM_TYPE) {
       if (!targetItem.tab.pinned)
         tPos = targetItem.tab._tPos + (aOrientation == -1 ? 0 : 1);

@@ -46,6 +46,8 @@
       <command id="panoCmdBookmarksAllTabs" oncommand="gPano.pane.contextMenu.bookmarksAllTabs();"/>
       <command id="panoCmdReloadAllTabs" oncommand="gPano.pane.contextMenu.reloadAllTabs();"/>
       <command id="panoCmdCloseEmptyGroups" oncommand="gPano.pane.closeEmptyGroups();"/>
+      <command id="panoCmdExportSessions" oncommand="gPano.pane.exportSessions();"/>
+      <command id="panoCmdImportSessions" oncommand="gPano.pane.importSessions();"/>
     </commandset>
     <popupset id="panoPopupSet">
       <tooltip id="panoTreeTabTooltip"

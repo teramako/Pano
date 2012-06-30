@@ -102,6 +102,14 @@
                  label="&closeEmptyGroups.label;"
                  tooltiptext="&closeEmptyGroups.tooltip;"
                  command="panoCmdCloseEmptyGroups"/>
+  <toolbarbutton id="panoExportSessionsButton"
+                 label="Export"
+                 tooltiptext="Export Sessions"
+                 command="panoCmdExportSessions"/>
+  <toolbarbutton id="panoImportSessionsButton"
+                 label="Import"
+                 tooltiptext="Import Sessions"
+                 command="panoCmdImportSessions"/>
 </toolbarpalette>
 
 <tree id="panoTabGroupTree" class="pano-tree" flex="1" hidecolumnpicker="true" editable="true">

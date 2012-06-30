@@ -1226,7 +1226,7 @@ PanoramaTreeView.prototype = {
   performActionOnCell: function PTV_performActionOnCell (aAction, aRow, aColumn) {},
 };
 
-function onDragStart (aEvent, view) {
+PanoramaTreeView.onDragStart = function PTV_onDragStart (aEvent, view) {
   if (view.filter)
     return;
 
@@ -1277,8 +1277,16 @@ function onDragStart (aEvent, view) {
   }
   dt.effectAllowed = "move";
   aEvent.stopPropagation();
-}
-PanoramaTreeView.onDragStart = onDragStart;
+};
+
+PanoramaTreeView.onDragOver = function PTV_onDragOver (aEvent, aView) {
+  var types = aEvent.dataTransfer.mozTypesAt(0);
+  if (types.contains(PlacesUtils.TYPE_X_MOZ_URL) ||
+      types.contains(PlacesUtils.TYPE_X_MOZ_PLACE)) {
+    aEvent.preventDefault();
+    aEvent.stopPropagation();
+  }
+};
 
 function blob (aString, aOption) {
   if (typeof aString !== "string")

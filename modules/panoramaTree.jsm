@@ -1080,9 +1080,11 @@ PanoramaTreeView.prototype = {
     return (this.rows[sourceIndex].type & TAB_ITEM_TYPE) > 0;
   },
   drop: function PTV_drop (aTargetIndex, aOrientation, aDataTransfer) {
-    if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation === Ci.nsITreeView.DROP_BEFORE) {
-      aTargetIndex--;
-      aOrientation = Ci.nsITreeView.DROP_AFTER;
+    if (aTargetIndex in this.rows) {
+      if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation === Ci.nsITreeView.DROP_BEFORE) {
+        aTargetIndex--;
+        aOrientation = Ci.nsITreeView.DROP_AFTER;
+      }
     }
 
     var types = aDataTransfer.mozTypesAt(0);
@@ -1152,6 +1154,9 @@ PanoramaTreeView.prototype = {
     return false;
   },
   getParentIndex: function PTV_getParentIndex (aRow) {
+    if (!(aRow in this.rows))
+      return -1;
+
     if (this.rows[aRow].level !== 1)
       return -1;
     for ( ; aRow > 0; aRow--) {

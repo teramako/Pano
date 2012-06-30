@@ -103,12 +103,12 @@
                  tooltiptext="&closeEmptyGroups.tooltip;"
                  command="panoCmdCloseEmptyGroups"/>
   <toolbarbutton id="panoExportSessionsButton"
-                 label="Export"
-                 tooltiptext="Export Sessions"
+                 label="&exportSessions.label;"
+                 tooltiptext="&exportSessions.tooltip;"
                  command="panoCmdExportSessions"/>
   <toolbarbutton id="panoImportSessionsButton"
-                 label="Import"
-                 tooltiptext="Import Sessions"
+                 label="&importSessions.label;"
+                 tooltiptext="&importSessions.tooltip;"
                  command="panoCmdImportSessions"/>
 </toolbarpalette>
 

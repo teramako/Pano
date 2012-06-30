@@ -21,6 +21,10 @@
 <!ENTITY collapseAll.tooltip "Collapse All tree items">
 <!ENTITY closeEmptyGroups.label "Close Empty">
 <!ENTITY closeEmptyGroups.tooltip "Close Empty Groups">
+<!ENTITY exportSessions.label "Export">
+<!ENTITY exportSessions.tooltip "Export selected tab's sessions to a local file">
+<!ENTITY importSessions.label "Import">
+<!ENTITY importSessions.tooltip "Import tab's sessions from a local file">
 <!ENTITY subFrame.label "Sub Content">
 <!ENTITY toolbar.topToolbar "Top Toolbar">
 <!ENTITY toolbar.bottomToolbar "Bottom Toolbar">

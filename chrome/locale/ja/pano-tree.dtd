@@ -21,6 +21,10 @@
 <!ENTITY collapseAll.tooltip "全てのグループを折り畳む">
 <!ENTITY closeEmptyGroups.label "ブランクグループを閉じる">
 <!ENTITY closeEmptyGroups.tooltip "ブランクグループを閉じる">
+<!ENTITY exportSessions.label "エクスポート">
+<!ENTITY exportSessions.tooltip "選択したタブのセッションをファイルにエクスポート">
+<!ENTITY importSessions.label "インポート">
+<!ENTITY importSessions.tooltip "ファイルからタブのセッションをインポート">
 <!ENTITY subFrame.label "サブ・コンテンツ">
 <!ENTITY toolbar.topToolbar "ツールバー(上部)">
 <!ENTITY toolbar.bottomToolbar "ツールバー(下部)">

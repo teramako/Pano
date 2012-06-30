@@ -310,8 +310,8 @@ PanoramaTreeView.prototype = {
   exportSessions: function PTV_exportSession (aFile) {
     if (!aFile) {
       [, aFile] = FileIO.showPicker(this.gWindow, Ci.nsIFilePicker.modeSave, {
-        title: "Export Session",
-        filters: [["json files", "*.json"]],
+        title: bundle.GetStringFromName("filepicker.export.title"),
+        filters: [[bundle.GetStringFromName("filepicker.filter.json"), "*.json"]],
         fileName: "tabsSession_" + (new Date).toLocaleFormat("%Y%m%d-%H%M%S") + ".pano.json",
       });
     }
@@ -348,8 +348,8 @@ PanoramaTreeView.prototype = {
   importSessions: function PTV_importSession (aFile) {
     if (!aFile) {
       [, aFile] = FileIO.showPicker(this.gWindow, Ci.nsIFilePicker.modeOpen, {
-        title: "Import Session",
-        filters: [["json files", "*.json"]],
+        title: bundle.GetStringFromName("filepicker.import.title"),
+        filters: [[bundle.GetStringFromName("filepicker.filter.json"), "*.json"]],
       });
     }
     if (!aFile)

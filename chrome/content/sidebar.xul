@@ -91,7 +91,8 @@
 
   <tree id="panoTabGroupTree">
     <treechildren id="panoTabGroupTreeChildren"
-                  ondragstart="gPanoramaTree.onDragStart(event);"/>
+                  ondragstart="gPanoramaTree.onDragStart(event);"
+                  ondragover="gPanoramaTree.onDragOver(event);"/>
   </tree>
 
   <splitter id="subFrameSplitter"

@@ -73,11 +73,7 @@ var ItemPrototype = {
   url: "",
   level: 0,
   id: 0,
-  getSessionData: function PanoItem_getSessionData () {
-    return {
-      openState: this.isOpen
-    };
-  },
+  getSessionData: function () {},
 };
 function AppTabsGroup (win, session) {
   this.win = win;
@@ -105,6 +101,11 @@ AppTabsGroup.prototype = Object.create(ItemPrototype, {
   },
   hasChild: {
     get: function () { return this.win.gBrowser.mTabs[0].pinned; },
+  },
+  getSessionData: {
+    value: function PanoAppTabsGroup_getSessionData () {
+      return { openState: this.isOpen };
+    }
   },
 });
 function GroupItem (group, session) {
@@ -146,6 +147,11 @@ GroupItem.prototype = Object.create(ItemPrototype, {
   hasChild: {
     get: function () { return this.group._children.length > 0; }
   },
+  getSessionData: {
+    value: function PanoGroupItem_getSessionData () {
+      return { openState: this.isOpen };
+    }
+  },
 });
 function TabItem (tab) {
   if (itemCache.has(tab))
@@ -165,6 +171,14 @@ TabItem.prototype = Object.create(ItemPrototype, {
   },
   id: {
     get: function () { return this.tab._tPos; },
+  },
+  getSessionData: {
+    value: function PanoTabItem_getSessionData () {
+      var data = JSON.parse(SessionStore.getTabState(this.tab));
+      delete data.extData;
+      delete data.attributes;
+      return data;
+    },
   },
 });
 
@@ -566,6 +580,12 @@ PanoramaTreeView.prototype = {
     var targetItem = this.rows[aTargetIndex],
         tPos = -1,
         groupItem;
+
+    if (!targetItem) {
+      // ツリーのアイテム外では、アクティブなグループに対してドロップしたとする
+      targetItem = new GroupItem(this.GI._activeGroupItem);
+      aOrientation = Ci.nsITreeView.DROP_ON;
+    }
 
     if (targetItem.type & TAB_ITEM_TYPE) {
       if (!targetItem.tab.pinned)
@@ -1060,9 +1080,11 @@ PanoramaTreeView.prototype = {
     return (this.rows[sourceIndex].type & TAB_ITEM_TYPE) > 0;
   },
   drop: function PTV_drop (aTargetIndex, aOrientation, aDataTransfer) {
-    if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation === Ci.nsITreeView.DROP_BEFORE) {
-      aTargetIndex--;
-      aOrientation = Ci.nsITreeView.DROP_AFTER;
+    if (aTargetIndex in this.rows) {
+      if (this.rows[aTargetIndex].type & TAB_GROUP_TYPE && aOrientation === Ci.nsITreeView.DROP_BEFORE) {
+        aTargetIndex--;
+        aOrientation = Ci.nsITreeView.DROP_AFTER;
+      }
     }
 
     var types = aDataTransfer.mozTypesAt(0);
@@ -1132,6 +1154,9 @@ PanoramaTreeView.prototype = {
     return false;
   },
   getParentIndex: function PTV_getParentIndex (aRow) {
+    if (!(aRow in this.rows))
+      return -1;
+
     if (this.rows[aRow].level !== 1)
       return -1;
     for ( ; aRow > 0; aRow--) {
@@ -1212,7 +1237,7 @@ PanoramaTreeView.prototype = {
   performActionOnCell: function PTV_performActionOnCell (aAction, aRow, aColumn) {},
 };
 
-function onDragStart (aEvent, view) {
+PanoramaTreeView.onDragStart = function PTV_onDragStart (aEvent, view) {
   if (view.filter)
     return;
 
@@ -1263,8 +1288,16 @@ function onDragStart (aEvent, view) {
   }
   dt.effectAllowed = "move";
   aEvent.stopPropagation();
-}
-PanoramaTreeView.onDragStart = onDragStart;
+};
+
+PanoramaTreeView.onDragOver = function PTV_onDragOver (aEvent, aView) {
+  var types = aEvent.dataTransfer.mozTypesAt(0);
+  if (types.contains(PlacesUtils.TYPE_X_MOZ_URL) ||
+      types.contains(PlacesUtils.TYPE_X_MOZ_PLACE)) {
+    aEvent.preventDefault();
+    aEvent.stopPropagation();
+  }
+};
 
 function blob (aString, aOption) {
   if (typeof aString !== "string")

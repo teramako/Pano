@@ -43,6 +43,11 @@ XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/P
  * @name PlacesUIUtils
  */
 XPCOMUtils.defineLazyModuleGetter(this, "PlacesUIUtils", "resource://gre/modules/PlacesUIUtils.jsm");
+/**
+ * @namespace
+ * @name FileIO
+ */
+XPCOMUtils.defineLazyModuleGetter(this, "FileIO", "resource://pano/fileIO.jsm");
 
 XPCOMUtils.defineLazyServiceGetter(this, "atomService", "@mozilla.org/atom-service;1", "nsIAtomService");
 XPCOMUtils.defineLazyServiceGetter(this, "SessionStore", "@mozilla.org/browser/sessionstore;1", "nsISessionStore");
@@ -301,6 +306,93 @@ PanoramaTreeView.prototype = {
     } catch (e) {
       return failedData;
     }
+  },
+  exportSessions: function PTV_exportSession (aFile) {
+    if (!aFile) {
+      [, aFile] = FileIO.showPicker(this.gWindow, Ci.nsIFilePicker.modeSave, {
+        title: bundle.GetStringFromName("filepicker.export.title"),
+        filters: [[bundle.GetStringFromName("filepicker.filter.json"), "*.json"]],
+        fileName: "tabsSession_" + (new Date).toLocaleFormat("%Y%m%d-%H%M%S") + ".pano.json",
+      });
+    }
+    if (!aFile)
+      return;
+
+    var selectedItems = this.getSelectedItems();
+    if (selectedItems.length < 1)
+      selectedItems = [item for ([, item] in Iterator(this.rows)) if (item.type & TAB_GROUP_TYPE)];
+
+    var tabItems = selectedItems.reduce(function(results, item) {
+      if (item.type & TAB_GROUP_TYPE)
+        return results.concat(item.children);
+      else if (results.indexOf(item) === -1)
+        results.push(item);
+
+      return results;
+    }, []);
+    var data = tabItems.reduce(function(result, tabItem) {
+      var session = tabItem.getSessionData();
+      var groupID = session.pinned ? "apptabs" : tabItem.tab._tabViewTabItem.parent.id;
+      if (!(groupID in result)) {
+        result[groupID] = {
+          id: groupID,
+          title: session.pinned ? groupID : tabItem.tab._tabViewTabItem.parent.getTitle(),
+          tabs: []
+        };
+      }
+      result[groupID].tabs.push(session);
+      return result;
+    }, {});
+    FileIO.asyncWrite(aFile, JSON.stringify(data, null, "  "));
+  },
+  importSessions: function PTV_importSession (aFile) {
+    if (!aFile) {
+      [, aFile] = FileIO.showPicker(this.gWindow, Ci.nsIFilePicker.modeOpen, {
+        title: bundle.GetStringFromName("filepicker.import.title"),
+        filters: [[bundle.GetStringFromName("filepicker.filter.json"), "*.json"]],
+      });
+    }
+    if (!aFile)
+      return;
+
+    FileIO.asyncRead(aFile, function (str) {
+      var data = JSON.parse(str);
+      var activeGroup = this.GI._activeGroupItem;
+      var tabViewWindow = this.tabView._window;
+      var self = this;
+
+      function delayedSetup (tab, tabSession, groupID) {
+        var tabItem = tab._tabViewTabItem;
+        if (tabItem && tabItem.parent) {
+          self.GI.moveTabToGroupItem(tab, groupID);
+          SessionStore.setTabState(tab, JSON.stringify(tabSession));
+        } else {
+          self.gWindow.setTimeout(delayedSetup, 50, tab, tabSession, groupID);
+        }
+      }
+      for (let [groupKey, groupData] in Iterator(data)) {
+        let group = null;
+        if (groupKey !== "apptabs") {
+          group = this.GI.groupItem(groupKey) ||
+                  new this.tabView._window.GroupItem([], {
+                    id: groupKey,
+                    title: groupData.title,
+                    bounds: new tabViewWindow.Rect(20, 20, 250, 200),
+                    immediately: true
+                  });
+        }
+        let isActiveGroup = (group !== null && group === activeGroup);
+        for (let [i, tabSession] in Iterator(groupData.tabs)) {
+          let tab = this.gBrowser.addTab("about:blank", { skipAnimation: true });
+          if (!isActiveGroup && !tabSession.pinned) {
+            tab.setAttribute("hidden", "true");
+            delayedSetup(tab, tabSession, groupKey);
+          } else {
+            SessionStore.setTabState(tab, JSON.stringify(tabSession));
+          }
+        }
+      }
+    }, this);
   },
   filter: null,
   setFilter: function PTV_setFilter (aValue) {
@@ -1088,6 +1180,13 @@ PanoramaTreeView.prototype = {
     }
 
     var types = aDataTransfer.mozTypesAt(0);
+    if (types.contains("application/x-moz-file")) {
+      let file = aDataTransfer.mozGetDataAt("application/x-moz-file", 0).QueryInterface(Ci.nsIFile);
+      if (/\.pano\.json$/.test(file.leafName)) {
+        this.importSessions(file);
+        return;
+      }
+    }
     if (types.contains(PlacesUtils.TYPE_X_MOZ_PLACE))
       this.dropPlaces(aTargetIndex, aOrientation, aDataTransfer);
     else if (types.contains(PlacesUtils.TYPE_X_MOZ_URL))

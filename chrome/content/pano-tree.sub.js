@@ -362,4 +362,12 @@ function closeEmptyGroups () {
   }
 }
 
+function exportSessions (aFile) {
+  view.exportSessions(aFile);
+}
+
+function importSessions (aFile) {
+  view.importSessions(aFile);
+}
+
 // vim: sw=2 ts=2 et:

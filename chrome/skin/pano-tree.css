@@ -50,7 +50,9 @@
 #panoSelectTabForward,
 #panoExpandAll,
 #panoCollapseAll,
-#panoCloseEmptyGroups {
+#panoCloseEmptyGroups,
+#panoExportSessionsButton,
+#panoImportSessionsButton {
   list-style-image: url("chrome://pano/skin/buttons.png");
 }
 
@@ -77,6 +79,12 @@
 }
 #panoCloseEmptyGroups {
   -moz-image-region: rect(0, 64px, 16px, 48px);
+}
+#panoExportSessionsButton {
+  -moz-image-region: rect(32px, 16px, 48px, 0);
+}
+#panoImportSessionsButton {
+  -moz-image-region: rect(32px, 32px, 48px, 16px);
 }
 
 /* Context-Menu */

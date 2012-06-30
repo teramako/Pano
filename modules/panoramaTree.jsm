@@ -1180,6 +1180,13 @@ PanoramaTreeView.prototype = {
     }
 
     var types = aDataTransfer.mozTypesAt(0);
+    if (types.contains("application/x-moz-file")) {
+      let file = aDataTransfer.mozGetDataAt("application/x-moz-file", 0).QueryInterface(Ci.nsIFile);
+      if (/\.pano\.json$/.test(file.leafName)) {
+        this.importSessions(file);
+        return;
+      }
+    }
     if (types.contains(PlacesUtils.TYPE_X_MOZ_PLACE))
       this.dropPlaces(aTargetIndex, aOrientation, aDataTransfer);
     else if (types.contains(PlacesUtils.TYPE_X_MOZ_URL))

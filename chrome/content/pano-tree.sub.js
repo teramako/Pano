@@ -7,6 +7,9 @@ XPCOMUtils.defineLazyGetter(this, "stringBundle", function() {
 function onDragStart (aEvent) {
   PanoramaTreeView.onDragStart(aEvent, view);
 }
+function onDragOver (aEvent) {
+  PanoramaTreeView.onDragOver(aEvent, view);
+}
 function onDblClick (aEvent) {
   if (aEvent.button !== 0)
     return;

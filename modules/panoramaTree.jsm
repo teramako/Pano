@@ -307,22 +307,11 @@ PanoramaTreeView.prototype = {
       return failedData;
     }
   },
-  exportSessions: function PTV_exportSession (aFile) {
-    if (!aFile) {
-      [, aFile] = FileIO.showPicker(this.gWindow, Ci.nsIFilePicker.modeSave, {
-        title: bundle.GetStringFromName("filepicker.export.title"),
-        filters: [[bundle.GetStringFromName("filepicker.filter.json"), "*.json"]],
-        fileName: "tabsSession_" + (new Date).toLocaleFormat("%Y%m%d-%H%M%S") + ".pano.json",
-      });
-    }
-    if (!aFile)
-      return;
+  getExportableSessionData: function PTV_getExportableSessionData (aItems) {
+    if (aItems.length < 1)
+      aItems = [item for ([, item] in Iterator(this.rows)) if (item.type & TAB_GROUP_TYPE)];
 
-    var selectedItems = this.getSelectedItems();
-    if (selectedItems.length < 1)
-      selectedItems = [item for ([, item] in Iterator(this.rows)) if (item.type & TAB_GROUP_TYPE)];
-
-    var tabItems = selectedItems.reduce(function(results, item) {
+    var tabItems = aItems.reduce(function(results, item) {
       if (item.type & TAB_GROUP_TYPE)
         return results.concat(item.children);
       else if (results.indexOf(item) === -1)
@@ -343,7 +332,22 @@ PanoramaTreeView.prototype = {
       result[groupID].tabs.push(session);
       return result;
     }, {});
-    FileIO.asyncWrite(aFile, JSON.stringify(data, null, "  "));
+    return data;
+  },
+  exportSessions: function PTV_exportSession (aFile) {
+    if (!aFile) {
+      [, aFile] = FileIO.showPicker(this.gWindow, Ci.nsIFilePicker.modeSave, {
+        title: bundle.GetStringFromName("filepicker.export.title"),
+        filters: [[bundle.GetStringFromName("filepicker.filter.json"), "*.json"]],
+        fileName: "tabsSession_" + (new Date).toLocaleFormat("%Y%m%d-%H%M%S") + ".pano.json",
+      });
+    }
+    if (!aFile)
+      return;
+
+    var data = this.getExportableSessionData(this.getSelectedItems());
+    var str = JSON.stringify(data, null, "  ");
+    FileIO.asyncWrite(aFile, str);
   },
   importSessions: function PTV_importSession (aFile) {
     if (!aFile) {
@@ -1346,6 +1350,8 @@ PanoramaTreeView.onDragStart = function PTV_onDragStart (aEvent, view) {
 
   var dt = aEvent.dataTransfer;
 
+  new FileDataFlavor(items, view, dt);
+
   if (items.length === 1 && (items[0].type === TAB_GROUP_TYPE)) {
     dt.mozSetDataAt(GROUP_DROP_TYPE, items[0].group, 0);
   }
@@ -1490,4 +1496,40 @@ function setTabState (tab, url, title) {
   };
   SessionStore.setTabState(tab, JSON.stringify(state));
 }
+
+function FileDataFlavor (aItems, aView, aDataTransfer) {
+  this.items = aItems;
+  this.view = aView;
+  var filename = "tabsession_" + (new Date).toLocaleFormat("%Y%m%d-%H%M%S") + ".pano.json";
+  aDataTransfer.mozSetDataAt("application/x-moz-file-promise", null, 0);
+  aDataTransfer.mozSetDataAt("application/x-moz-file-promise-url", this, 0);
+  aDataTransfer.mozSetDataAt("application/x-moz-file-promise-dest-filename", filename, 0);
+}
+FileDataFlavor.prototype = {
+  get url () {
+    var sessionData = this.view.getExportableSessionData(this.items),
+        sessionString = JSON.stringify(sessionData, null, "  ");
+
+    const base64= Cc["@mozilla.org/scriptablebase64encoder;1"].getService(Ci.nsIScriptableBase64Encoder);
+
+    var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Ci.nsIScriptableUnicodeConverter);
+    converter.charset = "UTF-8";
+    var input = converter.convertToInputStream(sessionString);
+
+    var str = "data:application/json;base64," +
+              base64.encodeToString(input, input.available());
+    var supportsString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+    supportsString.data = str;
+    Object.defineProperty(this, "url", { value: supportsString });
+    return supportsString;
+  },
+  getFlavorData: function FDP_getFlaverData (aTransferable, aFlavor, aData, aDataLen) {
+    if (aFlavor !== "application/x-moz-file-promise-url")
+      return;
+
+    aData.value = this.url;
+    aDataLen.value = this.url.data.length;
+  },
+  QueryInterface: XPCOMUtils.generateQI(["nsIFlavorDataProvider"]),
+};
 

@@ -307,22 +307,11 @@ PanoramaTreeView.prototype = {
       return failedData;
     }
   },
-  exportSessions: function PTV_exportSession (aFile) {
-    if (!aFile) {
-      [, aFile] = FileIO.showPicker(this.gWindow, Ci.nsIFilePicker.modeSave, {
-        title: bundle.GetStringFromName("filepicker.export.title"),
-        filters: [[bundle.GetStringFromName("filepicker.filter.json"), "*.json"]],
-        fileName: "tabsSession_" + (new Date).toLocaleFormat("%Y%m%d-%H%M%S") + ".pano.json",
-      });
-    }
-    if (!aFile)
-      return;
+  getExportableSessionData: function PTV_getExportableSessionData (aItems) {
+    if (aItems.length < 1)
+      aItems = [item for ([, item] in Iterator(this.rows)) if (item.type & TAB_GROUP_TYPE)];
 
-    var selectedItems = this.getSelectedItems();
-    if (selectedItems.length < 1)
-      selectedItems = [item for ([, item] in Iterator(this.rows)) if (item.type & TAB_GROUP_TYPE)];
-
-    var tabItems = selectedItems.reduce(function(results, item) {
+    var tabItems = aItems.reduce(function(results, item) {
       if (item.type & TAB_GROUP_TYPE)
         return results.concat(item.children);
       else if (results.indexOf(item) === -1)
@@ -343,7 +332,22 @@ PanoramaTreeView.prototype = {
       result[groupID].tabs.push(session);
       return result;
     }, {});
-    FileIO.asyncWrite(aFile, JSON.stringify(data, null, "  "));
+    return data;
+  },
+  exportSessions: function PTV_exportSession (aFile) {
+    if (!aFile) {
+      [, aFile] = FileIO.showPicker(this.gWindow, Ci.nsIFilePicker.modeSave, {
+        title: bundle.GetStringFromName("filepicker.export.title"),
+        filters: [[bundle.GetStringFromName("filepicker.filter.json"), "*.json"]],
+        fileName: "tabsSession_" + (new Date).toLocaleFormat("%Y%m%d-%H%M%S") + ".pano.json",
+      });
+    }
+    if (!aFile)
+      return;
+
+    var data = this.getExportableSessionData(this.getSelectedItems());
+    var str = JSON.stringify(data, null, "  ");
+    FileIO.asyncWrite(aFile, str);
   },
   importSessions: function PTV_importSession (aFile) {
     if (!aFile) {

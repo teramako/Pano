@@ -1350,6 +1350,8 @@ PanoramaTreeView.onDragStart = function PTV_onDragStart (aEvent, view) {
 
   var dt = aEvent.dataTransfer;
 
+  new FileDataFlavor(items, view, dt);
+
   if (items.length === 1 && (items[0].type === TAB_GROUP_TYPE)) {
     dt.mozSetDataAt(GROUP_DROP_TYPE, items[0].group, 0);
   }
@@ -1494,4 +1496,40 @@ function setTabState (tab, url, title) {
   };
   SessionStore.setTabState(tab, JSON.stringify(state));
 }
+
+function FileDataFlavor (aItems, aView, aDataTransfer) {
+  this.items = aItems;
+  this.view = aView;
+  var filename = "tabsession_" + (new Date).toLocaleFormat("%Y%m%d-%H%M%S") + ".pano.json";
+  aDataTransfer.mozSetDataAt("application/x-moz-file-promise", null, 0);
+  aDataTransfer.mozSetDataAt("application/x-moz-file-promise-url", this, 0);
+  aDataTransfer.mozSetDataAt("application/x-moz-file-promise-dest-filename", filename, 0);
+}
+FileDataFlavor.prototype = {
+  get url () {
+    var sessionData = this.view.getExportableSessionData(this.items),
+        sessionString = JSON.stringify(sessionData, null, "  ");
+
+    const base64= Cc["@mozilla.org/scriptablebase64encoder;1"].getService(Ci.nsIScriptableBase64Encoder);
+
+    var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Ci.nsIScriptableUnicodeConverter);
+    converter.charset = "UTF-8";
+    var input = converter.convertToInputStream(sessionString);
+
+    var str = "data:application/json;base64," +
+              base64.encodeToString(input, input.available());
+    var supportsString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+    supportsString.data = str;
+    Object.defineProperty(this, "url", { value: supportsString });
+    return supportsString;
+  },
+  getFlavorData: function FDP_getFlaverData (aTransferable, aFlavor, aData, aDataLen) {
+    if (aFlavor !== "application/x-moz-file-promise-url")
+      return;
+
+    aData.value = this.url;
+    aDataLen.value = this.url.data.length;
+  },
+  QueryInterface: XPCOMUtils.generateQI(["nsIFlavorDataProvider"]),
+};
 

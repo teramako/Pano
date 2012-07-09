@@ -57,6 +57,11 @@
   -moz-image-region: rect(0, 32px, 16px, 16px);
 }
 
+/* tab item's indentation */
+.pano-tree treechildren::-moz-tree-indentation {
+  width: 16px !important;
+}
+
 .pano-tree treechildren::-moz-tree-cell-text(currentTab),
 .pano-tree treechildren::-moz-tree-cell-text(currentGroup) {
   font-weight: bold;

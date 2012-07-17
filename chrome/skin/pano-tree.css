@@ -98,7 +98,7 @@
 }
 
 #panoSelectTabBack menupopup > menuitem,
-#panoSelectTabForward menupopup > mnuitem {
+#panoSelectTabForward menupopup > menuitem {
   list-style-image: url("chrome://mozapps/skin/places/defaultFavicon.png");
 }
 

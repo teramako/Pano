@@ -212,8 +212,8 @@ function Pano_moveTabToGroupItem (tab, groupItemId) {
 function Pano_registerGroup (groupItem) {
   this.originalRegister(groupItem);
   var win = Components.utils.getGlobalForObject(groupItem),
-      event = win.gWindow.document.createEvent("UIEvents");
-  event.initUIEvent("TabGroupAdded", true, false, win, groupItem.id);
+      event = win.gWindow.document.createEvent("CustomEvent");
+  event.initCustomEvent("TabGroupAdded", true, false, groupItem);
   win.gBrowser.dispatchEvent(event);
 }
 
@@ -223,9 +223,9 @@ function Pano_registerGroup (groupItem) {
 function Pano_dispatchGroupCloseEvent (groupItem, eventInfo) {
   // get TabView window object
   var win = Components.utils.getGlobalForObject(groupItem._children),
-      event = win.document.createEvent("UIEvents");
+      event = win.document.createEvent("CustomEvent");
   // set groupItem.id to UIEvent.detail
-  event.initUIEvent("TabGroupClose", true, false, win, groupItem.id);
+  event.initCustomEvent("TabGroupClose", true, false, groupItem);
   win.gBrowser.dispatchEvent(event);
 }
 
@@ -1082,7 +1082,7 @@ PanoramaTreeView.prototype = {
     this.ensureCurrentTabIsVisible();
   },
   onTabGroupAdded: function PTV_onTabGroupAdded (aEvent) {
-    var group = this.GI.groupItem(aEvent.detail);
+    var group = aEvent.detail;
     var item = new GroupItem(group);
     if (this.rows.indexOf(item) === -1) {
       let row = this.rows.push(item) - 1;
@@ -1091,14 +1091,13 @@ PanoramaTreeView.prototype = {
   },
   onTabGroupClose: function PTV_onTabGroupClose (aEvent) {
     // グループが削除される時、既にタブは削除されているので考慮の必要なし
-    var id = aEvent.detail;
-    for (let [i, item] in Iterator(this.rows)) {
-      if (item.type & TAB_GROUP_TYPE && item.id == id) {
-        this.rows.splice(i, 1);
-        this.treeBox.rowCountChanged(i, -1);
-        break;
-      }
-    }
+    var group = aEvent.detail;
+    var item = new GroupItem(group);
+    var i = this.rows.indexOf(item);
+    if (i === -1)
+      return;
+    this.rows.splice(i, 1);
+    this.treeBox.rowCountChanged(i, -1);
   },
   // ==========================================================================
   // nsITreeView

@@ -159,6 +159,7 @@
                  label="&panoPane.label;"
                  tooltiptext="&panoPane.tooltip;"
                  accesskey="P"
+                 onmouseover="gPano.pane.onButtonMouseOver(event);"
                  oncommand="gPano.pane.toggleOpen();">
   </toolbarbutton>
 </toolbarpalette>

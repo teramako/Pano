@@ -29,6 +29,16 @@ const gPano = {
       Services.scriptloader.loadSubScript("chrome://pano/content/pano-tree.sub.js", this);
     },
     isPanel: true,
+    onButtonMouseOver: function PanoPane_onMouseOver (aEvent) {
+      if (Services.prefs.getBoolPref("extensions.pano.panel.openOnMouseOver")) {
+        if ("panel" in this) {
+          if (this.panel.state === "closed")
+            this.panel.openPopup(this.button, "bottomcenter topright");
+        } else {
+          this.toggleOpen();
+        }
+      }
+    },
   },
   buttons: (function () {
     var self = {

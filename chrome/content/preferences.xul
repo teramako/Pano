@@ -23,6 +23,9 @@
       <preference id="pref-panel-autoCloseByTabSelect"
                   name="extensions.pano.panel.autoCloseByTabSelect"
                   type="bool"/>
+      <preference id="pref-panel-openPanelOnMouseOver"
+                  name="extensions.pano.panel.openOnMouseOver"
+                  type="bool"/>
       <preference id="pref-tooltip-showTitle"
                   name="extensions.pano.tooltip.showTitle"
                   type="bool"/>
@@ -50,6 +53,8 @@
       <checkbox label="&pref.switchTabBySingleClick.label;" preference="pref-switchTabBySingleClick"/>
       <sperator class="thin"/>
       <checkbox label="&pref.panel.autoCloseByTabSelect.label;" preference="pref-panel-autoCloseByTabSelect"/>
+      <sperator class="thin"/>
+      <checkbox label="&pref.panel.openPanelOnMouseOver.label;" preference="pref-panel-openPanelOnMouseOver"/>
       <sperator class="thin"/>
       <checkbox label="&pref.select_currenttab;" preference="pref-select-currenttab"/>
       <sperator class="thin"/>

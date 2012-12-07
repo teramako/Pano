@@ -112,6 +112,26 @@ function onClick (aEvent) {
   panel.hidePopup();
 }
 
+/**
+ * @see "lightweight-theme-styling-update" observer in pano-tree.sub.js
+ */
+function updatePanelTheme (aData) {
+  if (!aData)
+    aData =  { headerURL: "", footerURL: "", textcolor: "", accentcolor: "" };
+
+  var elem = document.getAnonymousElementByAttribute(panel, "class", "panel-arrowcontent");
+  var active = !!aData.headerURL;
+  if (active) {
+    elem.style.backgroundColor = aData.accentcolor || "white";
+    elem.style.backgroundImage = [aData.headerURL, aData.footerURL].map(function(url) {
+      return url ? 'url("' + url.replace(/"/g, '\\"') + '")' : "";
+    }).join(", ");
+  } else {
+    elem.style.backgroundColor = "";
+    elem.style.backgroundImage = "";
+  }
+}
+
 window.addEventListener("unload", function () {
   window.removeEventListener("unload", arguments.callee, false);
   if (view)

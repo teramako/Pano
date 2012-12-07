@@ -36,6 +36,10 @@
 #pano-pane[side=top] #panoPanelHeader {
   visibility: collapse;
 }
+#pano-pane .panel-arrowcontent {
+  background-position: right top, left bottom;
+  background-repeat: no-repeat, no-repeat;
+}
 
 .panoPanelResizer[dir=top], .panoPanelResizer[dir=bottom] {
   height: 3px;

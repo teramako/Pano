@@ -92,11 +92,16 @@ var observer = {
         break;
       }
     }
+    else if (isPanel && aTopic === "lightweight-theme-styling-update") {
+      /** @see pano-pane.sub.js */
+      updatePanelTheme(JSON.parse(aData));
+    }
   },
   QueryInterface: XPCOMUtils.generateQI(["nsIObserver", "nsISupportsWeakReference"]),
 }
 Services.prefs.addObserver(PREF_SWITCH_BY, observer, true);
 Services.prefs.addObserver(PREF_SHOW_CLOSEBUTTON, observer, true);
+Services.obs.addObserver(observer, "lightweight-theme-styling-update", true);
 
 function newGroup () {
   view.GI.newGroup().newTab();

@@ -27,6 +27,12 @@ const gPano = {
       Services.scriptloader.loadSubScript("chrome://pano/content/pano-pane.sub.js", this);
       this.toggleOpen();
       Services.scriptloader.loadSubScript("chrome://pano/content/pano-tree.sub.js", this);
+      // Fit to Personas theme
+      var elem = document.getAnonymousElementByAttribute(this.panel, "class", "panel-arrowcontent"),
+          rootStyle = document.documentElement.style,
+          bottomStyle = document.getElementById("browser-bottombox").style;
+      elem.style.backgroundColor = rootStyle.backgroundColor;
+      elem.style.backgroundImage = rootStyle.backgroundImage + ", " + bottomStyle.backgroundImage;
     },
     isPanel: true,
     onButtonMouseOver: function PanoPane_onMouseOver (aEvent) {

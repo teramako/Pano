@@ -45,14 +45,7 @@
 }
 
 /* toolbar items */
-#hideTabbarCheck,
-#panoSelectTabBack,
-#panoSelectTabForward,
-#panoExpandAll,
-#panoCollapseAll,
-#panoCloseEmptyGroups,
-#panoExportSessionsButton,
-#panoImportSessionsButton {
+.panoToolbarButton {
   list-style-image: url("chrome://pano/skin/buttons.png");
 }
 
@@ -100,5 +93,32 @@
 #panoSelectTabBack menupopup > menuitem,
 #panoSelectTabForward menupopup > menuitem {
   list-style-image: url("chrome://mozapps/skin/places/defaultFavicon.png");
+}
+
+/* lwtheme */
+#panoSearchBox:-moz-lwtheme {
+  -moz-appearance: none;
+  background-clip: padding-box;
+  border: 1px solid ThreeDShadow;
+  border-radius: 2px;
+  background-color: rgba(255,255,255,.9);
+}
+.panoToolbarButton:-moz-lwtheme,
+.panoToolbarButton:-moz-lwtheme > .toolbarbutton-menubutton-button {
+  -moz-appearance: none;
+  border-style: none;
+}
+
+.panoToolbarButton:-moz-lwtheme-brighttext {
+  background-image: linear-gradient(hsla(0,0%,40%,.6), hsla(0,0%,30%,.6) 80%);
+}
+.panoToolbarButton:-moz-lwtheme-brighttext:hover {
+  background-image: linear-gradient(hsla(0,0%,60%,.6), hsla(0,0%,45%,.6) 80%);
+}
+.panoToolbarButton:-moz-lwtheme-darktext {
+  background-image: linear-gradient(hsla(0,0%,60%,.5), hsla(0,0%,45%,.5) 80%);
+}
+.panoToolbarButton:-moz-lwtheme-darktext:hover {
+  background-image: linear-gradient(hsla(0,0%,80%,.5), hsla(0,0%,60%,.5) 80%);
 }
 

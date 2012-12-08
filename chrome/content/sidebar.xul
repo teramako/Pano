@@ -8,6 +8,8 @@
 <window id="panoramaSidebarWindow"
         onload="gPanoramaTree.init();"
         onunload="gPanoramaTree.destroy();"
+        lightweightthemes="true"
+        lightweightthemesfooter="panoBottomBox"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/javascript" src="chrome://pano/content/sidebar.js"/>
   <commandset id="panoCommandSet">
@@ -118,7 +120,7 @@
              clickthrough="never"
              persist="src"/>
   </vbox>
-  <vbox>
+  <vbox id="panoBottomBox">
     <toolbar id="panoBottomBar"
              toolbarname="&toolbar.bottomToolbar;"
              toolboxid="panoToolBox"

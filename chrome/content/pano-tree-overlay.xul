@@ -91,22 +91,27 @@
     <textbox id="panoSearchBox" flex="1" type="search" placeholder="&search.label;" class="compact"/>
   </toolbaritem>
   <toolbarbutton id="panoExpandAll"
+                 class="panoToolbarButton"
                  label="&expandAll.label;"
                  tooltiptext="&expandAll.tooltip;"
                  command="panoCmdExpandAll"/>
   <toolbarbutton id="panoCollapseAll"
+                 class="panoToolbarButton"
                  label="&collapseAll.label;"
                  tooltiptext="&collapseAll.tooltip;"
                  command="panoCmdCollapseAll"/>
   <toolbarbutton id="panoCloseEmptyGroups"
+                 class="panoToolbarButton"
                  label="&closeEmptyGroups.label;"
                  tooltiptext="&closeEmptyGroups.tooltip;"
                  command="panoCmdCloseEmptyGroups"/>
   <toolbarbutton id="panoExportSessionsButton"
+                 class="panoToolbarButton"
                  label="&exportSessions.label;"
                  tooltiptext="&exportSessions.tooltip;"
                  command="panoCmdExportSessions"/>
   <toolbarbutton id="panoImportSessionsButton"
+                 class="panoToolbarButton"
                  label="&importSessions.label;"
                  tooltiptext="&importSessions.tooltip;"
                  command="panoCmdImportSessions"/>

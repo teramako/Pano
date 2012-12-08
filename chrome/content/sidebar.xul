@@ -8,6 +8,8 @@
 <window id="panoramaSidebarWindow"
         onload="gPanoramaTree.init();"
         onunload="gPanoramaTree.destroy();"
+        lightweightthemes="true"
+        lightweightthemesfooter="panoBottomBox"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/javascript" src="chrome://pano/content/sidebar.js"/>
   <commandset id="panoCommandSet">
@@ -64,6 +66,7 @@
     <toolbar id="panoToolbar1"/>
     <toolbarpalette id="panoToolbarPalette">
       <toolbarbutton id="panoSelectTabBack"
+                     class="panoToolbarButton"
                      type="menu-button"
                      label="&tabHistory.back.label;"
                      tooltiptext="&tabHistory.back.tooltip;"
@@ -73,6 +76,7 @@
                   onpopupshowing="gWin.gPano.tabHistory.createMenu(false, this)"/>
       </toolbarbutton>
       <toolbarbutton id="panoSelectTabForward"
+                     class="panoToolbarButton"
                      type="menu-button"
                      label="&tabHistory.forward.label;"
                      tooltiptext="&tabHistory.forward.tooltip;"
@@ -85,6 +89,7 @@
         <textbox id="panoSearchBox" oncommand="gPanoramaTree.setFilter(this.value);"/>
       </toolbaritem>
       <toolbarbutton id="hideTabbarCheck" type="checkbox"
+                     class="panoToolbarButton"
                      label="&hidetabbar.label;"
                      tooltiptext="&hidetabbar.tooltip;"
                      oncommand="gPanoramaTree.tabbar.toggleHide();"/>
@@ -118,7 +123,7 @@
              clickthrough="never"
              persist="src"/>
   </vbox>
-  <vbox>
+  <vbox id="panoBottomBox">
     <toolbar id="panoBottomBar"
              toolbarname="&toolbar.bottomToolbar;"
              toolboxid="panoToolBox"

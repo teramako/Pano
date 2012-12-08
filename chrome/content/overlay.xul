@@ -83,6 +83,7 @@
             <toolbar id="panoToolbar1"/>
             <toolbarpalette id="panoToolbarPalette">
               <toolbarbutton id="panoSelectTabBack"
+                             class="panoToolbarButton"
                              type="menu-button"
                              label="&tabHistory.back.label;"
                              tooltiptext="&tabHistory.back.tooltip;"
@@ -92,6 +93,7 @@
                           onpopupshowing="gPano.tabHistory.createMenu(false, this)"/>
               </toolbarbutton>
               <toolbarbutton id="panoSelectTabForward"
+                             class="panoToolbarButton"
                              type="menu-button"
                              label="&tabHistory.forward.label;"
                              tooltiptext="&tabHistory.forward.tooltip;"

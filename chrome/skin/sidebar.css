@@ -35,3 +35,9 @@
   list-style-image: url("chrome://pano/skin/application_split.png");
 }
 
+/* lwtheme */
+#panoramaSidebarWindow:-moz-lwtheme {
+  background-repeat: no-repeat;
+  background-position: right top;
+}
+

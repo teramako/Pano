@@ -8,6 +8,7 @@ Changelog
   * [#80 ツリーのインデント幅を明示](https://github.com/teramako/Pano/issues/80)
   * [#87 パネルボタンのマウスオーバーでポップアップする機能](https://github.com/teramako/Pano/issues/87)
   * [#88 パネルのテーマをPersonasのテーマに合うように](https://github.com/teramako/Pano/issues/88)
+  * [#89 サイドバーにPersoasのテーマを適用](https://github.com/teramako/Pano/issues/89)
 
 ##version 1.1 (2012-05-29)
   * [#74 ツリーの空白部分をダブルクリックで新規グループを作成できるように](https://github.com/teramako/Pano/issues/74)

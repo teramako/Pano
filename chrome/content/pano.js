@@ -32,7 +32,8 @@ const gPano = {
           rootStyle = document.documentElement.style,
           bottomStyle = document.getElementById("browser-bottombox").style;
       elem.style.backgroundColor = rootStyle.backgroundColor;
-      elem.style.backgroundImage = rootStyle.backgroundImage + ", " + bottomStyle.backgroundImage;
+      elem.style.backgroundImage = rootStyle.backgroundImage +
+                                   (bottomStyle.backgroundImage ? ", " + bottomStyle.backgroundImage : "");
     },
     isPanel: true,
     onButtonMouseOver: function PanoPane_onMouseOver (aEvent) {

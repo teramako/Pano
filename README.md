@@ -3,7 +3,7 @@
 #なんぞコレ？
 タブグループをリストする拡張機能だよん。
 
- * 対象：Firefox 7.0 以上
+ * 対象：Firefox 10.0 以上
 
 #キャプチャ画像
 ![sidebar](http://teramako.github.com/Pano/sidebar.png "Pano sidebar")

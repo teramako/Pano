@@ -1201,6 +1201,11 @@ PanoramaTreeView.prototype = {
   selection: null,
   getRowProperties: function PTV_getRowProperties (aRow, aProperties) {
     var item = this.rows[aRow];
+    var isSupportsArray = true;
+    if (!aProperties) {
+      isSupportsArray = false;
+      aProperties = Cc["@mozilla.org/supports-array;1"].createInstance(Ci.nsISupportsArray);
+    }
     if (item.level === 0) {
       aProperties.AppendElement(this.getAtom("group"));
 
@@ -1231,13 +1236,32 @@ PanoramaTreeView.prototype = {
       if (item.tab.hasAttribute("titlechanged"))
         aProperties.AppendElement(this.getAtom("titlechanged"))
     }
+    if (!isSupportsArray) {
+      let props = [];
+      for (let i = 0, len = aProperties.Count(); i < len; ++i) {
+        props.push(aProperties.GetElementAt(i));
+      }
+      return props.join(" ");
+    }
   },
   getCellProperties: function PTV_getCellProperties (aRow, aColumn, aProperties) {
     var anonid = aColumn.element.getAttribute("anonid");
+    var isSupportsArray = true;
+    if (!aProperties) {
+      isSupportsArray = false;
+      aProperties = Cc["@mozilla.org/supports-array;1"].createInstance(Ci.nsISupportsArray);
+    }
     if (anonid === "closebutton") {
       aProperties.AppendElement(this.getAtom("closebutton"));
     }
     this.getRowProperties(aRow, aProperties);
+    if (!isSupportsArray) {
+      let props = [];
+      for (let i = 0, len = aProperties.Count(); i < len; ++i) {
+        props.push(aProperties.GetElementAt(i));
+      }
+      return props.join(" ");
+    }
   },
   getColumnProperties: function PTV_getColumnProperties (aColumn, aProperties) {},
   isContainer: function PTV_isContainer (aRow) {

@@ -1,7 +1,8 @@
 Changelog
 =========
 
-##version 1.3
+##version 1.2.1 (2013-03-12)
+  * [#98 Firefox 22+ のnsISupportsArray削除対応](https://github.com/teramako/Pano/issues/98)
 
 ##version 1.2 (2012-12-29)
   * [#71 パネルのサイズを可能にして欲しい](https://github.com/teramako/Pano/issues/71)

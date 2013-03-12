@@ -1,6 +1,8 @@
 Changelog
 =========
 
+##version 1.3
+
 ##version 1.2 (2012-12-29)
   * [#71 パネルのサイズを可能にして欲しい](https://github.com/teramako/Pano/issues/71)
   * [#78 ツリー空白部分もドラッグ＆ドロップ可能に](https://github.com/teramako/Pano/issues/78)

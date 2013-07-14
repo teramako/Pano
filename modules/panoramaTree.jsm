@@ -32,7 +32,7 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
  * @namespace
  * @name Services
  */
-XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
+Cu.import("resource://gre/modules/Services.jsm");
 /**
  * @namespace
  * @name PlacesUtils
@@ -54,6 +54,10 @@ XPCOMUtils.defineLazyServiceGetter(this, "SessionStore", "@mozilla.org/browser/s
 XPCOMUtils.defineLazyGetter(this, "bundle", function () {
   return Services.strings.createBundle("chrome://pano/locale/pano-tree.properties");
 });
+
+// see: Bug407956  Remove nsISupportsArray usage from nsITreeView
+//      https://bugzilla.mozilla.org/show_bug.cgi?id=407956
+const IS_REMOVED_SUPPORTSARRAY = Services.vc.compare(Services.appinfo.version, "22.0") >= 0;
 
 var showTabNumber = Services.prefs.getBoolPref(PREF_SHOW_NUMBER);
 var observer = {
@@ -1199,70 +1203,55 @@ PanoramaTreeView.prototype = {
 
   },
   selection: null,
-  getRowProperties: function PTV_getRowProperties (aRow, aProperties) {
+  rowPropertiesIterator: function PTV_rowPropertiesIterator (aRow) {
     var item = this.rows[aRow];
-    var isSupportsArray = true;
-    if (!aProperties) {
-      isSupportsArray = false;
-      aProperties = Cc["@mozilla.org/supports-array;1"].createInstance(Ci.nsISupportsArray);
-    }
     if (item.level === 0) {
-      aProperties.AppendElement(this.getAtom("group"));
-
+      yield "group";
       if (item.group && item.group === this.GI._activeGroupItem)
-        aProperties.AppendElement(this.getAtom("currentGroup"));
-
+        yield "currentGroup";
       if (item.type & APPTAB_GROUP_TYPE)
-        aProperties.AppendElement(this.getAtom("AppTabs"));
-
+        yield "AppTabs";
     } else {
-      aProperties.AppendElement(this.getAtom("item"));
-
+      yield "item";
       if (item.tab.selected)
-        aProperties.AppendElement(this.getAtom("currentTab"));
-
+        yield "currentTab";
       if (item.tab.pinned)
-        aProperties.AppendElement(this.getAtom("apptab"));
-
+        yield "apptab";
       if (item.tab.linkedBrowser.__SS_restoreState)
-        aProperties.AppendElement(this.getAtom("pending"));
-
+        yield "pending";
       if (item.tab.hasAttribute("unread"))
-        aProperties.AppendElement(this.getAtom("unread"));
-
+        yield "unread";
       if (item.tab.hasAttribute("busy"))
-        aProperties.AppendElement(this.getAtom("loading"));
-
+        yield "loading";
       if (item.tab.hasAttribute("titlechanged"))
-        aProperties.AppendElement(this.getAtom("titlechanged"))
-    }
-    if (!isSupportsArray) {
-      let props = [];
-      for (let i = 0, len = aProperties.Count(); i < len; ++i) {
-        props.push(aProperties.GetElementAt(i));
-      }
-      return props.join(" ");
+        yield "titlechanged";
     }
   },
-  getCellProperties: function PTV_getCellProperties (aRow, aColumn, aProperties) {
+  getRowProperties: IS_REMOVED_SUPPORTSARRAY ?
+    function PTV_getRowProperties (aRow) {
+      return [prop for (prop of this.rowPropertiesIterator(aRow))].join(" ");
+    } :
+    function PTV_getRowProperties (aRow, aProperties) {
+      for (var name of this.rowPropertiesIterator(aRow)) {
+        aProperties.AppendElement(this.getAtom(name));
+      }
+    },
+  cellPropertiesIterator: function PTV_cellPropertiesIterator (aRow, aColumn) {
     var anonid = aColumn.element.getAttribute("anonid");
-    var isSupportsArray = true;
-    if (!aProperties) {
-      isSupportsArray = false;
-      aProperties = Cc["@mozilla.org/supports-array;1"].createInstance(Ci.nsISupportsArray);
-    }
-    if (anonid === "closebutton") {
-      aProperties.AppendElement(this.getAtom("closebutton"));
-    }
-    this.getRowProperties(aRow, aProperties);
-    if (!isSupportsArray) {
-      let props = [];
-      for (let i = 0, len = aProperties.Count(); i < len; ++i) {
-        props.push(aProperties.GetElementAt(i));
-      }
-      return props.join(" ");
-    }
+    if (anonid === "closebutton")
+      yield "closebutton";
+    for (var prop of this.rowPropertiesIterator(aRow))
+      yield prop;
   },
+  getCellProperties: IS_REMOVED_SUPPORTSARRAY ?
+    function PTV_getCellProperties (aRow, aColumn) {
+      return [prop for (prop of this.cellPropertiesIterator(aRow, aColumn))].join(" ");
+    } :
+    function PTV_getCellProperties (aRow, aColumn, aProperties) {
+      for (var name of this.cellPropertiesIterator(aRow, aColumn)) {
+        aProperties.AppendElement(this.getAtom(name));
+      }
+    },
   getColumnProperties: function PTV_getColumnProperties (aColumn, aProperties) {},
   isContainer: function PTV_isContainer (aRow) {
     return this.rows[aRow].level === 0;

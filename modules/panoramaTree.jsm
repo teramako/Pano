@@ -79,10 +79,14 @@ var ItemPrototype = {
   level: 0,
   id: 0,
   getSessionData: function () {},
+  buildProperties: function PanoItem_buildProperties () {
+    return this.properties = [v for (v of this.propertySet)].join(" ");
+  },
 };
 function AppTabsGroup (win, session) {
   this.win = win;
   this.title = bundle.GetStringFromName("appTabGroup");
+  this.properties = "group AppTabs";
   if (session && ("openState" in session))
     this.isOpen = !!session.openState;
 }
@@ -118,6 +122,8 @@ function GroupItem (group, session) {
     return itemCache.get(group);
 
   this.group = group;
+  this.propertySet = new Set(["group"]);
+  this.buildProperties();
   if (group.addSubscriber.length > 2)
     group.addSubscriber(this, "close", Pano_dispatchGroupCloseEvent);
   else
@@ -163,14 +169,18 @@ function TabItem (tab) {
     return itemCache.get(tab);
 
   this.tab = tab;
+  this.title = tab.label;
+  this.properties = "";
+  this.propertySet = new Set(["item"]);
+  if (tab.selected) this.propertySet.add("currentTab");
+  if (tab.pinned)   this.propertySet.add("pinned");
+  if (tab.hasAttribute("pending"))  this.propertySet.add("pending");
+  this.buildProperties();
   itemCache.set(tab, this);
 }
 TabItem.prototype = Object.create(ItemPrototype, {
   level: { value: 1 },
   type: { value: TAB_ITEM_TYPE },
-  title: {
-    get: function () { return this.tab.label; },
-  },
   url: {
     get: function () { return this.tab.linkedBrowser.currentURI.spec; },
   },
@@ -191,10 +201,6 @@ const HANDLE_EVENT_TYPES = [
   "TabOpen",
   "TabClose",
   "TabMove",
-  "TabSelect",
-  "TabPinned",
-  "TabUnpinned",
-  "TabAttrModified",
   "TabGroupMove",
   "TabGroupAdded",
   "TabGroupClose",
@@ -241,6 +247,54 @@ function PanoramaTreeView (gWindow) {
   this.GI = gWindow.TabView._window.GroupItems;
   this.treeBox = null;
   this.rows = [];
+  this.tabsObserver = new this.gWindow.MutationObserver(list => {
+    var tab, tabItem, attrName;
+    for (var mutation of list) {
+      tab = mutation.target;
+      if (tab.localName !== "tab")
+        continue;
+
+      attrName = mutation.attributeName;
+      tabItem = new TabItem(tab);
+      switch (attrName) {
+        case "label":
+          tabItem.title = tab.label;
+          break;
+        case "pinned":
+          this.onTabMove(tab);
+        case "titlechanged":
+        case "unread":
+        case "pending":
+          if (tab.hasAttribute(attrName))
+            tabItem.propertySet.add(attrName);
+          else
+            tabItem.propertySet.delete(attrName);
+          break;
+        case "busy":
+          if (tab.hasAttribute(attrName))
+            tabItem.propertySet.add("loading");
+          else
+            tabItem.propertySet.delete("loading");
+          break;
+        case "selected":
+          if (tab.hasAttribute(attrName)) {
+            this.onTabSelect();
+            tabItem.propertySet.add("currentTab");
+          } else
+            tabItem.propertySet.delete("currentTab");
+          break;
+        default:
+          continue;
+      }
+      tabItem.buildProperties();
+    }
+    this.treeBox.invalidate();
+  });
+  this.tabsObserver.observe(this.gBrowser.tabContainer, {
+    attributes: true,
+    subtree: true,
+    attributeFilter: ["label", "titlechanged", "unread", "pinned", "busy", "selected", "pending"],
+  });
   this.inited = false;
 }
 
@@ -269,6 +323,8 @@ PanoramaTreeView.prototype = {
     for (let [, type] in Iterator(HANDLE_EVENT_TYPES)) {
       this.gWindow.removeEventListener(type, this, false);
     }
+    this.tabsObserver.disconnect();
+    this.tabsObserver = null;
   },
   saveSession: function PTV_saveSession (aWindow) {
     if (!aWindow)
@@ -933,7 +989,7 @@ PanoramaTreeView.prototype = {
     case "TabUnpinned":
     case "TabMove":
     case "TabGroupMove":
-      this.onTabMove(aEvent);
+      this.onTabMove(aEvent.target);
       break;
     case "TabSelect":
       this.onTabSelect(aEvent);
@@ -1019,11 +1075,10 @@ PanoramaTreeView.prototype = {
     }
 
   },
-  onTabMove: function PTV_onTabMove (aEvent) {
+  onTabMove: function PTV_onTabMove (tab) {
     if (this.filter)
       return;
 
-    var tab = aEvent.target;
     var row = this.getRowForTab(tab);
 
     var self = this;
@@ -1193,42 +1248,21 @@ PanoramaTreeView.prototype = {
 
   },
   selection: null,
-  rowPropertiesIterator: function PTV_rowPropertiesIterator (aRow) {
-    var item = this.rows[aRow];
-    if (item.level === 0) {
-      yield "group";
-      if (item.group && item.group === this.GI._activeGroupItem)
-        yield "currentGroup";
-      if (item.type & APPTAB_GROUP_TYPE)
-        yield "AppTabs";
-    } else {
-      yield "item";
-      if (item.tab.selected)
-        yield "currentTab";
-      if (item.tab.pinned)
-        yield "apptab";
-      if (item.tab.linkedBrowser.__SS_restoreState)
-        yield "pending";
-      if (item.tab.hasAttribute("unread"))
-        yield "unread";
-      if (item.tab.hasAttribute("busy"))
-        yield "loading";
-      if (item.tab.hasAttribute("titlechanged"))
-        yield "titlechanged";
-    }
-  },
   getRowProperties: function PTV_getRowProperties (aRow) {
-    return [prop for (prop of this.rowPropertiesIterator(aRow))].join(" ");
-  },
-  cellPropertiesIterator: function PTV_cellPropertiesIterator (aRow, aColumn) {
-    var anonid = aColumn.element.getAttribute("anonid");
-    if (anonid === "closebutton")
-      yield "closebutton";
-    for (var prop of this.rowPropertiesIterator(aRow))
-      yield prop;
+    var item = this.rows[aRow],
+        properties = "";
+    if (item.level === 0) {
+      if (item.group && item.group === this.GI._activeGroupItem)
+        properties += "currentGroup ";
+    }
+    return properties + item.properties;
   },
   getCellProperties: function PTV_getCellProperties (aRow, aColumn) {
-    return [prop for (prop of this.cellPropertiesIterator(aRow, aColumn))].join(" ");
+    var anonid = aColumn.element.getAttribute("anonid"),
+        properties = "";
+    if (anonid === "closebutton")
+      properties += "closebutton ";
+    return properties + this.getRowProperties(aRow);
   },
   getColumnProperties: function PTV_getColumnProperties (aColumn, aProperties) {},
   isContainer: function PTV_isContainer (aRow) {

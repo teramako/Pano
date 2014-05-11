@@ -1,3 +1,4 @@
+// vim: sw=2 ts=2 et ft=javascript:
 
 var EXPORTED_SYMBOLS = [
   "PanoramaTreeView",

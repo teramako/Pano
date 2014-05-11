@@ -19,6 +19,7 @@
     <em:localized>
       <Description>
         <em:locale>ja</em:locale>
+        <em:name>Pano</em:name>
         <em:description>タブグループをリスト表示します</em:description>
         <em:contributor>Higmmer</em:contributor>
         <em:contributor>mooz</em:contributor>
@@ -29,8 +30,8 @@
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>17.0</em:minVersion>
-        <em:maxVersion>22.0a1</em:maxVersion>
+        <em:minVersion>24.0</em:minVersion>
+        <em:maxVersion>32.0a1</em:maxVersion>
       </Description>
     </em:targetApplication>
   </Description>

@@ -56,10 +56,6 @@ XPCOMUtils.defineLazyGetter(this, "bundle", function () {
   return Services.strings.createBundle("chrome://pano/locale/pano-tree.properties");
 });
 
-// see: Bug407956  Remove nsISupportsArray usage from nsITreeView
-//      https://bugzilla.mozilla.org/show_bug.cgi?id=407956
-const IS_REMOVED_SUPPORTSARRAY = Services.vc.compare(Services.appinfo.version, "22.0") >= 0;
-
 var showTabNumber = Services.prefs.getBoolPref(PREF_SHOW_NUMBER);
 var observer = {
   observe: function (aSubject, aTopic, aData) {
@@ -75,8 +71,7 @@ var observer = {
 }
 Services.prefs.addObserver(PREF_SHOW_NUMBER, observer, true);
 
-var atomCache = {}
-    itemCache = new WeakMap;
+var itemCache = new WeakMap;
 
 var ItemPrototype = {
   title: "",
@@ -477,12 +472,6 @@ PanoramaTreeView.prototype = {
     this.treeBox.invalidate();
 
     return rows;
-  },
-  getAtom: function PTV_getAtom (name) {
-    if (atomCache[name])
-      return atomCache[name];
-
-    return atomCache[name] = atomService.getAtom(name);
   },
   getRowForGroup: function PTV_getRowForGroup (aGroup) {
     if (!aGroup)
@@ -1228,15 +1217,9 @@ PanoramaTreeView.prototype = {
         yield "titlechanged";
     }
   },
-  getRowProperties: IS_REMOVED_SUPPORTSARRAY ?
-    function PTV_getRowProperties (aRow) {
-      return [prop for (prop of this.rowPropertiesIterator(aRow))].join(" ");
-    } :
-    function PTV_getRowProperties (aRow, aProperties) {
-      for (var name of this.rowPropertiesIterator(aRow)) {
-        aProperties.AppendElement(this.getAtom(name));
-      }
-    },
+  getRowProperties: function PTV_getRowProperties (aRow) {
+    return [prop for (prop of this.rowPropertiesIterator(aRow))].join(" ");
+  },
   cellPropertiesIterator: function PTV_cellPropertiesIterator (aRow, aColumn) {
     var anonid = aColumn.element.getAttribute("anonid");
     if (anonid === "closebutton")
@@ -1244,15 +1227,9 @@ PanoramaTreeView.prototype = {
     for (var prop of this.rowPropertiesIterator(aRow))
       yield prop;
   },
-  getCellProperties: IS_REMOVED_SUPPORTSARRAY ?
-    function PTV_getCellProperties (aRow, aColumn) {
-      return [prop for (prop of this.cellPropertiesIterator(aRow, aColumn))].join(" ");
-    } :
-    function PTV_getCellProperties (aRow, aColumn, aProperties) {
-      for (var name of this.cellPropertiesIterator(aRow, aColumn)) {
-        aProperties.AppendElement(this.getAtom(name));
-      }
-    },
+  getCellProperties: function PTV_getCellProperties (aRow, aColumn) {
+    return [prop for (prop of this.cellPropertiesIterator(aRow, aColumn))].join(" ");
+  },
   getColumnProperties: function PTV_getColumnProperties (aColumn, aProperties) {},
   isContainer: function PTV_isContainer (aRow) {
     return this.rows[aRow].level === 0;

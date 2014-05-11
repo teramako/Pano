@@ -2,25 +2,19 @@
 
 #pano-sidebarbutton,
 #pano-alltabs-group-menu {
-  list-style-image: url("chrome://pano/content/pano.svg");
+  list-style-image: url("chrome://pano/skin/pano-button.png");
 }
 #pano-pane-button {
-  list-style-image: url("chrome://pano/content/pano-pane.svg");
+  list-style-image: url("chrome://pano/skin/pano-pane.png");
 }
-#pano-sidebarbutton:hover {
-  background-image: -moz-linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.5)),
-                    -moz-linear-gradient(transparent, rgba(0,0,0,.25) 30%),
-                    -moz-linear-gradient(transparent, rgba(0,0,0,.25) 30%);
-  background-position: 1px -1px, 0 -1px, 100% -1px;
-  background-size: -moz-calc(100% - 2px) 100%, 1px 100%, 1px 100%;
-  background-repeat: no-repeat;
+#PanelUI-contents #pano-sidebarbutton,
+.customization-palette #pano-sidebarbutton {
+  list-style-image: url("chrome://pano/content/pano-button.svg");
 }
-:-moz-any(#pano-sidebarbutton, #pano-pane-button) .toolbarbutton-icon {
-  width: 18px;
-  height: 18px;
-  -moz-margin-end: 0;
+#PanelUI-contents #pano-pane-button,
+.customization-palette #pano-pane-button {
+  list-style-image: url("chrome://pano/content/pano-button.svg");
 }
-
 #pano-pane {
   min-width: 350px;
   min-height: 200px;

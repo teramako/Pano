@@ -6,6 +6,7 @@ Changelog
   * タブ番号表示を廃止
   * タブ選択履歴の廃止
   * シングルクリックでタブ選択を有効とダブルクリックによるタブ選択機能を削除
+  * サイドバーやパネルを開いた時、ツリーにフォーカスされるようにした
 
 ##version 1.2.1 (2013-03-12)
   * [#98 Firefox 22+ のnsISupportsArray削除対応](https://github.com/teramako/Pano/issues/98)

@@ -51,6 +51,7 @@ var gPanoramaTree = {
   tabViewCallback: function PT_tabViewCallback () {
     this.view = new this.PanoramaTreeView(gWin);
     this.tree.view = this.view;
+    this.tree.focus();
   },
   isPanel: false,
   tabbar: {

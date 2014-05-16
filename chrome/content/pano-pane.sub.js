@@ -50,6 +50,8 @@ function onPopupShown (aEvent) {
     resizerRight.style.visibility = "collapse";
   }
 
+  tree.focus();
+
   if (keyset.hasAttribute("disabled"))
     keyset.removeAttribute("disabled");
 

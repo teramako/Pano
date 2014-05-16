@@ -47,39 +47,6 @@ const gPano = {
       }
     },
   },
-  buttons: (function () {
-    var self = {
-      observe: function Pano_observe (aSubject, aTopic, aData) {
-        if (aTopic === "pano-tab-selection-changed" && aSubject === window) {
-          let data = JSON.parse(aData);
-          this.enableCommand(this.commands.tabHistoryForwardCmd, data.canGoForward);
-          this.enableCommand(this.commands.tabHistoryBackCmd,    data.canGoBack);
-        }
-      },
-      enableCommand: function (aCommand, aEnable) {
-        if (aEnable)
-          aCommand.removeAttribute("disabled");
-        else
-          aCommand.setAttribute("disabled", "true");
-      },
-      commands: {},
-      QueryInterface: XPCOMUtils.generateQI(["nsIObserver", "nsISupportsWeakReference"]),
-    };
-    XPCOMUtils.defineLazyGetter(self.commands, "tabHistoryForwardCmd", function(){
-      return document.getElementById("panoCmdTabHistoryForward")
-    });
-    XPCOMUtils.defineLazyGetter(self.commands, "tabHistoryBackCmd", function(){
-      return document.getElementById("panoCmdTabHistoryBack")
-    });
-    Services.obs.addObserver(self, "pano-tab-selection-changed", true);
-    return self;
-  })(),
-  get tabHistory() {
-    let tmp = {};
-    Components.utils.import("resource://pano/tabSelectionHistory.jsm", tmp);
-    delete this.tabHistory;
-    return this.tabHistory = new tmp.TabSelectionHistory(window);
-  },
 };
 XPCOMUtils.defineLazyModuleGetter(gPano, "styler", "resource://pano/panoStyle.jsm", "PanoStyle");
 
@@ -98,12 +65,6 @@ window.addEventListener("load", function () {
   if (allTabsButton)
     allTabsButton.addEventListener("popupshowing", gPano.tabGroups.onPopupShowing, true);
 
-  window.addEventListener("TabSelect", function () {
-    window.removeEventListener("TabSelect", arguments.callee, false);
-    let th = gPano.tabHistory;
-    th.clear();
-    th.maxItems = 20;
-  }, false);
 }, false);
 
 // vim: sw=2 ts=2 et fdm=marker:

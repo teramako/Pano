@@ -35,7 +35,6 @@ var gPanoramaTree = {
     gWin.TabView._initFrame(this.tabViewCallback.bind(this));
     Services.scriptloader.loadSubScript("chrome://pano/content/pano-tree.sub.js", this);
     this.tabbar.init();
-    this.buttons.init();
   },
   destroy: function PT_destroy () {
     this.view.destroy();
@@ -43,7 +42,6 @@ var gPanoramaTree = {
     if (this.tabbar.pref) {
       this.tabbar.toolbar.style.visibility = "visible";
     }
-    this.buttons.uninit();
     let (splitter = document.getElementById("subFrameSplitter")) {
       if (splitter.getAttribute("state") !== "collapsed")
         splitter.setAttribute("state", "open");
@@ -104,34 +102,6 @@ var gPanoramaTree = {
       }
     },
   },
-  buttons: {
-    init: function () {
-      this.commands = {
-        tabHistoryForwardCmd: document.getElementById("panoCmdTabHistoryForward"),
-        tabHistoryBackCmd:    document.getElementById("panoCmdTabHistoryBack")
-      };
-      Services.obs.addObserver(this, "pano-tab-selection-changed", true);
-      this.enableCommand(this.commands.tabHistoryForwardCmd, gWin.gPano.tabHistory.canGoForward);
-      this.enableCommand(this.commands.tabHistoryBackCmd,    gWin.gPano.tabHistory.canGoBack);
-    },
-    uninit: function () {
-      Services.obs.removeObserver(this, "pano-tab-selection-changed");
-    },
-    observe: function Pano_observe (aSubject, aTopic, aData) {
-      if (aTopic === "pano-tab-selection-changed" && aSubject === gWin) {
-        let data = JSON.parse(aData);
-        this.enableCommand(this.commands.tabHistoryForwardCmd, data.canGoForward);
-        this.enableCommand(this.commands.tabHistoryBackCmd,    data.canGoBack);
-      }
-    },
-    enableCommand: function (aCommand, aEnable) {
-      if (aEnable)
-        aCommand.removeAttribute("disabled");
-      else
-        aCommand.setAttribute("disabled", "true");
-    },
-    QueryInterface: XPCOMUtils.generateQI(["nsIObserver", "nsISupportsWeakReference"]),
-  }
 };
 
 /**

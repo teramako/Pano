@@ -11,10 +11,6 @@
 <!ENTITY search.label "Filter">
 <!ENTITY hidetabbar.label "Hide Tabbar">
 <!ENTITY hidetabbar.tooltip "Hide the tabbar automatically during Pano sidebar is opening.">
-<!ENTITY tabHistory.forward.label "Forward">
-<!ENTITY tabHistory.forward.tooltip "Forward Tab History">
-<!ENTITY tabHistory.back.label "Back">
-<!ENTITY tabHistory.back.tooltip "Back Tab History">
 <!ENTITY expandAll.label "Expand All">
 <!ENTITY expandAll.tooltip "Expand All tree items">
 <!ENTITY collapseAll.label "Collapse All">

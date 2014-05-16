@@ -5,11 +5,6 @@
   width: 16px;
   height: 16px;
 }
-.pano-tree treechildren::-moz-tree-image(checked) {
-  width: 16px;
-  margin: 0 !important;
-  padding: 0 !important;
-}
 .pano-tree treecol[anonid="closebutton"] {
   width: 33px;
 }

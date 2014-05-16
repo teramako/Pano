@@ -122,10 +122,6 @@
     <treecol anonid="title" flex="1"
              hideheader="true"
              editable="true" primary="true"/>
-    <treecol anonid="closebutton"
-             hideheader="true"
-             type="checkbox"
-             editable="true"/>
   </treecols>
   <treechildren id="panoTabGroupTreeChildren"
                 context="panoContextMenu"

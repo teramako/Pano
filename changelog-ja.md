@@ -2,6 +2,7 @@ Changelog
 =========
 
 ##version 1.3
+  * ツリーのクローズボタンを廃止
 
 ##version 1.2.1 (2013-03-12)
   * [#98 Firefox 22+ のnsISupportsArray削除対応](https://github.com/teramako/Pano/issues/98)

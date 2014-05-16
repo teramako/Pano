@@ -63,7 +63,6 @@ tree.addEventListener("click", closeTab, false);
 tree.addEventListener("dblclick", onDblClick, false);
 
 const PREF_SWITCH_BY              = "extensions.pano.switchTabBySingleClick",
-      PREF_SHOW_CLOSEBUTTON       = "extensions.pano.showCloseButton",
       PREF_TOOLTIP_SHOW_THUMBNAIL = "extensions.pano.tooltip.showThumbnail",
       PREF_TOOLTIP_SHOW_TITLE     = "extensions.pano.tooltip.showTitle";
 
@@ -73,12 +72,7 @@ function toggleSwitchTabHandler () {
   tree.removeEventListener("dblclick", selectTab, false);
   tree.addEventListener(type, selectTab, false);
 }
-function toggleShowCloseButton () {
-  var show = Services.prefs.getBoolPref(PREF_SHOW_CLOSEBUTTON);
-  tree.columns.getColumnAt(1).element.hidden = !show;
-}
 toggleSwitchTabHandler();
-toggleShowCloseButton();
 
 var observer = {
   observe: function (aSubject, aTopic, aData) {
@@ -86,9 +80,6 @@ var observer = {
       switch (aData) {
       case PREF_SWITCH_BY:
         toggleSwitchTabHandler();
-        break;
-      case PREF_SHOW_CLOSEBUTTON:
-        toggleShowCloseButton();
         break;
       }
     }
@@ -100,7 +91,6 @@ var observer = {
   QueryInterface: XPCOMUtils.generateQI(["nsIObserver", "nsISupportsWeakReference"]),
 }
 Services.prefs.addObserver(PREF_SWITCH_BY, observer, true);
-Services.prefs.addObserver(PREF_SHOW_CLOSEBUTTON, observer, true);
 Services.obs.addObserver(observer, "lightweight-theme-styling-update", true);
 
 function newGroup () {

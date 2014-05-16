@@ -1184,14 +1184,7 @@ PanoramaTreeView.prototype = {
     return "";
   },
   getCellValue: function PTV_getCellValue (aRow, aColumn) {
-    var item = this.rows[aRow];
-    switch (aColumn.element.getAttribute("anonid")) {
-    case "title":
-      return item.id;
-    case "closebutton":
-      return !(item.type & APPTAB_GROUP_TYPE);
-    }
-    return "";
+    return this.rows[aRow].id;
   },
   getLevel: function PTV_getLevel (aRow) {
     return this.filter ? 0 : this.rows[aRow].level;
@@ -1258,11 +1251,7 @@ PanoramaTreeView.prototype = {
     return properties + item.properties;
   },
   getCellProperties: function PTV_getCellProperties (aRow, aColumn) {
-    var anonid = aColumn.element.getAttribute("anonid"),
-        properties = "";
-    if (anonid === "closebutton")
-      properties += "closebutton ";
-    return properties + this.getRowProperties(aRow);
+    return this.getRowProperties(aRow);
   },
   getColumnProperties: function PTV_getColumnProperties (aColumn, aProperties) {},
   isContainer: function PTV_isContainer (aRow) {
@@ -1331,24 +1320,7 @@ PanoramaTreeView.prototype = {
   isSelectable: function PTV_isSelectable (aRow, aColumn) {
     return false;
   },
-  setCellValue: function PTV_setCellValue (aRow, aColumn, aValue) {
-    if (aColumn.element.getAttribute("anonid") === "closebutton" && aValue === "false") {
-      var item = this.rows[aRow];
-      if (item.type & TAB_ITEM_TYPE) {
-        this.gBrowser.removeTab(item.tab);
-      } else if (item.type & TAB_GROUP_TYPE) {
-        if (item.type & APPTAB_GROUP_TYPE)
-          return;
-
-        item.children.forEach(function (tabItem) {
-          this.removeTab(tabItem.tab, { animate: false });
-        }, this.gBrowser)
-
-        if (item.group)
-          item.group.close({ immediately: true });
-      }
-    }
-  },
+  setCellValue: function PTV_setCellValue (aRow, aColumn, aValue) {},
   setCellText: function PTV_setCellText (aRow, aColumn, aValue) {
     var group = this.rows[aRow].group;
     if (group.id != aValue) {

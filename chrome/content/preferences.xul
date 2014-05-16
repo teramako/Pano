@@ -8,9 +8,6 @@
   <prefpane>
     <script type="application/javascript" src="chrome://pano/content/preferences.js"/>
     <preferences>
-      <preference id="pref-showCloseButton"
-                  name="extensions.pano.showCloseButton"
-                  type="bool"/>
       <preference id="pref-showTabNumber"
                   name="extensions.pano.showTabNumber"
                   type="bool"/>
@@ -47,8 +44,6 @@
       <checkbox label="&pref.autoHideTabbar.label;" preference="pref-autoHideTabbar"/>
       <sperator class="thin"/>
       <checkbox label="&pref.showTabNumber.label;" preference="pref-showTabNumber"/>
-      <sperator class="thin"/>
-      <checkbox label="&pref.showCloseButton.label;" preference="pref-showCloseButton"/>
       <sperator class="thin"/>
       <checkbox label="&pref.switchTabBySingleClick.label;" preference="pref-switchTabBySingleClick"/>
       <sperator class="thin"/>

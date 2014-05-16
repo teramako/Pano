@@ -87,7 +87,6 @@
           </toolbox>
           <tree id="panoTabGroupTree">
             <treechildren id="panoTabGroupTreeChildren"
-                          ondblclick="gPano.pane.selectTab(event);"
                           ondragstart="gPano.pane.onDragStart(event);"
                           ondragover="gPano.pane.onDragOver(event);"/>
           </tree>

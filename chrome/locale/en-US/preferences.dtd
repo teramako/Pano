@@ -1,6 +1,5 @@
 <!ENTITY window.title "Pano Option">
 <!ENTITY pref.autoHideTabbar.label "Hide the tabbar automatically during Pano sidebar is opening.">
-<!ENTITY pref.switchTabBySingleClick.label "Switch the tab by SINGLE click.">
 <!ENTITY pref.panel.autoCloseByTabSelect.label "Close automatically at switching a tab">
 <!ENTITY pref.panel.openPanelOnMouseOver.label "Open popup on mouse-over the button">
 <!ENTITY pref.select_currenttab "Select the current tab's (or group's) row when the current tab is changed">

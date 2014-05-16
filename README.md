@@ -12,8 +12,6 @@
 
 ##サイドバー
 
- * タブのアイテムをダブルクリックでタブ選択
-   * about:config から `extensions.pano.switchTabBySingleClick` を `true` にすると、シングルクリックで選択可能
  * タブのアイテムを中ボタンクリックで閉じる
  * グループのアイテムをダブルクリックするとグループ名の編集
  * 一応ドラッグ&ドロップ可
@@ -68,8 +66,6 @@
 
  * `extensions.pano.autoHideTabbar`:
    タブバーを隠すかどうかの設定(サイドバーが開いているときのみ有効)
- * `extensions.pano.switchTabBySingleClick`:
-   タブのアイテムをシングルクリックでスイッチするかどうかの設定
  * `extensions.pano.panel.autoCloseByTabSelect`:
    パネルからタブを切り替えた時、自動的にパネルを閉じるかどうかの設定
  * `extensions.pano.panel.openOnMouseOver`:

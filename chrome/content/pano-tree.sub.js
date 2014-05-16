@@ -10,7 +10,7 @@ function onDragStart (aEvent) {
 function onDragOver (aEvent) {
   PanoramaTreeView.onDragOver(aEvent, view);
 }
-function onDblClick (aEvent) {
+function onTreeDblClick (aEvent) {
   if (aEvent.button !== 0)
     return;
 
@@ -23,9 +23,6 @@ function onDblClick (aEvent) {
 }
 
 function selectTab (aEvent) {
-  if (aEvent.button !== 0 || aEvent.ctrlKey || aEvent.shiftKey || aEvent.metaKey || aEvent.altKey)
-    return;
-
   var index = view.selection.currentIndex;
   if (index === -1)
     return;
@@ -48,49 +45,44 @@ function selectTab (aEvent) {
   }
 }
 
-function closeTab (aEvent) {
-  if (aEvent.button !== 1)
-    return;
+function onTreeClick (aEvent) {
+  switch (aEvent.button) {
+    case 0: { // Left Click
+      if (aEvent.ctrlKey || aEvent.shiftKey || aEvent.metaKey || aEvent.altKey)
+        return;
 
-  var item = view.getItemFromEvent(aEvent);
-  if (!item || !(item.type & TAB_ITEM_TYPE)) {
-    return;
+      selectTab(aEvent);
+    }
+    break;
+    case 1: { // Middle Click
+      let item = view.getItemFromEvent(aEvent);
+      if (!item || !(item.type & TAB_ITEM_TYPE)) {
+        return;
+      }
+      let animate = gBrowser.visibleTabs.indexOf(item.tab) >= 0;
+      gBrowser.removeTab(item.tab, { animate: animate, byMouse: false });
+    }
+    break;
+    default:
+      return;
   }
-  var animate = gBrowser.visibleTabs.indexOf(item.tab) >= 0;
-  gBrowser.removeTab(item.tab, { animate: animate, byMouse: false });
 }
-tree.addEventListener("click", closeTab, false);
-tree.addEventListener("dblclick", onDblClick, false);
 
-const PREF_SWITCH_BY              = "extensions.pano.switchTabBySingleClick",
-      PREF_TOOLTIP_SHOW_THUMBNAIL = "extensions.pano.tooltip.showThumbnail",
+tree.addEventListener("click", onTreeClick, false);
+tree.addEventListener("dblclick", onTreeDblClick, false);
+
+const PREF_TOOLTIP_SHOW_THUMBNAIL = "extensions.pano.tooltip.showThumbnail",
       PREF_TOOLTIP_SHOW_TITLE     = "extensions.pano.tooltip.showTitle";
-
-function toggleSwitchTabHandler () {
-  var type = Services.prefs.getBoolPref(PREF_SWITCH_BY) ?  "click" : "dblclick";
-  tree.removeEventListener("click", selectTab, false);
-  tree.removeEventListener("dblclick", selectTab, false);
-  tree.addEventListener(type, selectTab, false);
-}
-toggleSwitchTabHandler();
 
 var observer = {
   observe: function (aSubject, aTopic, aData) {
-    if (aTopic === "nsPref:changed") {
-      switch (aData) {
-      case PREF_SWITCH_BY:
-        toggleSwitchTabHandler();
-        break;
-      }
-    }
-    else if (isPanel && aTopic === "lightweight-theme-styling-update") {
+    if (isPanel && aTopic === "lightweight-theme-styling-update") {
       /** @see pano-pane.sub.js */
       updatePanelTheme(JSON.parse(aData));
     }
   },
   QueryInterface: XPCOMUtils.generateQI(["nsIObserver", "nsISupportsWeakReference"]),
 }
-Services.prefs.addObserver(PREF_SWITCH_BY, observer, true);
 Services.obs.addObserver(observer, "lightweight-theme-styling-update", true);
 
 function newGroup () {

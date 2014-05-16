@@ -8,9 +8,6 @@
   <prefpane>
     <script type="application/javascript" src="chrome://pano/content/preferences.js"/>
     <preferences>
-      <preference id="pref-switchTabBySingleClick"
-                  name="extensions.pano.switchTabBySingleClick"
-                  type="bool"/>
       <preference id="pref-autoHideTabbar"
                   name="extensions.pano.autoHideTabbar"
                   type="bool"/>
@@ -39,8 +36,6 @@
     <vbox flex="1">
       <sperator class="thin"/>
       <checkbox label="&pref.autoHideTabbar.label;" preference="pref-autoHideTabbar"/>
-      <sperator class="thin"/>
-      <checkbox label="&pref.switchTabBySingleClick.label;" preference="pref-switchTabBySingleClick"/>
       <sperator class="thin"/>
       <checkbox label="&pref.panel.autoCloseByTabSelect.label;" preference="pref-panel-autoCloseByTabSelect"/>
       <sperator class="thin"/>

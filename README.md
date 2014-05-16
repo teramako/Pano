@@ -3,13 +3,7 @@
 #なんぞコレ？
 タブグループをリストする拡張機能だよん。
 
- * 対象：Firefox 10.0 以上
-
-#キャプチャ画像
-![sidebar](http://teramako.github.com/Pano/sidebar.png "Pano sidebar")
-![PanoButton](http://teramako.github.com/Pano/pano-button-menu.png "Pano Button")
-![tablist](http://teramako.github.com/Pano/all-tabs-list.png "All tabs list button")
-![PanoPanel](http://teramako.github.com/Pano/pano-pane.png "Pano panel")
+ * 対象：Firefox 24.0 以上
 
 #使い方
 

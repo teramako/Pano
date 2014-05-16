@@ -1,6 +1,5 @@
 pref("extensions.pano.switchTabBySingleClick", false);
 pref("extensions.pano.autoHideTabbar", false);
-pref("extensions.pano.showTabNumber", false);
 pref("extensions.pano.panel.autoCloseByTabSelect", false);
 pref("extensions.pano.panel.openOnMouseOver", false);
 pref("extensions.pano.tooltip.showThumbnail", true);

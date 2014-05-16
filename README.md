@@ -69,8 +69,6 @@
 
  * `extensions.pano.autoHideTabbar`:
    タブバーを隠すかどうかの設定(サイドバーが開いているときのみ有効)
- * `extensions.pano.showTabNumber`:
-   ツリーにタブ番号を付加
  * `extensions.pano.switchTabBySingleClick`:
    タブのアイテムをシングルクリックでスイッチするかどうかの設定
  * `extensions.pano.panel.autoCloseByTabSelect`:

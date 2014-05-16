@@ -1,6 +1,5 @@
 <!ENTITY window.title "Pano オプション">
 <!ENTITY pref.autoHideTabbar.label "Panoサイドバーが開いている間、タブバーを自動的に隠す">
-<!ENTITY pref.showTabNumber.label "タブ番号を付加する">
 <!ENTITY pref.switchTabBySingleClick.label "シングルクリックでタブにスイッチ">
 <!ENTITY pref.panel.autoCloseByTabSelect.label "タブをスイッチした時、自動的にパネルを閉じる">
 <!ENTITY pref.panel.openPanelOnMouseOver.label "パネルボタンのマウスオーバーでポップアップする">
